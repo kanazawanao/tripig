@@ -8,45 +8,45 @@ const routes: Routes = [
     component: TabsPage,
     children: [
       {
-        path: 'tab1',
+        path: 'point',
         children: [
           {
             path: '',
             loadChildren: () =>
-              import('../tab1/tab1.module').then(m => m.Tab1PageModule)
+              import('./point-search/point-search.module').then(m => m.PointSearchModule)
           }
         ]
       },
       {
-        path: 'tab2',
+        path: 'route',
         children: [
           {
             path: '',
             loadChildren: () =>
-              import('../tab2/tab2.module').then(m => m.Tab2PageModule)
+              import('./route-search/route-search.module').then(m => m.RouteSearchModule)
           }
         ]
       },
       {
-        path: 'tab3',
+        path: 'registered',
         children: [
           {
             path: '',
             loadChildren: () =>
-              import('../tab3/tab3.module').then(m => m.Tab3PageModule)
+              import('./registered-routes/registered-routes.module').then(m => m.RegisteredRoutesModule)
           }
         ]
       },
       {
         path: '',
-        redirectTo: '/tabs/tab1',
+        redirectTo: '/tabs/point',
         pathMatch: 'full'
       }
     ]
   },
   {
     path: '',
-    redirectTo: '/tabs/tab1',
+    redirectTo: '/tabs/point',
     pathMatch: 'full'
   }
 ];
