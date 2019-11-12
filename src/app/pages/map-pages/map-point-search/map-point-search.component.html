@@ -1,7 +1,17 @@
-<h2>サジェスト画面</h2>
-<p>
-  ここに検索地点を中心にした地図 or 出発地点～到着地点までのルート地図表示
-</p>
+<google-map
+  [center]="center"
+  [zoom]="zoom"
+  (mapClick)="addMarker($event)"
+  (mapMousemove)="move($event)"
+  (mapRightclick)="removeLastMarker()">
+  <map-marker
+    #marker
+    *ngFor="let markerPosition of markerPositions"
+    [position]="markerPosition"
+    [options]="markerOptions"
+    (mapClick)="openInfoWindow(marker)"></map-marker>
+  <map-info-window>Info Window content</map-info-window>
+</google-map>
 <p>
   サジェスト一覧表示
 </p>
