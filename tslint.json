@@ -48,7 +48,10 @@
     "no-non-null-assertion": true,
     "no-redundant-jsdoc": true,
     "no-switch-case-fall-through": true,
+    "no-trailing-whitespace": true,
+    "no-unnecessary-initializer": true,
     "no-use-before-declare": true,
+    "no-var-keyword": true,
     "no-var-requires": false,
     "object-literal-key-quotes": [
       true,
@@ -56,6 +59,7 @@
     ],
     "object-literal-sort-keys": false,
     "ordered-imports": false,
+    "prefer-const": true,
     "quotemark": [
       true,
       "single"
