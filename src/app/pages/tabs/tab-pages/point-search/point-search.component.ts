@@ -9,4 +9,7 @@ export class PointSearchComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {}
+  search() {
+
+  }
 }

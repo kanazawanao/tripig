@@ -5,8 +5,8 @@ import { FormsModule } from '@angular/forms';
 
 import { MaterialModule } from 'src/app/material/material.module';
 import { TabsPageRoutingModule } from './tabs-routing.module';
-import { TabsPage } from './tabs.page';
-import { MapModule } from 'src/app/dialog/map/map.module';
+import { TabsPage } from './tabs.component.page';
+import { MapModule } from 'src/app/parts/dialog/map/map.module';
 @NgModule({
   imports: [
     IonicModule,

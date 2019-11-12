@@ -11,7 +11,7 @@ export class MapRouteResultComponent implements OnInit {
   constructor(private dialogRef: MatDialogRef<MapRouteResultComponent>) { }
 
   ngOnInit() {}
-  
+
   close() {
     this.dialogRef.close();
   }
