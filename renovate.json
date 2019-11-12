@@ -1,5 +1,21 @@
 {
-  "extends": [
-    "config:base"
+  "extends": ["config:base"],
+  "timezone": "Asia/Tokyo",
+  "schedule": ["every weekend"],
+  "labels": ["renovate"],
+  "patch": { "automerge": true },
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 3am on the first day of the month"]
+  },
+  "packageRules": [
+    {
+      "groupName": "Unit test package",
+      "packagePatterns": ["^jasmine", "^karma"]
+    },
+    {
+      "groupName": "Angular DevKit",
+      "packagePatterns": ["^@angular-devkit/"]
+    }
   ]
 }
