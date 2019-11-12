@@ -4,11 +4,11 @@ import { Routes, RouterModule } from '@angular/router';
 
 const routes: Routes = [
   {
-    path: 'point-search',
+    path: 'point',
     loadChildren: () => import('./map-point-search/map-point-search.module').then(m => m.MapPointSearchModule)
   },
   {
-    path: 'route-search',
+    path: 'route',
     loadChildren: () => import('./map-route-search/map-route-search.module').then(m => m.MapRouteSearchModule)
   },
 ];

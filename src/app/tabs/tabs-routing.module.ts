@@ -38,6 +38,16 @@ const routes: Routes = [
         ]
       },
       {
+        path: 'search',
+        children: [
+          {
+            path: '',
+            loadChildren: () =>
+              import('./map-pages/map-pages.module').then(m => m.MapPagesModule)
+          }
+        ]
+      },
+      {
         path: '',
         redirectTo: '/tabs/point',
         pathMatch: 'full'
