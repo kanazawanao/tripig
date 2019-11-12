@@ -20,6 +20,7 @@ npm-debug.log*
 /.firebase
 /.idea
 /.ionic
+/.prettierrc
 /.sass-cache
 /.sourcemaps
 /.versions
