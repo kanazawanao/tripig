@@ -12,20 +12,22 @@ import { AlertController } from '@ionic/angular';
 @Component({
   selector: 'app-map-route-search',
   templateUrl: './map-route-search.component.html',
-  styleUrls: ['./map-route-search.component.scss'],
+  styleUrls: ['./map-route-search.component.scss']
 })
 export class MapRouteSearchComponent implements OnInit, OnDestroy {
-  @ViewChild(GoogleMap, {static: false}) map!: GoogleMap;
+  @ViewChild(GoogleMap, { static: false }) map!: GoogleMap;
   private onDestroy$ = new Subject();
-  direction$: Observable<Direction> = this.store.select(TripigSelector.getDirection);
-  center: google.maps.LatLng =  new google.maps.LatLng(37.421995, -122.084092);
+  direction$: Observable<Direction> = this.store.select(
+    TripigSelector.getDirection
+  );
+  center: google.maps.LatLng = new google.maps.LatLng(37.421995, -122.084092);
   zoom = 16;
 
   constructor(
     private router: Router,
     private store: Store<TripigState.State>,
-    private alertController: AlertController,
-  ) { }
+    private alertController: AlertController
+  ) {}
 
   ngOnInit() {
     this.direction$
@@ -43,7 +45,7 @@ export class MapRouteSearchComponent implements OnInit, OnDestroy {
     const request: google.maps.DirectionsRequest = {
       origin: direction.leaving,
       destination: direction.arrival,
-      travelMode: direction.travelMode,
+      travelMode: direction.travelMode
     };
     directionService.route(request, (result, status) => {
       if (this.routeResultCheck(status)) {
@@ -70,7 +72,7 @@ export class MapRouteSearchComponent implements OnInit, OnDestroy {
     const alert = await this.alertController.create({
       header: 'Alert',
       subHeader: '検索に失敗しました',
-      message: message,
+      message,
       buttons: ['OK']
     });
 
