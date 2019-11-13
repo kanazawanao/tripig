@@ -5,17 +5,30 @@ import { Store } from '@ngrx/store';
 import * as TripigActions from 'src/app/store/tripig.action';
 import * as TripigReducer from 'src/app/store/tripig.reducer';
 import { Direction } from 'src/app/models/direction.model';
-
+export interface Mode {
+  value: google.maps.TravelMode;
+  viewValue: string;
+}
 @Component({
   selector: 'app-route-search',
   templateUrl: './route-search.component.html',
   styleUrls: ['./route-search.component.scss'],
 })
 export class RouteSearchComponent implements OnInit {
+  travelModes: Mode[] = [
+    {value: google.maps.TravelMode.WALKING, viewValue: 'directions_walk'},
+    {value: google.maps.TravelMode.BICYCLING, viewValue: 'directions_bike'},
+    {value: google.maps.TravelMode.DRIVING, viewValue: 'directions_car'},
+    {value: google.maps.TravelMode.TRANSIT, viewValue: 'directions_transit'},
+    {value: google.maps.TravelMode.TWO_WHEELER, viewValue: 'motorcycle'}
+  ];
+
   searchForm = this.fb.group({
     leaving: ['', Validators.required],
     arrival: ['', Validators.required],
+    selectedTravelMode: [this.travelModes[0]]
   });
+
   leavingKey = 'leaving';
   get leaving(): string {
     return this.searchForm.controls[this.leavingKey].value;
@@ -24,14 +37,20 @@ export class RouteSearchComponent implements OnInit {
   get arrival(): string {
     return this.searchForm.controls[this.arrivalKey].value;
   }
+  selectedModeKey = 'selectedTravelMode';
+  get selectedMode(): Mode {
+    return this.searchForm.controls[this.selectedModeKey].value;
+  }
   get direction(): Direction {
     const direction: Direction = {
       arrival: this.arrival,
       looking: '',
-      leaving: this.leaving
+      leaving: this.leaving,
+      travelMode: this.selectedMode.value,
     };
     return direction;
   }
+
   constructor(
     private router: Router,
     private fb: FormBuilder,

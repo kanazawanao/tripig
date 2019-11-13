@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
+import { Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import * as TripigState from 'src/app/store/';
 import * as TripigSelector from 'src/app/store/tripig.selector';
-import { Observable } from 'rxjs';
 import { Direction } from 'src/app/models/direction.model';
 
 @Component({
@@ -10,7 +11,8 @@ import { Direction } from 'src/app/models/direction.model';
   templateUrl: './map-point-search.component.html',
   styleUrls: ['./map-point-search.component.scss'],
 })
-export class MapPointSearchComponent implements OnInit {
+export class MapPointSearchComponent implements OnInit, OnDestroy {
+  private onDestroy$ = new Subject();
   direction$: Observable<Direction> = this.store.select(TripigSelector.getDirection);
   center: google.maps.LatLng =  new google.maps.LatLng(37.421995, -122.084092);
   zoom = 16;
@@ -19,14 +21,27 @@ export class MapPointSearchComponent implements OnInit {
 
   ngOnInit() {
     this.direction$
-      .subscribe(direction => {
-        console.log(direction);
-        const geocoder = new google.maps.Geocoder();
-        geocoder.geocode({ address: direction.arrival }, (result, status) => {
-          if (status === google.maps.GeocoderStatus.OK) {
-            this.center = result[0].geometry.location;
-          }
-        });
-      });
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(direction => this.setMap(direction));
+  }
+
+  ngOnDestroy(): void {
+    this.onDestroy$.next();
+  }
+
+  private setMap(direction: Direction) {
+    const geocoder = new google.maps.Geocoder();
+    geocoder.geocode({ address: direction.arrival }, (result, status) => {
+      if (this.geocodeResultCheck(status)) {
+        this.center = result[0].geometry.location;
+      }
+    });
+  }
+
+  private geocodeResultCheck(status: google.maps.GeocoderStatus): boolean {
+    if (status === google.maps.GeocoderStatus.OK) {
+      return true;
+    }
+    return false;
   }
 }
