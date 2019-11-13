@@ -1,11 +1,24 @@
-<ion-content>
-  <form class="form">
-    <mat-form-field class="full-width">
-      <input matInput placeholder="LEAVING FROM">
-    </mat-form-field>
-    <mat-form-field class="full-width">
-      <input matInput placeholder="ARRIVAL AT">
-    </mat-form-field>
-    <button mat-button routerLink="/tabs/search/route">Search</button>
-  </form>
-</ion-content>
+<form [formGroup]="searchForm" class="form">
+  <mat-form-field class="full-width">
+    <input
+      matInput
+      type="text"
+      placeholder="LEAVING FROM"
+      formControlName="leaving"
+      required>
+  </mat-form-field>
+  <mat-form-field class="full-width">
+    <input
+      matInput
+      type="text"
+      placeholder="ARRIVAL AT"
+      formControlName="arrival"
+      required>
+  </mat-form-field>
+  <button
+    mat-button
+    type="button"
+    (click)="search()"
+    [disabled]="!searchForm.valid"
+    >Search</button>
+</form>

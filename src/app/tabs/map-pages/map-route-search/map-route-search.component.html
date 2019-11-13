@@ -1,9 +1,9 @@
-<p>
-  <google-map
-    height="250px"
-    width="100%">
-  </google-map>
-</p>
+<google-map
+  height="250px"
+  width="100%"
+  [center]="center"
+  [zoom]="zoom">
+</google-map>
 <p>
   ジャンル選択
   <button mat-button routerLink="/tabs/search/point">Search</button>
