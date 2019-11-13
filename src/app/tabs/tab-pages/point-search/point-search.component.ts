@@ -12,12 +12,12 @@ export interface Category {
 @Component({
   selector: 'app-point-search',
   templateUrl: './point-search.component.html',
-  styleUrls: ['./point-search.component.scss'],
+  styleUrls: ['./point-search.component.scss']
 })
 export class PointSearchComponent implements OnInit {
   searchForm = this.fb.group({
     arrival: ['', Validators.required],
-    selectedCategory: ['all'],
+    selectedCategory: ['cafe']
   });
   arrivalKey = 'arrival';
   get arrival(): string {
@@ -36,20 +36,27 @@ export class PointSearchComponent implements OnInit {
     return direction;
   }
   categories: Category[] = [
-    {value: 'all', viewValue: 'Any Category'},
-    {value: 'vacation', viewValue: 'City getaway'},
-    {value: 'family', viewValue: 'Family Holidays'}
+    { value: 'cafe', viewValue: 'Cafe' },
+    { value: 'convenience_store', viewValue: 'Convenience Store' },
+    { value: 'food', viewValue: 'food' },
+    { value: 'gas_station', viewValue: 'Gas Station' },
+    { value: 'park', viewValue: 'Park' },
+    { value: 'restaurant', viewValue: 'restaurant' },
+    { value: 'spa', viewValue: 'Spa' },
+    { value: 'zoo', viewValue: 'Zoo' }
   ];
   constructor(
     private router: Router,
     private fb: FormBuilder,
     private store: Store<TripigReducer.State>
-  ) { }
+  ) {}
 
   ngOnInit() {}
 
   search() {
-    this.store.dispatch(TripigActions.setDirection({ direction: this.direction }));
+    this.store.dispatch(
+      TripigActions.setDirection({ direction: this.direction })
+    );
     this.router.navigate(['/tabs/search/point']);
   }
 }

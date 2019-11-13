@@ -2,11 +2,13 @@
   height="250px"
   width="100%"
   [center]="center"
-  [zoom]="zoom">
-</google-map>
-<p>
-  サジェスト一覧表示
-</p>
-<p>
-  決定ボタン⇒出発～経由地～目的地までの地図表示画面へ遷移
-</p>
+  [zoom]="zoom"
+></google-map>
+
+<ion-content>
+  <mat-list>
+    <mat-list-item *ngFor="let suggest of suggestList">
+      <p>name: {{ suggest.name }}</p>
+    </mat-list-item>
+  </mat-list>
+</ion-content>

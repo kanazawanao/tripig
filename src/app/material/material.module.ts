@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 
 const modules = [
@@ -11,15 +12,13 @@ const modules = [
   MatDialogModule,
   MatInputModule,
   MatIconModule,
-  MatSelectModule,
+  MatListModule,
+  MatSelectModule
 ];
 
 @NgModule({
   declarations: [],
   exports: [modules],
-  imports: [
-    CommonModule,
-    modules
-  ]
+  imports: [CommonModule, modules]
 })
-export class MaterialModule { }
+export class MaterialModule {}
