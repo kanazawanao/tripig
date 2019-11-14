@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, NgZone } from '@angular/core';
 import { Location } from '@angular/common';
 import { GoogleMap, MapMarker, MapInfoWindow } from '@angular/google-maps';
 import { AlertController } from '@ionic/angular';
@@ -36,7 +36,8 @@ export class MapPointSearchComponent {
   constructor(
     private location: Location,
     private store: Store<TripigState.State>,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private zone: NgZone,
   ) {}
 
   ionViewDidEnter() {
@@ -103,12 +104,14 @@ export class MapPointSearchComponent {
     };
     console.log(direction);
     placeService.nearbySearch(request, (results, status) => {
-      if (this.nearbySearchResultCheck(status)) {
-        this.suggestList = this.selectedList.concat(results);
-        console.log(results);
-      } else {
-        console.log(status);
-      }
+      this.zone.run(() => {
+        if (this.nearbySearchResultCheck(status)) {
+          this.suggestList = this.selectedList.concat(results);
+          console.log(results);
+        } else {
+          console.log(status);
+        }
+      });
     });
   }
 
