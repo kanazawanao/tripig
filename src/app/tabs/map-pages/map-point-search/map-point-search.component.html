@@ -4,8 +4,8 @@
   [center]="center"
   [zoom]="zoom">
   <map-marker #marker
-    *ngFor="let markerPosition of markerPositions"
-    [position]="markerPosition"
+    *ngFor="let selected of selectedList"
+    [position]="selected.geometry?.location"
     [options]="markerOptions"
     (mapClick)="openInfoWindow(marker)"></map-marker>
   <map-info-window>Info Window content</map-info-window>
@@ -13,8 +13,7 @@
 
 <ion-content>
   <mat-selection-list
-    [(ngModel)]="selectedList"
-    (selectionChange)="onSelectionChange($event)">
+    [(ngModel)]="selectedList">
     <mat-list-option
       *ngFor="let suggest of suggestList"
       [value]="suggest">

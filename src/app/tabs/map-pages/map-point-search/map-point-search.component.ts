@@ -1,33 +1,37 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
-import { GoogleMap } from '@angular/google-maps';
+import { GoogleMap, MapMarker, MapInfoWindow } from '@angular/google-maps';
 import { AlertController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import * as TripigState from 'src/app/store/';
+import * as TripigActions from 'src/app/store/tripig.action';
 import * as TripigSelector from 'src/app/store/tripig.selector';
 import { Direction } from 'src/app/models/direction.model';
-import { MatSelectionListChange } from '@angular/material/list';
 
 @Component({
   selector: 'app-map-point-search',
   templateUrl: './map-point-search.component.html',
   styleUrls: ['./map-point-search.component.scss']
 })
-export class MapPointSearchComponent implements OnInit, OnDestroy {
+export class MapPointSearchComponent {
   @ViewChild(GoogleMap, { static: false }) map!: GoogleMap;
+  @ViewChild(MapInfoWindow, {static: false}) infoWindow!: MapInfoWindow;
   private onDestroy$ = new Subject();
   direction$: Observable<Direction> = this.store.select(
     TripigSelector.getDirection
   );
+  selectedList$: Observable<google.maps.places.PlaceResult[]> = this.store.select(
+    TripigSelector.getSelectedList
+  );
   suggestList: google.maps.places.PlaceResult[] = [];
   selectedList: google.maps.places.PlaceResult[] = [];
+
   RADIUS = 1000;
   center: google.maps.LatLng = new google.maps.LatLng(37.421995, -122.084092);
   zoom = 16;
   markerOptions: google.maps.MarkerOptions = {draggable: false};
-  markerPositions: google.maps.LatLngLiteral[] = [];
 
   constructor(
     private location: Location,
@@ -35,14 +39,24 @@ export class MapPointSearchComponent implements OnInit, OnDestroy {
     private alertController: AlertController
   ) {}
 
-  ngOnInit() {
+  ionViewDidEnter() {
     this.direction$
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(direction => this.setMap(direction));
+    this.selectedList$
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(selectedList => {
+        this.selectedList = selectedList;
+      });
   }
 
-  ngOnDestroy(): void {
+  ionViewDidLeave(): void {
+    console.log('aaaaa');
+    console.log(this.selectedList);
     this.onDestroy$.next();
+    this.store.dispatch(
+      TripigActions.setSelectedList({ selectedList: this.selectedList })
+    );
   }
 
   private setMap(direction: Direction) {
@@ -84,12 +98,13 @@ export class MapPointSearchComponent implements OnInit, OnDestroy {
       rankBy: google.maps.places.RankBy.PROMINENCE,
       location: latLng,
       radius: this.RADIUS,
-      type: direction.looking
+      type: direction.looking,
+      keyword: direction.arrival
     };
     console.log(direction);
     placeService.nearbySearch(request, (results, status) => {
       if (this.nearbySearchResultCheck(status)) {
-        this.suggestList = results;
+        this.suggestList = this.selectedList.concat(results);
         console.log(results);
       } else {
         console.log(status);
@@ -130,22 +145,7 @@ export class MapPointSearchComponent implements OnInit, OnDestroy {
     await alert.present();
   }
 
-  onSelectionChange(event: MatSelectionListChange) {
-    this.markerPositions = [];
-    console.log(event.source);
-    console.log(this.selectedList);
-    this.selectedList.forEach(place => {
-      if (place.geometry) {
-        this.addMarker(place.geometry.location);
-      }
-    });
-  }
-
-  addMarker(latLng: google.maps.LatLng) {
-    this.markerPositions.push(latLng.toJSON());
-  }
-
-  removeLastMarker() {
-    this.markerPositions.pop();
+  openInfoWindow(marker: MapMarker) {
+    this.infoWindow.open(marker);
   }
 }

@@ -17,7 +17,7 @@ export interface Category {
 export class PointSearchComponent implements OnInit {
   searchForm = this.fb.group({
     arrival: ['', Validators.required],
-    selectedCategory: ['cafe']
+    selectedCategory: ['']
   });
   arrivalKey = 'arrival';
   get arrival(): string {
@@ -36,6 +36,7 @@ export class PointSearchComponent implements OnInit {
     return direction;
   }
   categories: Category[] = [
+    { value: '', viewValue: 'any categories' },
     { value: 'cafe', viewValue: 'Cafe' },
     { value: 'convenience_store', viewValue: 'Convenience Store' },
     { value: 'food', viewValue: 'food' },

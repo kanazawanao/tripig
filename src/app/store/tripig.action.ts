@@ -6,3 +6,7 @@ export const setDirection = createAction(
   props<{ direction: Direction; }>()
 );
 
+export const setSelectedList = createAction(
+  '[Tripig] setSelectedList',
+  props<{ selectedList: google.maps.places.PlaceResult[]; }>()
+);
