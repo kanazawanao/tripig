@@ -1,13 +1,13 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 import { GoogleMap } from '@angular/google-maps';
+import { AlertController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import * as TripigState from 'src/app/store/';
 import * as TripigSelector from 'src/app/store/tripig.selector';
 import { Direction } from 'src/app/models/direction.model';
-import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-map-route-search',
@@ -24,7 +24,7 @@ export class MapRouteSearchComponent implements OnInit, OnDestroy {
   zoom = 16;
 
   constructor(
-    private router: Router,
+    private location: Location,
     private store: Store<TripigState.State>,
     private alertController: AlertController
   ) {}
@@ -45,14 +45,14 @@ export class MapRouteSearchComponent implements OnInit, OnDestroy {
     const request: google.maps.DirectionsRequest = {
       origin: direction.leaving,
       destination: direction.arrival,
-      travelMode: direction.travelMode
+      travelMode: direction.travelMode,
     };
     directionService.route(request, (result, status) => {
       if (this.routeResultCheck(status)) {
         directionsRenderer.setMap(this.map.data.getMap());
         directionsRenderer.setDirections(result);
       } else {
-        this.router.navigate(['/tabs/route']);
+        this.location.back();
       }
     });
   }

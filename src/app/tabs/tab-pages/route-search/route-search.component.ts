@@ -19,8 +19,9 @@ export class RouteSearchComponent implements OnInit {
     {value: google.maps.TravelMode.WALKING, viewValue: 'directions_walk'},
     {value: google.maps.TravelMode.BICYCLING, viewValue: 'directions_bike'},
     {value: google.maps.TravelMode.DRIVING, viewValue: 'directions_car'},
-    {value: google.maps.TravelMode.TRANSIT, viewValue: 'directions_transit'},
-    {value: google.maps.TravelMode.TWO_WHEELER, viewValue: 'motorcycle'}
+    // 日本国内だと路線を含めたルート検索できないみたい
+    // {value: google.maps.TravelMode.TRANSIT, viewValue: 'directions_transit'},
+    {value: google.maps.TravelMode.TWO_WHEELER, viewValue: 'motorcycle'},
   ];
 
   searchForm = this.fb.group({
@@ -29,18 +30,21 @@ export class RouteSearchComponent implements OnInit {
     selectedTravelMode: [this.travelModes[0]]
   });
 
-  leavingKey = 'leaving';
+  private leavingKey = 'leaving';
   get leaving(): string {
     return this.searchForm.controls[this.leavingKey].value;
   }
-  arrivalKey = 'arrival';
+
+  private arrivalKey = 'arrival';
   get arrival(): string {
     return this.searchForm.controls[this.arrivalKey].value;
   }
-  selectedModeKey = 'selectedTravelMode';
+
+  private selectedModeKey = 'selectedTravelMode';
   get selectedMode(): Mode {
     return this.searchForm.controls[this.selectedModeKey].value;
   }
+
   get direction(): Direction {
     const direction: Direction = {
       arrival: this.arrival,

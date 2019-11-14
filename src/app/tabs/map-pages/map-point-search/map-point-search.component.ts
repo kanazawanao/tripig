@@ -1,11 +1,14 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Location } from '@angular/common';
+import { GoogleMap } from '@angular/google-maps';
+import { AlertController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import * as TripigState from 'src/app/store/';
 import * as TripigSelector from 'src/app/store/tripig.selector';
 import { Direction } from 'src/app/models/direction.model';
-import { GoogleMap } from '@angular/google-maps';
+import { MatSelectionListChange } from '@angular/material/list';
 
 @Component({
   selector: 'app-map-point-search',
@@ -14,16 +17,23 @@ import { GoogleMap } from '@angular/google-maps';
 })
 export class MapPointSearchComponent implements OnInit, OnDestroy {
   @ViewChild(GoogleMap, { static: false }) map!: GoogleMap;
-  suggestList: google.maps.places.PlaceResult[] = [];
-  RADIUS = 1000;
   private onDestroy$ = new Subject();
   direction$: Observable<Direction> = this.store.select(
     TripigSelector.getDirection
   );
+  suggestList: google.maps.places.PlaceResult[] = [];
+  selectedList: google.maps.places.PlaceResult[] = [];
+  RADIUS = 1000;
   center: google.maps.LatLng = new google.maps.LatLng(37.421995, -122.084092);
   zoom = 16;
+  markerOptions: google.maps.MarkerOptions = {draggable: false};
+  markerPositions: google.maps.LatLngLiteral[] = [];
 
-  constructor(private store: Store<TripigState.State>) {}
+  constructor(
+    private location: Location,
+    private store: Store<TripigState.State>,
+    private alertController: AlertController
+  ) {}
 
   ngOnInit() {
     this.direction$
@@ -41,6 +51,8 @@ export class MapPointSearchComponent implements OnInit, OnDestroy {
       if (this.geocodeResultCheck(status)) {
         this.center = result[0].geometry.location;
         this.searchPlace(result[0].geometry.location, direction);
+      } else {
+        this.location.back();
       }
     });
   }
@@ -48,11 +60,23 @@ export class MapPointSearchComponent implements OnInit, OnDestroy {
   private geocodeResultCheck(status: google.maps.GeocoderStatus): boolean {
     if (status === google.maps.GeocoderStatus.OK) {
       return true;
+    } else if (status === google.maps.GeocoderStatus.ERROR) {
+      this.presentAlert('接続に失敗しました。再度やり直してください。');
+    } else if (status === google.maps.GeocoderStatus.INVALID_REQUEST) {
+      this.presentAlert('リクエストが無効です。');
+    } else if (status === google.maps.GeocoderStatus.OVER_QUERY_LIMIT) {
+      this.presentAlert('時間をおいて再度やり直してください。');
+    } else if (status === google.maps.GeocoderStatus.REQUEST_DENIED) {
+      this.presentAlert('Mapの利用が許可されていません。');
+    } else if (status === google.maps.GeocoderStatus.UNKNOWN_ERROR) {
+      this.presentAlert('サーバーエラーが発生しました。再度やり直してください。');
+    } else if (status === google.maps.GeocoderStatus.ZERO_RESULTS) {
+      this.presentAlert('見つかりませんでした。検索キーワードに誤字や脱字がないかご確認ください。地名や郵便番号を追加してみてください。');
     }
     return false;
   }
 
-  searchPlace(latLng: google.maps.LatLng, direction: Direction) {
+  private searchPlace(latLng: google.maps.LatLng, direction: Direction) {
     const placeService = new google.maps.places.PlacesService(
       this.map.data.getMap()
     );
@@ -62,10 +86,13 @@ export class MapPointSearchComponent implements OnInit, OnDestroy {
       radius: this.RADIUS,
       type: direction.looking
     };
+    console.log(direction);
     placeService.nearbySearch(request, (results, status) => {
       if (this.nearbySearchResultCheck(status)) {
         this.suggestList = results;
         console.log(results);
+      } else {
+        console.log(status);
       }
     });
   }
@@ -73,9 +100,52 @@ export class MapPointSearchComponent implements OnInit, OnDestroy {
   private nearbySearchResultCheck(
     status: google.maps.places.PlacesServiceStatus
   ): boolean {
+
     if (status === google.maps.places.PlacesServiceStatus.OK) {
       return true;
+    } else if (status === google.maps.places.PlacesServiceStatus.NOT_FOUND) {
+      this.presentAlert('お探しの周辺施設が見つかりませんでした。');
+    } else if (status === google.maps.places.PlacesServiceStatus.UNKNOWN_ERROR) {
+      this.presentAlert('サーバーエラーが発生しました。再度やり直してください。');
+    } else if (status === google.maps.places.PlacesServiceStatus.INVALID_REQUEST) {
+      this.presentAlert('リクエストが無効です。');
+    } else if (status === google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
+      this.presentAlert('時間をおいて再度やり直してください。');
+    } else if (status === google.maps.places.PlacesServiceStatus.REQUEST_DENIED) {
+      this.presentAlert('Mapの利用が許可されていません。');
+    } else if (status === google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
+      this.presentAlert('お探しの周辺施設が見つかりませんでした。');
     }
     return false;
+  }
+
+  private async presentAlert(message: string) {
+    const alert = await this.alertController.create({
+      header: 'Alert',
+      subHeader: '検索に失敗しました',
+      message,
+      buttons: ['OK']
+    });
+
+    await alert.present();
+  }
+
+  onSelectionChange(event: MatSelectionListChange) {
+    this.markerPositions = [];
+    console.log(event.source);
+    console.log(this.selectedList);
+    this.selectedList.forEach(place => {
+      if (place.geometry) {
+        this.addMarker(place.geometry.location);
+      }
+    });
+  }
+
+  addMarker(latLng: google.maps.LatLng) {
+    this.markerPositions.push(latLng.toJSON());
+  }
+
+  removeLastMarker() {
+    this.markerPositions.pop();
   }
 }

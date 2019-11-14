@@ -43,7 +43,7 @@ export class PointSearchComponent implements OnInit {
     { value: 'park', viewValue: 'Park' },
     { value: 'restaurant', viewValue: 'restaurant' },
     { value: 'spa', viewValue: 'Spa' },
-    { value: 'zoo', viewValue: 'Zoo' }
+    { value: 'zoo', viewValue: 'Zoo' },
   ];
   constructor(
     private router: Router,

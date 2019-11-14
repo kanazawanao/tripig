@@ -2,13 +2,23 @@
   height="250px"
   width="100%"
   [center]="center"
-  [zoom]="zoom"
-></google-map>
+  [zoom]="zoom">
+  <map-marker #marker
+    *ngFor="let markerPosition of markerPositions"
+    [position]="markerPosition"
+    [options]="markerOptions"
+    (mapClick)="openInfoWindow(marker)"></map-marker>
+  <map-info-window>Info Window content</map-info-window>
+</google-map>
 
 <ion-content>
-  <mat-list>
-    <mat-list-item *ngFor="let suggest of suggestList">
-      <p>name: {{ suggest.name }}</p>
-    </mat-list-item>
-  </mat-list>
+  <mat-selection-list
+    [(ngModel)]="selectedList"
+    (selectionChange)="onSelectionChange($event)">
+    <mat-list-option
+      *ngFor="let suggest of suggestList"
+      [value]="suggest">
+      {{ suggest.name }}
+    </mat-list-option>
+  </mat-selection-list>
 </ion-content>
