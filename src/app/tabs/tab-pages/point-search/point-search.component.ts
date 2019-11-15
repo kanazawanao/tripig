@@ -16,12 +16,12 @@ export interface Category {
 })
 export class PointSearchComponent implements OnInit {
   searchForm = this.fb.group({
-    arrival: ['', Validators.required],
+    destination: ['', Validators.required],
     selectedCategory: ['']
   });
-  arrivalKey = 'arrival';
-  get arrival(): string {
-    return this.searchForm.controls[this.arrivalKey].value;
+  destinationKey = 'destination';
+  get destination(): string {
+    return this.searchForm.controls[this.destinationKey].value;
   }
   selectedCategoryKey = 'selectedCategory';
   get looking(): string {
@@ -29,9 +29,9 @@ export class PointSearchComponent implements OnInit {
   }
   get direction(): Direction {
     const direction: Direction = {
-      arrival: this.arrival,
+      destination: this.destination,
       looking: this.looking,
-      leaving: ''
+      origin: ''
     };
     return direction;
   }

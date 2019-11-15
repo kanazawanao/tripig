@@ -43,8 +43,8 @@ export class MapRouteSearchComponent {
     const directionService = new google.maps.DirectionsService();
     const directionsRenderer = new google.maps.DirectionsRenderer();
     const request: google.maps.DirectionsRequest = {
-      origin: direction.leaving,
-      destination: direction.arrival,
+      origin: direction.origin,
+      destination: direction.destination,
       travelMode: direction.travelMode,
     };
     directionService.route(request, (result, status) => {

@@ -60,7 +60,7 @@ export class MapPointSearchComponent {
 
   private setMap(direction: Direction) {
     const geocoder = new google.maps.Geocoder();
-    geocoder.geocode({ address: direction.arrival }, (result, status) => {
+    geocoder.geocode({ address: direction.destination }, (result, status) => {
       if (this.geocodeResultCheck(status)) {
         this.center = result[0].geometry.location;
         this.searchPlace(result[0].geometry.location, direction);
@@ -98,9 +98,10 @@ export class MapPointSearchComponent {
       location: latLng,
       radius: this.RADIUS,
       type: direction.looking,
-      keyword: direction.arrival
+      keyword: direction.destination
     };
     placeService.nearbySearch(request, (results, status) => {
+      // NOTE: nearbySearchがzone外で動いているみたいで、変更検知がうまく動かないのでzoneに含める
       this.zone.run(() => {
         if (this.nearbySearchResultCheck(status)) {
           // FIXME: selectedListとresultの内容が重複してしまうので、同じLatLngの地点は排除したい

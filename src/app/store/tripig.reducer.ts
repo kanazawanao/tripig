@@ -8,7 +8,7 @@ export interface State {
 }
 
 export const initialState: State = {
-  direction: {arrival: '', looking: '', leaving: ''},
+  direction: {destination: '', looking: '', origin: ''},
   selectedList: [],
 };
 

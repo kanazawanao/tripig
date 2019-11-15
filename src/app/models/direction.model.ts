@@ -2,8 +2,8 @@
  * Direction
  */
 export interface Direction {
-  leaving: string;
-  arrival: string;
+  origin: string;
+  destination: string;
   looking: string;
   travelMode?: google.maps.TravelMode;
 }

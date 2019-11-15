@@ -25,19 +25,19 @@ export class RouteSearchComponent implements OnInit {
   ];
 
   searchForm = this.fb.group({
-    leaving: ['', Validators.required],
-    arrival: ['', Validators.required],
+    origin: ['', Validators.required],
+    destinationKey: ['', Validators.required],
     selectedTravelMode: [this.travelModes[0]]
   });
 
-  private leavingKey = 'leaving';
-  get leaving(): string {
-    return this.searchForm.controls[this.leavingKey].value;
+  private originKey = 'origin';
+  get origin(): string {
+    return this.searchForm.controls[this.originKey].value;
   }
 
-  private arrivalKey = 'arrival';
-  get arrival(): string {
-    return this.searchForm.controls[this.arrivalKey].value;
+  private destinationKey = 'destination';
+  get destination(): string {
+    return this.searchForm.controls[this.destinationKey].value;
   }
 
   private selectedModeKey = 'selectedTravelMode';
@@ -47,9 +47,9 @@ export class RouteSearchComponent implements OnInit {
 
   get direction(): Direction {
     const direction: Direction = {
-      arrival: this.arrival,
+      destination: this.destination,
       looking: '',
-      leaving: this.leaving,
+      origin: this.origin,
       travelMode: this.selectedMode.value,
     };
     return direction;
