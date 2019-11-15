@@ -103,6 +103,7 @@ export class MapPointSearchComponent {
     placeService.nearbySearch(request, (results, status) => {
       this.zone.run(() => {
         if (this.nearbySearchResultCheck(status)) {
+          // FIXME: selectedListとresultの内容が重複してしまうので、同じLatLngの地点は排除したい
           this.suggestList = this.selectedList.concat(results);
         } else {
           // TODO: 周辺施設が検索できなかった場合どうするか検討
