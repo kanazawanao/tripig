@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { ModalController } from '@ionic/angular';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-map-route-result',
@@ -8,16 +9,19 @@ import { MatDialogRef } from '@angular/material/dialog';
 })
 export class MapRouteResultComponent implements OnInit {
 
-  constructor(private dialogRef: MatDialogRef<MapRouteResultComponent>) { }
+  constructor(
+    private modalCtrl: ModalController,
+    private router: Router
+  ) { }
 
   ngOnInit() {}
 
-  close() {
-    this.dialogRef.close();
+  dismissModal() {
+    this.modalCtrl.dismiss();
   }
 
-  onClose() {
-    this.close();
+  regist() {
+    this.modalCtrl.dismiss();
+    this.router.navigate(['/tabs/registered']);
   }
-
 }

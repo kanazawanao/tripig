@@ -1,11 +1,24 @@
-<h2>最終結果画面</h2>
-<p>
-  出発～経由地～目的地までの地図表示
-</p>
-<p>
-  出発～経由地～目的地までのListを表示
-  ここはドラッグ＆ドロップで簡単に入れ替えできてそれが地図に反映されるイメージ
-</p>
-<p>
-  登録ボタン
-</p>
+<ion-header translucent>
+  <ion-toolbar>
+    <ion-title>
+      <button mat-button routerLink="/">Tripig</button>
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismissModal()">
+        <mat-icon>close</mat-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <p>
+    出発～経由地～目的地までの地図表示
+  </p>
+  <p>
+    出発～経由地～目的地までのListを表示
+    ここはドラッグ＆ドロップで簡単に入れ替えできてそれが地図に反映されるイメージ
+  </p>
+  <p>
+    <button mat-button (click)="regist()">OK</button>
+  </p>
+</ion-content>

@@ -52,8 +52,6 @@ export class MapPointSearchComponent {
   }
 
   ionViewDidLeave(): void {
-    console.log('aaaaa');
-    console.log(this.selectedList);
     this.onDestroy$.next();
     this.store.dispatch(
       TripigActions.setSelectedList({ selectedList: this.selectedList })
@@ -102,14 +100,12 @@ export class MapPointSearchComponent {
       type: direction.looking,
       keyword: direction.arrival
     };
-    console.log(direction);
     placeService.nearbySearch(request, (results, status) => {
       this.zone.run(() => {
         if (this.nearbySearchResultCheck(status)) {
           this.suggestList = this.selectedList.concat(results);
-          console.log(results);
         } else {
-          console.log(status);
+          // TODO: 周辺施設が検索できなかった場合どうするか検討
         }
       });
     });

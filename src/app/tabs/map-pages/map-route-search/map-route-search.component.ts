@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { GoogleMap } from '@angular/google-maps';
 import { AlertController } from '@ionic/angular';
@@ -14,7 +14,7 @@ import { Direction } from 'src/app/models/direction.model';
   templateUrl: './map-route-search.component.html',
   styleUrls: ['./map-route-search.component.scss']
 })
-export class MapRouteSearchComponent implements OnInit {
+export class MapRouteSearchComponent {
   @ViewChild(GoogleMap, { static: false }) map!: GoogleMap;
   private onDestroy$ = new Subject();
   direction$: Observable<Direction> = this.store.select(
@@ -29,7 +29,7 @@ export class MapRouteSearchComponent implements OnInit {
     private alertController: AlertController
   ) {}
 
-  ngOnInit() {
+  ionViewDidEnter() {
     this.direction$
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(direction => this.setRouteMap(direction));
