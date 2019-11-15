@@ -6,7 +6,6 @@ import { FormsModule } from '@angular/forms';
 import { MaterialModule } from 'src/app/material/material.module';
 import { TabsPageRoutingModule } from './tabs-routing.module';
 import { TabsPage } from './tabs.component.page';
-import { MapModule } from 'src/app/parts/dialog/map/map.module';
 @NgModule({
   imports: [
     IonicModule,
@@ -14,7 +13,6 @@ import { MapModule } from 'src/app/parts/dialog/map/map.module';
     FormsModule,
     TabsPageRoutingModule,
     MaterialModule,
-    MapModule,
   ],
   declarations: [TabsPage]
 })
