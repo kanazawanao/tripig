@@ -27,8 +27,10 @@ export class MapPointSearchComponent {
   );
   suggestList: google.maps.places.PlaceResult[] = [];
   selectedList: google.maps.places.PlaceResult[] = [];
-
-  RADIUS = 1000;
+  min = 1;
+  max = 50000;
+  radius = 10000;
+  thumbLabel = true;
   center: google.maps.LatLng = new google.maps.LatLng(37.421995, -122.084092);
   zoom = 16;
   markerOptions: google.maps.MarkerOptions = {draggable: false};
@@ -96,7 +98,7 @@ export class MapPointSearchComponent {
     const request: google.maps.places.PlaceSearchRequest = {
       rankBy: google.maps.places.RankBy.PROMINENCE,
       location: latLng,
-      radius: this.RADIUS,
+      radius: direction.radius,
       type: direction.looking,
       keyword: direction.destination
     };

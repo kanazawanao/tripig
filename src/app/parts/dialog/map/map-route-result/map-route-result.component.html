@@ -11,9 +11,12 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <p>
-    出発～経由地～目的地までの地図表示
-  </p>
+  <google-map
+    height="250px"
+    width="100%"
+    [center]="center"
+    [zoom]="zoom">
+  </google-map>
   <p>
     出発～経由地～目的地までのListを表示
     ここはドラッグ＆ドロップで簡単に入れ替えできてそれが地図に反映されるイメージ

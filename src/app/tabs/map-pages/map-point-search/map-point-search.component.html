@@ -10,7 +10,13 @@
     (mapClick)="openInfoWindow(marker)"></map-marker>
   <map-info-window>Info Window content</map-info-window>
 </google-map>
-
+<mat-slider
+  [displayWith]="formatLabel"
+  [min]="min"
+  [max]="max"
+  [thumbLabel]="thumbLabel"
+  [(ngModel)]="radius">
+</mat-slider>
 <ion-content>
   <mat-selection-list
     [(ngModel)]="selectedList">
