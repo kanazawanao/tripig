@@ -26,7 +26,7 @@ export class RouteSearchComponent implements OnInit {
 
   searchForm = this.fb.group({
     origin: ['', Validators.required],
-    destinationKey: ['', Validators.required],
+    destination: ['', Validators.required],
     selectedTravelMode: [this.travelModes[0]]
   });
 
@@ -51,6 +51,7 @@ export class RouteSearchComponent implements OnInit {
       looking: '',
       origin: this.origin,
       travelMode: this.selectedMode.value,
+      radius: 10000
     };
     return direction;
   }

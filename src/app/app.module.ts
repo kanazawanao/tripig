@@ -15,6 +15,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { environment } from '../environments/environment';
 import { MaterialModule } from 'src/app/material/material.module';
+import { MapRouteResultModule } from 'src/app/parts/dialog/map/map-route-result/map-route-result.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -39,6 +40,7 @@ import { MaterialModule } from 'src/app/material/material.module';
       }
     }),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
+    MapRouteResultModule,
   ],
   providers: [
     StatusBar,

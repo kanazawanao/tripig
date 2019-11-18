@@ -31,7 +31,8 @@ export class PointSearchComponent implements OnInit {
     const direction: Direction = {
       destination: this.destination,
       looking: this.looking,
-      origin: ''
+      origin: '',
+      radius: 10000,
     };
     return direction;
   }
