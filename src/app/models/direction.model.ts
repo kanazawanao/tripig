@@ -6,5 +6,5 @@ export interface Direction {
   destination: string;
   looking: string;
   radius: number;
-  travelMode?: google.maps.TravelMode;
+  travelMode: google.maps.TravelMode;
 }

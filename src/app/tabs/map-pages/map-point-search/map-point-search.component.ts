@@ -151,4 +151,10 @@ export class MapPointSearchComponent {
   openInfoWindow(marker: MapMarker) {
     this.infoWindow.open(marker);
   }
+
+  onSelectionChange() {
+    this.store.dispatch(
+      TripigActions.setSelectedList({ selectedList: this.selectedList })
+    );
+  }
 }

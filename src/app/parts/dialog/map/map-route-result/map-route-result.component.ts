@@ -59,30 +59,44 @@ export class MapRouteResultComponent {
     const directionsRenderer = new google.maps.DirectionsRenderer();
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(position => {
-        const latlng = new google.maps.LatLng( position.coords.latitude, position.coords.longitude);
+        const latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
         // HACK: subscribeのネストはやめたい
         this.selectedList$
-        .pipe(takeUntil(this.onDestroy$))
-        .subscribe(waypoints => {
-          const request: google.maps.DirectionsRequest = {
-            origin: latlng,
-            destination: direction.destination,
-            waypoints: this.createWaypoints(waypoints),
-            travelMode: direction.travelMode,
-            optimizeWaypoints: true,
-          };
-          directionService.route(request, (result, status) => {
-            if (this.routeResultCheck(status)) {
-              directionsRenderer.setMap(this.map.data.getMap());
-              directionsRenderer.setDirections(result);
-            } else {
-              this.location.back();
-            }
+          .pipe(takeUntil(this.onDestroy$))
+          .subscribe(waypoints => {
+            const request: google.maps.DirectionsRequest = {
+              origin: latlng,
+              destination: direction.destination,
+              waypoints: this.createWaypoints(waypoints),
+              travelMode: direction.travelMode,
+              optimizeWaypoints: true,
+            };
+            directionService.route(request, (result, status) => {
+              if (this.routeResultCheck(status)) {
+                directionsRenderer.setMap(this.map.data.getMap());
+                directionsRenderer.setDirections(result);
+                // TODO: 出発～到着までのルートをresultから抽出したいからできるのか確認
+                console.log(result.geocoded_waypoints);
+                console.log(result.routes);
+                result.geocoded_waypoints.forEach(g => {
+                  const gRequest: google.maps.GeocoderRequest = {
+                    placeId: g.place_id
+                  };
+                  const geocoder = new google.maps.Geocoder();
+                  geocoder.geocode(gRequest, (gResults, gStatus) => {
+                    if (gStatus === google.maps.GeocoderStatus.OK) {
+                      console.log(gResults);
+                    }
+                  });
+                });
+              } else {
+                this.location.back();
+              }
+            });
           });
-        });
       });
     } else {
-      // geolocation IS NOT available
+      // TODO: geolocation IS NOT available
     }
   }
 

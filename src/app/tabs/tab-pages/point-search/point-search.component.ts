@@ -33,17 +33,18 @@ export class PointSearchComponent implements OnInit {
       looking: this.looking,
       origin: '',
       radius: 10000,
+      travelMode: google.maps.TravelMode.DRIVING
     };
     return direction;
   }
   categories: Category[] = [
-    { value: '', viewValue: 'any categories' },
+    { value: '', viewValue: 'Any Categories' },
     { value: 'cafe', viewValue: 'Cafe' },
     { value: 'convenience_store', viewValue: 'Convenience Store' },
-    { value: 'food', viewValue: 'food' },
+    { value: 'food', viewValue: 'Food' },
     { value: 'gas_station', viewValue: 'Gas Station' },
     { value: 'park', viewValue: 'Park' },
-    { value: 'restaurant', viewValue: 'restaurant' },
+    { value: 'restaurant', viewValue: 'Restaurant' },
     { value: 'spa', viewValue: 'Spa' },
     { value: 'zoo', viewValue: 'Zoo' },
   ];
