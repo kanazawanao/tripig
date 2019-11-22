@@ -24,9 +24,20 @@ export class MapRouteResultComponent {
     TripigSelector.getSelectedList
   );
   private onDestroy$ = new Subject();
+  private dist = 0;
+  private dura = 0;
   route: string[] = [];
   center: google.maps.LatLng = new google.maps.LatLng(37.421995, -122.084092);
   zoom = 16;
+
+  get distance(): string {
+    return `約${Math.floor(this.dist / 1000)}km`;
+  }
+
+  get duration(): string {
+    return `約${Math.floor(this.dura / 60)}分`;
+  }
+
   constructor(
     private location: Location,
     private modalCtrl: ModalController,
@@ -81,12 +92,16 @@ export class MapRouteResultComponent {
                   directionsRenderer.setDirections(result);
                   result.routes[0].waypoint_order.forEach(index => {
                     this.route.push(waypoints[index].name);
-                  })
+                  });
+                  result.routes[0].legs.forEach(leg => {
+                    this.dist += leg.distance.value;
+                    this.dura += leg.duration.value;
+                  });
                   this.route.push(direction.destination);
                 } else {
                   this.location.back();
                 }
-              })
+              });
             });
           });
       });
