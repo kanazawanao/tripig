@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { GoogleMap } from '@angular/google-maps';
@@ -24,6 +24,7 @@ export class MapRouteResultComponent {
     TripigSelector.getSelectedList
   );
   private onDestroy$ = new Subject();
+  route: string[] = [];
   center: google.maps.LatLng = new google.maps.LatLng(37.421995, -122.084092);
   zoom = 16;
   constructor(
@@ -31,7 +32,8 @@ export class MapRouteResultComponent {
     private modalCtrl: ModalController,
     private router: Router,
     private store: Store<TripigState.State>,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private zone: NgZone,
   ) { }
 
   ionViewDidEnter() {
@@ -58,6 +60,7 @@ export class MapRouteResultComponent {
     const directionService = new google.maps.DirectionsService();
     const directionsRenderer = new google.maps.DirectionsRenderer();
     if ('geolocation' in navigator) {
+      this.route.push('現在地');
       navigator.geolocation.getCurrentPosition(position => {
         const latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
         // HACK: subscribeのネストはやめたい
@@ -72,26 +75,18 @@ export class MapRouteResultComponent {
               optimizeWaypoints: true,
             };
             directionService.route(request, (result, status) => {
-              if (this.routeResultCheck(status)) {
-                directionsRenderer.setMap(this.map.data.getMap());
-                directionsRenderer.setDirections(result);
-                // TODO: 出発～到着までのルートをresultから抽出したいからできるのか確認
-                console.log(result.geocoded_waypoints);
-                console.log(result.routes);
-                result.geocoded_waypoints.forEach(g => {
-                  const gRequest: google.maps.GeocoderRequest = {
-                    placeId: g.place_id
-                  };
-                  const geocoder = new google.maps.Geocoder();
-                  geocoder.geocode(gRequest, (gResults, gStatus) => {
-                    if (gStatus === google.maps.GeocoderStatus.OK) {
-                      console.log(gResults);
-                    }
-                  });
-                });
-              } else {
-                this.location.back();
-              }
+              this.zone.run(() => {
+                if (this.routeResultCheck(status)) {
+                  directionsRenderer.setMap(this.map.data.getMap());
+                  directionsRenderer.setDirections(result);
+                  result.routes[0].waypoint_order.forEach(index => {
+                    this.route.push(waypoints[index].name);
+                  })
+                  this.route.push(direction.destination);
+                } else {
+                  this.location.back();
+                }
+              })
             });
           });
       });

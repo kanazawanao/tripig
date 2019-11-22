@@ -17,10 +17,11 @@
     [center]="center"
     [zoom]="zoom">
   </google-map>
-  <p>
-    出発～経由地～目的地までのListを表示
-    ここはドラッグ＆ドロップで簡単に入れ替えできてそれが地図に反映されるイメージ
-  </p>
+  <mat-list>
+    <mat-list-item *ngFor="let point of route">
+      {{ point }}
+    </mat-list-item>
+  </mat-list>
   <p>
     <button mat-button (click)="regist()">OK</button>
   </p>
