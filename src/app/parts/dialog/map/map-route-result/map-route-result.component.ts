@@ -1,8 +1,9 @@
-import { Component, ViewChild, NgZone } from '@angular/core';
+import { Component, ViewChild, NgZone, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { GoogleMap } from '@angular/google-maps';
 import { ModalController, AlertController } from '@ionic/angular';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -14,7 +15,7 @@ import { Place } from 'src/app/models/place.model';
 @Component({
   selector: 'app-map-route-result',
   templateUrl: './map-route-result.component.html',
-  styleUrls: ['./map-route-result.component.scss'],
+  styleUrls: ['./map-route-result.component.scss']
 })
 export class MapRouteResultComponent {
   @ViewChild(GoogleMap, { static: false }) map!: GoogleMap;
@@ -46,9 +47,11 @@ export class MapRouteResultComponent {
     private store: Store<TripigState.State>,
     private alertController: AlertController,
     private zone: NgZone,
-  ) { }
+    private geolocation: Geolocation
+  ) {}
 
   ionViewDidEnter() {
+    console.log('ionViewDidEnter');
     this.direction$
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(direction => this.setRouteMap(direction));
@@ -56,8 +59,8 @@ export class MapRouteResultComponent {
 
   ionViewDidLeave(): void {
     this.onDestroy$.next();
+    console.log('ionViewDidLeave');
   }
-
 
   dismissModal() {
     this.modalCtrl.dismiss();
@@ -69,13 +72,19 @@ export class MapRouteResultComponent {
   }
 
   private setRouteMap(direction: Direction) {
+    console.log(direction);
     const directionService = new google.maps.DirectionsService();
     const directionsRenderer = new google.maps.DirectionsRenderer();
-    if ('geolocation' in navigator) {
-      this.route.push('現在地');
-      navigator.geolocation.getCurrentPosition(position => {
-        const latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-        // HACK: subscribeのネストはやめたい
+
+    let latlng: google.maps.LatLng;
+    this.geolocation
+      .getCurrentPosition()
+      .then(position => {
+        console.log(position);
+        latlng = new google.maps.LatLng(
+          position.coords.latitude,
+          position.coords.longitude
+        );
         this.selectedList$
           .pipe(takeUntil(this.onDestroy$))
           .subscribe(waypoints => {
@@ -84,7 +93,7 @@ export class MapRouteResultComponent {
               destination: direction.destination,
               waypoints: this.createWaypoints(waypoints),
               travelMode: direction.travelMode,
-              optimizeWaypoints: true,
+              optimizeWaypoints: true
             };
             directionService.route(request, (result, status) => {
               this.zone.run(() => {
@@ -110,10 +119,10 @@ export class MapRouteResultComponent {
               });
             });
           });
+      })
+      .catch(error => {
+        console.log('Error getting location', error);
       });
-    } else {
-      // TODO: geolocation IS NOT available
-    }
   }
 
   private routeResultCheck(status: google.maps.DirectionsStatus): boolean {
@@ -138,12 +147,14 @@ export class MapRouteResultComponent {
     await alert.present();
   }
 
-  private createWaypoints(selectedList: Place[]): google.maps.DirectionsWaypoint[] {
+  private createWaypoints(
+    selectedList: Place[]
+  ): google.maps.DirectionsWaypoint[] {
     const waypoints: google.maps.DirectionsWaypoint[] = [];
     selectedList.forEach(selected => {
       if (selected.location) {
         const p: google.maps.DirectionsWaypoint = {
-          location: selected.location,
+          location: selected.location
         };
         waypoints.push(p);
       }

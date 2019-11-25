@@ -8,6 +8,7 @@ import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { reducers, metaReducers } from './store';
@@ -39,8 +40,11 @@ import { MapRouteResultModule } from 'src/app/parts/dialog/map/map-route-result/
         strictActionImmutability: true
       }
     }),
-    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
-    MapRouteResultModule,
+    StoreDevtoolsModule.instrument({
+      maxAge: 25,
+      logOnly: environment.production
+    }),
+    MapRouteResultModule
   ],
   providers: [
     StatusBar,
@@ -48,7 +52,8 @@ import { MapRouteResultModule } from 'src/app/parts/dialog/map/map-route-result/
     {
       provide: RouteReuseStrategy,
       useClass: IonicRouteStrategy
-    }
+    },
+    Geolocation
   ],
   bootstrap: [AppComponent]
 })
