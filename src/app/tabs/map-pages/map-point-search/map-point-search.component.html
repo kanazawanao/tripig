@@ -1,32 +1,36 @@
-<google-map
-  height="250px"
-  width="100%"
-  [center]="center"
-  [zoom]="zoom">
-  <map-marker #marker
+<google-map height="250px" width="100%" [center]="center" [zoom]="zoom">
+  <map-marker
+    #marker
     *ngFor="let selected of selectedList"
     [position]="selected.location"
     [options]="markerOptions"
-    (mapClick)="openInfoWindow(marker)"></map-marker>
+    (mapClick)="openInfoWindow(marker)"
+  ></map-marker>
   <map-info-window>Info Window content</map-info-window>
 </google-map>
 <mat-slider
   [min]="min"
   [max]="max"
   [thumbLabel]="thumbLabel"
-  [(ngModel)]="radius">
+  [(ngModel)]="radius"
+>
 </mat-slider>
 <ion-content>
   <mat-accordion>
     <mat-expansion-panel *ngFor="let suggest of suggestList">
       <mat-expansion-panel-header>
         <mat-panel-title>
-          <mat-checkbox [(ngModel)]="suggest.selected" (change)="onSelectionChange()"></mat-checkbox>
+          <mat-checkbox
+            [(ngModel)]="suggest.selected"
+            (change)="onSelectionChange()"
+          ></mat-checkbox>
           {{ suggest.name }}
         </mat-panel-title>
       </mat-expansion-panel-header>
       <p>{{ suggest.name }}</p>
-      <img [src]="suggest.photos[0]"> 
+      <div *ngFor="let photo of suggest.photos">
+        <img [src]="photo" />
+      </div>
     </mat-expansion-panel>
   </mat-accordion>
 </ion-content>
