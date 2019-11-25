@@ -9,6 +9,7 @@ import { takeUntil } from 'rxjs/operators';
 import * as TripigState from 'src/app/store/';
 import * as TripigSelector from 'src/app/store/tripig.selector';
 import { Direction } from 'src/app/models/direction.model';
+import { Place } from 'src/app/models/place.model';
 
 @Component({
   selector: 'app-map-route-result',
@@ -20,7 +21,7 @@ export class MapRouteResultComponent {
   direction$: Observable<Direction> = this.store.select(
     TripigSelector.getDirection
   );
-  selectedList$: Observable<google.maps.places.PlaceResult[]> = this.store.select(
+  selectedList$: Observable<Place[]> = this.store.select(
     TripigSelector.getSelectedList
   );
   private onDestroy$ = new Subject();
@@ -91,7 +92,10 @@ export class MapRouteResultComponent {
                   directionsRenderer.setMap(this.map.data.getMap());
                   directionsRenderer.setDirections(result);
                   result.routes[0].waypoint_order.forEach(index => {
-                    this.route.push(waypoints[index].name);
+                    const name = waypoints[index].name;
+                    if (name) {
+                      this.route.push(name);
+                    }
                   });
                   this.dist = 0;
                   this.dura = 0;
@@ -134,12 +138,12 @@ export class MapRouteResultComponent {
     await alert.present();
   }
 
-  private createWaypoints(selectedList: google.maps.places.PlaceResult[]): google.maps.DirectionsWaypoint[] {
+  private createWaypoints(selectedList: Place[]): google.maps.DirectionsWaypoint[] {
     const waypoints: google.maps.DirectionsWaypoint[] = [];
     selectedList.forEach(selected => {
-      if (selected.geometry) {
+      if (selected.location) {
         const p: google.maps.DirectionsWaypoint = {
-          location: selected.geometry.location,
+          location: selected.location,
         };
         waypoints.push(p);
       }

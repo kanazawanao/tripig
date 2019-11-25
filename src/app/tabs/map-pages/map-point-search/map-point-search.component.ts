@@ -9,6 +9,7 @@ import * as TripigState from 'src/app/store/';
 import * as TripigActions from 'src/app/store/tripig.action';
 import * as TripigSelector from 'src/app/store/tripig.selector';
 import { Direction } from 'src/app/models/direction.model';
+import { Place } from 'src/app/models/place.model';
 
 @Component({
   selector: 'app-map-point-search',
@@ -22,11 +23,11 @@ export class MapPointSearchComponent {
   direction$: Observable<Direction> = this.store.select(
     TripigSelector.getDirection
   );
-  selectedList$: Observable<google.maps.places.PlaceResult[]> = this.store.select(
+  selectedList$: Observable<Place[]> = this.store.select(
     TripigSelector.getSelectedList
   );
-  suggestList: google.maps.places.PlaceResult[] = [];
-  selectedList: google.maps.places.PlaceResult[] = [];
+  suggestList: Place[] = [];
+  selectedList: Place[] = [];
   min = 1;
   max = 50000;
   radius = 10000;
@@ -107,12 +108,31 @@ export class MapPointSearchComponent {
       this.zone.run(() => {
         if (this.nearbySearchResultCheck(status)) {
           // FIXME: selectedListとresultの内容が重複してしまうので、同じLatLngの地点は排除したい
-          this.suggestList = this.selectedList.concat(results);
+          this.suggestList = this.selectedList.concat(this.ToPlaceArray(results));
         } else {
           // TODO: 周辺施設が検索できなかった場合どうするか検討
         }
       });
     });
+  }
+
+  private ToPlaceArray(results: google.maps.places.PlaceResult[]): Place[] {
+    const placeList: Place[] = [];
+    const photoOptions: google.maps.places.PhotoOptions = {
+      maxHeight: 500,
+      maxWidth: 500
+    };
+    results.map(r => {
+      placeList.push({
+        icon: r.icon,
+        name: r.name,
+        photos: r.photos ? r.photos.map(p => p.getUrl(photoOptions)) : [],
+        selected: false,
+        url: r.url,
+        location: r.geometry ? r.geometry.location : undefined,
+      });
+    });
+    return placeList;
   }
 
   private nearbySearchResultCheck(
@@ -154,7 +174,7 @@ export class MapPointSearchComponent {
 
   onSelectionChange() {
     this.store.dispatch(
-      TripigActions.setSelectedList({ selectedList: this.selectedList })
+      TripigActions.setSelectedList({ selectedList: this.suggestList.filter(s => s.selected === true) })
     );
   }
 }

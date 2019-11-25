@@ -1,5 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import { Direction } from '../models/direction.model';
+import { Place } from '../models/place.model';
 
 export const setDirection = createAction(
   '[Tripig] setDirection',
@@ -8,5 +9,5 @@ export const setDirection = createAction(
 
 export const setSelectedList = createAction(
   '[Tripig] setSelectedList',
-  props<{ selectedList: google.maps.places.PlaceResult[]; }>()
+  props<{ selectedList: Place[]; }>()
 );

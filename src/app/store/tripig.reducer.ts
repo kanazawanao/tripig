@@ -1,10 +1,11 @@
 import { Action, createReducer, on } from '@ngrx/store';
 import * as TripigAction from './tripig.action';
 import { Direction } from '../models/direction.model';
+import { Place } from '../models/place.model';
 
 export interface State {
   direction: Direction;
-  selectedList: google.maps.places.PlaceResult[];
+  selectedList: Place[];
 }
 
 export const initialState: State = {

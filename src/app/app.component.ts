@@ -5,10 +5,10 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Store } from '@ngrx/store';
 import * as TripigState from 'src/app/store/';
-import * as TripigActions from 'src/app/store/tripig.action';
 import * as TripigSelector from 'src/app/store/tripig.selector';
 import { MapRouteResultComponent } from './parts/dialog/map/map-route-result/map-route-result.component';
 import { Observable } from 'rxjs';
+import { Place } from './models/place.model';
 
 @Component({
   selector: 'app-root',
@@ -17,7 +17,7 @@ import { Observable } from 'rxjs';
 })
 export class AppComponent implements OnInit {
   showResultRoute = false;
-  selectedList$: Observable<google.maps.places.PlaceResult[]> = this.store.select(
+  selectedList$: Observable<Place[]> = this.store.select(
     TripigSelector.getSelectedList
   );
   constructor(
