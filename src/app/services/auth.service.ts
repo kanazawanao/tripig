@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { Observable, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import * as firebase from 'firebase/app';
 import { User } from '../models/user.model';
 import { UserService } from './user.service';
@@ -10,12 +12,28 @@ import { UserService } from './user.service';
   providedIn: 'root'
 })
 export class AuthService {
+  user: Observable<User | null | undefined>;
+  userId = '';
+  loggedIn = false;
   constructor(
     private router: Router,
     private afAuth: AngularFireAuth,
     private afStore: AngularFirestore,
     private userService: UserService
-  ) {}
+  ) {
+    this.user = this.afAuth.authState.pipe(
+      switchMap(user => {
+        if (user) {
+          this.userId = user.uid;
+          this.loggedIn = true;
+          return this.afStore.doc<User>(`users/${user.uid}`).valueChanges();
+        } else {
+          this.loggedIn = false;
+          return of(null);
+        }
+      })
+    );
+  }
 
   async signIn(email: string, password: string) {
     try {

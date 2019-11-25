@@ -15,7 +15,7 @@ export class UserService {
   }
 
   addUser(user: User) {
-    // カスタムobjectは登録できないといわれるので、無理やり変換して登録しちゃう
+    // HACK: カスタムobjectは登録できないといわれるので、無理やり変換して登録してる
     this.collection
       .doc(user.uid)
       .set(Object.assign({}, JSON.parse(JSON.stringify(user))));

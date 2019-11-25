@@ -24,16 +24,16 @@ export class MapRouteResultComponent {
     TripigSelector.getSelectedList
   );
   private onDestroy$ = new Subject();
-  private dist = 0;
-  private dura = 0;
   route: string[] = [];
   center: google.maps.LatLng = new google.maps.LatLng(37.421995, -122.084092);
   zoom = 16;
 
+  private dist = 0;
   get distance(): string {
     return `約${Math.floor(this.dist / 1000)}km`;
   }
 
+  private dura = 0;
   get duration(): string {
     return `約${Math.floor(this.dura / 60)}分`;
   }
