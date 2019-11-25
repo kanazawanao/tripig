@@ -93,6 +93,8 @@ export class MapRouteResultComponent {
                   result.routes[0].waypoint_order.forEach(index => {
                     this.route.push(waypoints[index].name);
                   });
+                  this.dist = 0;
+                  this.dura = 0;
                   result.routes[0].legs.forEach(leg => {
                     this.dist += leg.distance.value;
                     this.dura += leg.duration.value;
