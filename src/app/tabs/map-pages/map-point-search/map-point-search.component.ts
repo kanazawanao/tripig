@@ -122,7 +122,7 @@ export class MapPointSearchComponent {
       maxHeight: 500,
       maxWidth: 500
     };
-    results.map(r => {
+    results.forEach(r => {
       placeList.push({
         icon: r.icon,
         name: r.name,

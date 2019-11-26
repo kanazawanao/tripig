@@ -23,6 +23,7 @@
           <mat-checkbox
             [(ngModel)]="suggest.selected"
             (change)="onSelectionChange()"
+            (click)="$event.stopPropagation()"
           ></mat-checkbox>
           {{ suggest.name }}
         </mat-panel-title>
