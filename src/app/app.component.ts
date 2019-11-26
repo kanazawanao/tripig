@@ -36,7 +36,7 @@ export class AppComponent implements OnInit {
     });
   }
 
-  initializeApp() {
+  initializeApp(): void {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();

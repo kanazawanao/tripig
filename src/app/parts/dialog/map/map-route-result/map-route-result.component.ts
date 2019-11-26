@@ -50,37 +50,36 @@ export class MapRouteResultComponent {
     private geolocation: Geolocation
   ) {}
 
-  ionViewDidEnter() {
-    console.log('ionViewDidEnter');
+  ionViewDidEnter(): void {
     this.direction$
       .pipe(takeUntil(this.onDestroy$))
-      .subscribe(direction => this.setRouteMap(direction));
+      .subscribe(direction => {
+        this.zone.run(() => {
+          this.setRouteMap(direction);
+        });
+      });
   }
 
   ionViewDidLeave(): void {
     this.onDestroy$.next();
-    console.log('ionViewDidLeave');
   }
 
-  dismissModal() {
+  dismissModal(): void {
     this.modalCtrl.dismiss();
   }
 
-  regist() {
+  regist(): void {
     this.modalCtrl.dismiss();
     this.router.navigate(['/tabs/registered']);
   }
 
-  private setRouteMap(direction: Direction) {
-    console.log(direction);
+  private setRouteMap(direction: Direction): void {
     const directionService = new google.maps.DirectionsService();
     const directionsRenderer = new google.maps.DirectionsRenderer();
-
     let latlng: google.maps.LatLng;
     this.geolocation
       .getCurrentPosition()
       .then(position => {
-        console.log(position);
         latlng = new google.maps.LatLng(
           position.coords.latitude,
           position.coords.longitude
@@ -88,41 +87,51 @@ export class MapRouteResultComponent {
         this.selectedList$
           .pipe(takeUntil(this.onDestroy$))
           .subscribe(waypoints => {
-            const request: google.maps.DirectionsRequest = {
-              origin: latlng,
-              destination: direction.destination,
-              waypoints: this.createWaypoints(waypoints),
-              travelMode: direction.travelMode,
-              optimizeWaypoints: true
-            };
+            const request: google.maps.DirectionsRequest = this.CreateDirectionsRequest(latlng, direction, waypoints);
             directionService.route(request, (result, status) => {
-              this.zone.run(() => {
-                if (this.routeResultCheck(status)) {
-                  directionsRenderer.setMap(this.map.data.getMap());
-                  directionsRenderer.setDirections(result);
-                  result.routes[0].waypoint_order.forEach(index => {
-                    const name = waypoints[index].name;
-                    if (name) {
-                      this.route.push(name);
-                    }
-                  });
-                  this.dist = 0;
-                  this.dura = 0;
-                  result.routes[0].legs.forEach(leg => {
-                    this.dist += leg.distance.value;
-                    this.dura += leg.duration.value;
-                  });
-                  this.route.push(direction.destination);
-                } else {
-                  this.location.back();
-                }
-              });
+              if (this.routeResultCheck(status)) {
+                directionsRenderer.setMap(this.map.data.getMap());
+                directionsRenderer.setDirections(result);
+                result.routes[0].waypoint_order.forEach(index => {
+                  const name = waypoints[index].name;
+                  if (name) {
+                    this.route.push(name);
+                  }
+                });
+                this.calcDistAndDura(result);
+                this.route.push(direction.destination);
+              } else {
+                this.location.back();
+              }
             });
           });
       })
       .catch(error => {
         console.log('Error getting location', error);
       });
+  }
+
+  private CreateDirectionsRequest(
+    latlng: google.maps.LatLng,
+    direction: Direction,
+    waypoints: Place[]
+  ): google.maps.DirectionsRequest {
+    return {
+      origin: latlng,
+      destination: direction.destination,
+      waypoints: this.createWaypoints(waypoints),
+      travelMode: direction.travelMode,
+      optimizeWaypoints: true
+    };
+  }
+
+  private calcDistAndDura(result: google.maps.DirectionsResult): void {
+    this.dist = 0;
+    this.dura = 0;
+    result.routes[0].legs.forEach(leg => {
+      this.dist += leg.distance.value;
+      this.dura += leg.duration.value;
+    });
   }
 
   private routeResultCheck(status: google.maps.DirectionsStatus): boolean {

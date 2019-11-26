@@ -43,7 +43,7 @@ export class MapPointSearchComponent {
     private zone: NgZone,
   ) {}
 
-  ionViewDidEnter() {
+  ionViewDidEnter(): void {
     this.direction$
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(direction => this.setMap(direction));
@@ -61,7 +61,7 @@ export class MapPointSearchComponent {
     );
   }
 
-  private setMap(direction: Direction) {
+  private setMap(direction: Direction): void {
     const geocoder = new google.maps.Geocoder();
     geocoder.geocode({ address: direction.destination }, (result, status) => {
       if (this.geocodeResultCheck(status)) {
@@ -92,7 +92,7 @@ export class MapPointSearchComponent {
     return false;
   }
 
-  private searchPlace(latLng: google.maps.LatLng, direction: Direction) {
+  private searchPlace(latLng: google.maps.LatLng, direction: Direction): void {
     const placeService = new google.maps.places.PlacesService(
       this.map.data.getMap()
     );
@@ -168,11 +168,11 @@ export class MapPointSearchComponent {
     await alert.present();
   }
 
-  openInfoWindow(marker: MapMarker) {
+  openInfoWindow(marker: MapMarker): void {
     this.infoWindow.open(marker);
   }
 
-  onSelectionChange() {
+  onSelectionChange(): void {
     this.store.dispatch(
       TripigActions.setSelectedList({ selectedList: this.suggestList.filter(s => s.selected === true) })
     );

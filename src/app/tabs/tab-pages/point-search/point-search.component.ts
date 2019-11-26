@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -14,7 +14,7 @@ export interface Category {
   templateUrl: './point-search.component.html',
   styleUrls: ['./point-search.component.scss']
 })
-export class PointSearchComponent implements OnInit {
+export class PointSearchComponent {
   searchForm = this.fb.group({
     destination: ['', Validators.required],
     selectedCategory: ['']
@@ -54,9 +54,7 @@ export class PointSearchComponent implements OnInit {
     private store: Store<TripigReducer.State>
   ) {}
 
-  ngOnInit() {}
-
-  search() {
+  search(): void {
     this.store.dispatch(
       TripigActions.setDirection({ direction: this.direction })
     );

@@ -29,7 +29,7 @@ export class MapRouteSearchComponent {
     private alertController: AlertController
   ) {}
 
-  ionViewDidEnter() {
+  ionViewDidEnter(): void {
     this.direction$
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(direction => this.setRouteMap(direction));
@@ -39,7 +39,7 @@ export class MapRouteSearchComponent {
     this.onDestroy$.next();
   }
 
-  private setRouteMap(direction: Direction) {
+  private setRouteMap(direction: Direction): void {
     const directionService = new google.maps.DirectionsService();
     const directionsRenderer = new google.maps.DirectionsRenderer();
     const request: google.maps.DirectionsRequest = {
