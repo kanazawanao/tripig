@@ -4,11 +4,14 @@ import { RouteReuseStrategy, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { AngularFireModule } from '@angular/fire';
+import { AngularFireAuthModule } from '@angular/fire/auth';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { reducers, metaReducers } from './store';
@@ -30,6 +33,8 @@ import { MapRouteResultModule } from 'src/app/parts/dialog/map/map-route-result/
       enabled: environment.production
     }),
     AngularFireModule.initializeApp(environment.firebase),
+    AngularFireAuthModule,
+    AngularFirestoreModule,
     RouterModule,
     BrowserAnimationsModule,
     MaterialModule,
@@ -53,7 +58,8 @@ import { MapRouteResultModule } from 'src/app/parts/dialog/map/map-route-result/
       provide: RouteReuseStrategy,
       useClass: IonicRouteStrategy
     },
-    Geolocation
+    Geolocation,
+    GooglePlus
   ],
   bootstrap: [AppComponent]
 })

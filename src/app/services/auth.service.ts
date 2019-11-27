@@ -49,6 +49,11 @@ export class AuthService {
     return this.oAuthSignIn(provider);
   }
 
+  facebookSignIn() {
+    const provider = new firebase.auth.FacebookAuthProvider();
+    return this.oAuthSignIn(provider);
+  }
+
   signOut() {
     this.afAuth.auth.signOut().then(() => {
       this.router.navigate(['/signIn']);
