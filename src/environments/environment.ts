@@ -12,7 +12,8 @@ export const environment = {
     storageBucket: '<STORAGE-BUCKET>',
     messagingSenderId: '<MESSAGEING-SENDER-ID>',
     appId: '<APP-ID>'
-  }
+  },
+  webClientId: '<YOUR-WEB-CLIENT-ID>'
 };
 
 /*
