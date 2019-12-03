@@ -1,4 +1,4 @@
-import { Component, ViewChild, NgZone } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { GoogleMap, MapMarker, MapInfoWindow } from '@angular/google-maps';
 import { AlertController } from '@ionic/angular';
@@ -10,6 +10,7 @@ import * as TripigActions from 'src/app/store/tripig.action';
 import * as TripigSelector from 'src/app/store/tripig.selector';
 import { Direction } from 'src/app/models/direction.model';
 import { Place } from 'src/app/models/place.model';
+import { MapService } from 'src/app/services/map.service';
 
 @Component({
   selector: 'app-map-point-search',
@@ -40,7 +41,7 @@ export class MapPointSearchComponent {
     private location: Location,
     private store: Store<TripigState.State>,
     private alertController: AlertController,
-    private zone: NgZone,
+    private mapService: MapService
   ) {}
 
   ionViewDidEnter(): void {
@@ -103,58 +104,13 @@ export class MapPointSearchComponent {
       type: direction.looking,
       keyword: direction.destination
     };
-    placeService.nearbySearch(request, (results, status) => {
-      // NOTE: nearbySearchがzone外で動いているみたいで、変更検知がうまく動かないのでzoneに含める
-      this.zone.run(() => {
-        if (this.nearbySearchResultCheck(status)) {
-          // FIXME: selectedListとresultの内容が重複してしまうので、同じLatLngの地点は排除したい
-          this.suggestList = this.selectedList.concat(this.ToPlaceArray(results));
-        } else {
-          // TODO: 周辺施設が検索できなかった場合どうするか検討
-        }
-      });
+
+    this.mapService.nearbySearch(placeService, request).then(results => {
+      // FIXME: selectedListとresultの内容が重複してしまうので、同じLatLngの地点は排除したい
+      this.suggestList = this.selectedList.concat(results);
+    }).catch(() => {
+      // TODO: 周辺施設が検索できなかった場合どうするか検討
     });
-  }
-
-  private ToPlaceArray(results: google.maps.places.PlaceResult[]): Place[] {
-    const placeList: Place[] = [];
-    const photoOptions: google.maps.places.PhotoOptions = {
-      maxHeight: 500,
-      maxWidth: 500
-    };
-    results.forEach(r => {
-      placeList.push({
-        icon: r.icon,
-        name: r.name,
-        photos: r.photos ? r.photos.map(p => p.getUrl(photoOptions)) : [],
-        selected: false,
-        url: r.url,
-        location: r.geometry ? r.geometry.location : undefined,
-      });
-    });
-    return placeList;
-  }
-
-  private nearbySearchResultCheck(
-    status: google.maps.places.PlacesServiceStatus
-  ): boolean {
-
-    if (status === google.maps.places.PlacesServiceStatus.OK) {
-      return true;
-    } else if (status === google.maps.places.PlacesServiceStatus.NOT_FOUND) {
-      this.presentAlert('お探しの周辺施設が見つかりませんでした。');
-    } else if (status === google.maps.places.PlacesServiceStatus.UNKNOWN_ERROR) {
-      this.presentAlert('サーバーエラーが発生しました。再度やり直してください。');
-    } else if (status === google.maps.places.PlacesServiceStatus.INVALID_REQUEST) {
-      this.presentAlert('リクエストが無効です。');
-    } else if (status === google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
-      this.presentAlert('時間をおいて再度やり直してください。');
-    } else if (status === google.maps.places.PlacesServiceStatus.REQUEST_DENIED) {
-      this.presentAlert('Mapの利用が許可されていません。');
-    } else if (status === google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
-      this.presentAlert('お探しの周辺施設が見つかりませんでした。');
-    }
-    return false;
   }
 
   private async presentAlert(message: string) {

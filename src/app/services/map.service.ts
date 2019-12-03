@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AlertController } from '@ionic/angular';
+import { Place } from '../models/place.model';
 
 @Injectable({
   providedIn: 'root'
@@ -42,6 +43,86 @@ export class MapService {
     return false;
   }
 
+  route(request: google.maps.DirectionsRequest): Promise<google.maps.DirectionsResult> {
+    const directionService = new google.maps.DirectionsService();
+    return new Promise((resolve, reject) => {
+      directionService.route(request, (result, status) => {
+        if (this.routeResultCheck(status)) {
+          resolve(result);
+        } else {
+          reject(status);
+        }
+      });
+    });
+  }
+
+  private routeResultCheck(status: google.maps.DirectionsStatus): boolean {
+    if (status === google.maps.DirectionsStatus.OK) {
+      return true;
+    } else if (status === google.maps.DirectionsStatus.ZERO_RESULTS) {
+      this.presentAlert('ルートが見つかりませんでした。');
+    } else if (status === google.maps.DirectionsStatus.NOT_FOUND) {
+      this.presentAlert('入力された地点を検索することができませんでした。');
+    }
+    return false;
+  }
+
+  nearbySearch(
+    service: google.maps.places.PlacesService,
+    request: google.maps.places.PlaceSearchRequest
+  ): Promise<Place[]> {
+    return new Promise((resolve, reject) => {
+      service.nearbySearch(request, (results, status) => {
+        if (this.nearbySearchResultCheck(status)) {
+          resolve(this.ToPlaceArray(results));
+        } else {
+          reject(status);
+        }
+      });
+    });
+  }
+
+  private ToPlaceArray(results: google.maps.places.PlaceResult[]): Place[] {
+    const placeList: Place[] = [];
+    const photoOptions: google.maps.places.PhotoOptions = {
+      maxHeight: 500,
+      maxWidth: 500
+    };
+    results.forEach(r => {
+      placeList.push({
+        icon: r.icon,
+        name: r.name,
+        photos: r.photos ? r.photos.map(p => p.getUrl(photoOptions)) : [],
+        selected: false,
+        url: r.url,
+        location: r.geometry ? r.geometry.location : undefined,
+      });
+    });
+    return placeList;
+  }
+
+  private nearbySearchResultCheck(
+    status: google.maps.places.PlacesServiceStatus
+  ): boolean {
+
+    if (status === google.maps.places.PlacesServiceStatus.OK) {
+      return true;
+    } else if (status === google.maps.places.PlacesServiceStatus.NOT_FOUND) {
+      this.presentAlert('お探しの周辺施設が見つかりませんでした。');
+    } else if (status === google.maps.places.PlacesServiceStatus.UNKNOWN_ERROR) {
+      this.presentAlert('サーバーエラーが発生しました。再度やり直してください。');
+    } else if (status === google.maps.places.PlacesServiceStatus.INVALID_REQUEST) {
+      this.presentAlert('リクエストが無効です。');
+    } else if (status === google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
+      this.presentAlert('時間をおいて再度やり直してください。');
+    } else if (status === google.maps.places.PlacesServiceStatus.REQUEST_DENIED) {
+      this.presentAlert('Mapの利用が許可されていません。');
+    } else if (status === google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
+      this.presentAlert('お探しの周辺施設が見つかりませんでした。');
+    }
+    return false;
+  }
+
   private async presentAlert(message: string) {
     const alert = await this.alertController.create({
       header: 'Alert',
@@ -53,18 +134,18 @@ export class MapService {
     await alert.present();
   }
 
-  searchMiddlePoint(origin: google.maps.LatLng, destination: google.maps.LatLng): google.maps.LatLng{
+  searchMiddlePoint(origin: google.maps.LatLng, destination: google.maps.LatLng): google.maps.LatLng {
     const originLat = origin.lat();
     const originLng = origin.lng();
     const destLat = destination.lat();
     const destLng = destination.lng();
-    const middleLat = originLat > destLat 
+    const middleLat = originLat > destLat
       ? originLat - ((originLat - destLat) / 2)
       : destLat - ((destLat - originLat) / 2);
     const middleLng = originLng > destLng
       ? originLng - ((originLng - destLng) / 2)
       : destLng - ((destLng - originLng) / 2);
-    let result: google.maps.LatLng = new google.maps.LatLng(middleLat, middleLng)
+    const result: google.maps.LatLng = new google.maps.LatLng(middleLat, middleLng);
     return result;
   }
 }
