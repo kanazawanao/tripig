@@ -1,7 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { GoogleMap } from '@angular/google-maps';
-import { AlertController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -29,7 +28,6 @@ export class MapRouteSearchComponent {
   constructor(
     private location: Location,
     private store: Store<TripigState.State>,
-    private alertController: AlertController,
     private mapService: MapService
   ) {}
 
