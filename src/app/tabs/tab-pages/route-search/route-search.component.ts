@@ -48,7 +48,6 @@ export class RouteSearchComponent {
   get direction(): Direction {
     const direction: Direction = {
       destination: this.destination,
-      looking: '',
       origin: this.origin,
       travelMode: this.selectedMode.value,
       radius: 10000

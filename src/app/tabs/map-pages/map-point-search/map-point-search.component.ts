@@ -77,7 +77,6 @@ export class MapPointSearchComponent {
       rankBy: google.maps.places.RankBy.PROMINENCE,
       location: latLng,
       radius: direction.radius,
-      type: direction.looking,
       keyword: direction.destination
     };
 

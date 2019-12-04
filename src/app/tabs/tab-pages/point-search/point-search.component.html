@@ -1,25 +1,24 @@
-<form [formGroup]="searchForm" class="form">
-  <mat-form-field class="full-width">
-    <input
-      matInput
-      type="text"
-      placeholder="ARRIVAL AT"
-      formControlName="destination"
-      required>
-  </mat-form-field>
-  <mat-form-field class="full-width">
-    <mat-label>LOOKING FOR</mat-label>
-    <mat-select formControlName="selectedCategory">
-      <mat-option *ngFor="let category of categories" [value]="category.value">
-        {{category.viewValue}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-  <button
-    mat-button
-    type="button"
-    (click)="search()"
-    [disabled]="!searchForm.valid">
-    Search
-  </button>
-</form>
+
+<ion-content>
+  <form [formGroup]="searchForm" class="form">
+    <mat-form-field class="full-width">
+      <input
+        matInput
+        type="text"
+        placeholder="ARRIVAL AT"
+        formControlName="destination"
+        required>
+    </mat-form-field>
+    <mat-grid-list cols="4" rowHeight="2:1">
+      <mat-grid-tile *ngFor="let category of categories">
+        <button
+          mat-button
+          type="button"
+          (click)="search(category.value)"
+          [disabled]="!searchForm.valid">
+          <mat-icon>{{category.icon}}</mat-icon>
+        </button>
+      </mat-grid-tile>
+    </mat-grid-list>
+  </form>
+</ion-content>

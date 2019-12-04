@@ -11,7 +11,6 @@ export interface State {
 export const initialState: State = {
   direction: {
     destination: '',
-    looking: '',
     origin: '',
     radius: 10000,
     travelMode: google.maps.TravelMode.DRIVING
