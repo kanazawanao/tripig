@@ -10,6 +10,7 @@ import * as TripigSelector from 'src/app/store/tripig.selector';
 import { Direction } from 'src/app/models/direction.model';
 import { Place } from 'src/app/models/place.model';
 import { MapService } from 'src/app/services/map.service';
+import { Category, CATEGORIES } from 'src/app/parts/category.class';
 
 @Component({
   selector: 'app-map-point-search',
@@ -26,6 +27,8 @@ export class MapPointSearchComponent {
   selectedList$: Observable<Place[]> = this.store.select(
     TripigSelector.getSelectedList
   );
+
+  categories: Category[] = CATEGORIES;
   suggestList: Place[] = [];
   selectedList: Place[] = [];
   min = 1;

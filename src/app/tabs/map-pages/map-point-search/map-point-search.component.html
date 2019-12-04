@@ -15,6 +15,13 @@
   [(ngModel)]="radius"
 >
 </mat-slider>
+<mat-tab-group>
+  <mat-tab *ngFor="let category of categories">
+    <ng-template mat-tab-label>
+      <mat-icon>{{ category.icon }}</mat-icon>
+    </ng-template>
+  </mat-tab>
+</mat-tab-group>
 <ion-content>
   <mat-accordion>
     <mat-expansion-panel *ngFor="let suggest of suggestList">
