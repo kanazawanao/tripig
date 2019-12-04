@@ -12,18 +12,18 @@ export interface Mode {
 @Component({
   selector: 'app-route-search',
   templateUrl: './route-search.component.html',
-  styleUrls: ['./route-search.component.scss'],
+  styleUrls: ['./route-search.component.scss']
 })
 export class RouteSearchComponent {
   @ViewChild('origin') inputOrigin!: ElementRef;
   @ViewChild('destination') inputDestination!: ElementRef;
   travelModes: Mode[] = [
-    {value: google.maps.TravelMode.WALKING, viewValue: 'directions_walk'},
-    {value: google.maps.TravelMode.BICYCLING, viewValue: 'directions_bike'},
-    {value: google.maps.TravelMode.DRIVING, viewValue: 'directions_car'},
+    { value: google.maps.TravelMode.WALKING, viewValue: 'directions_walk' },
+    { value: google.maps.TravelMode.BICYCLING, viewValue: 'directions_bike' },
+    { value: google.maps.TravelMode.DRIVING, viewValue: 'directions_car' },
     // 日本国内だと路線を含めたルート検索できないみたい
     // {value: google.maps.TravelMode.TRANSIT, viewValue: 'directions_transit'},
-    {value: google.maps.TravelMode.TWO_WHEELER, viewValue: 'motorcycle'},
+    { value: google.maps.TravelMode.TWO_WHEELER, viewValue: 'motorcycle' }
   ];
 
   searchForm = this.fb.group({
@@ -51,6 +51,7 @@ export class RouteSearchComponent {
     const direction: Direction = {
       destination: this.destination,
       origin: this.origin,
+      category: '',
       travelMode: this.selectedMode.value,
       radius: 10000
     };
@@ -61,7 +62,7 @@ export class RouteSearchComponent {
     private router: Router,
     private fb: FormBuilder,
     private store: Store<TripigReducer.State>
-  ) { }
+  ) {}
 
   ionViewDidEnter(): void {
     new google.maps.places.Autocomplete(this.inputDestination.nativeElement);
@@ -69,7 +70,9 @@ export class RouteSearchComponent {
   }
 
   search(): void {
-    this.store.dispatch(TripigActions.setDirection({ direction: this.direction }));
+    this.store.dispatch(
+      TripigActions.setDirection({ direction: this.direction })
+    );
     this.router.navigate(['/tabs/search/route']);
   }
 }

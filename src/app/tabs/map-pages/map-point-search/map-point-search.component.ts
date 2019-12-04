@@ -20,6 +20,7 @@ import { Category, CATEGORIES } from 'src/app/parts/category.class';
 export class MapPointSearchComponent {
   @ViewChild(GoogleMap) map!: GoogleMap;
   @ViewChild(MapInfoWindow) infoWindow!: MapInfoWindow;
+  selectedCategory = '';
   private onDestroy$ = new Subject();
   direction$: Observable<Direction> = this.store.select(
     TripigSelector.getDirection
@@ -37,7 +38,7 @@ export class MapPointSearchComponent {
   thumbLabel = true;
   center: google.maps.LatLng = new google.maps.LatLng(37.421995, -122.084092);
   zoom = 16;
-  markerOptions: google.maps.MarkerOptions = {draggable: false};
+  markerOptions: google.maps.MarkerOptions = { draggable: false };
 
   constructor(
     private location: Location,
@@ -46,9 +47,10 @@ export class MapPointSearchComponent {
   ) {}
 
   ionViewDidEnter(): void {
-    this.direction$
-      .pipe(takeUntil(this.onDestroy$))
-      .subscribe(direction => this.setMap(direction));
+    this.direction$.pipe(takeUntil(this.onDestroy$)).subscribe(direction => {
+      this.selectedCategory = direction.category;
+      this.setMap(direction);
+    });
     this.selectedList$
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(selectedList => {
@@ -64,12 +66,15 @@ export class MapPointSearchComponent {
   }
 
   private setMap(direction: Direction): void {
-    this.mapService.geocode(direction.destination).then(result => {
-      this.center = result;
-      this.searchPlace(result, direction);
-    }).catch(() => {
-      this.location.back();
-    });
+    this.mapService
+      .geocode(direction.destination)
+      .then(result => {
+        this.center = result;
+        this.searchPlace(result, direction);
+      })
+      .catch(() => {
+        this.location.back();
+      });
   }
 
   private searchPlace(latLng: google.maps.LatLng, direction: Direction): void {
@@ -80,15 +85,18 @@ export class MapPointSearchComponent {
       rankBy: google.maps.places.RankBy.PROMINENCE,
       location: latLng,
       radius: direction.radius,
-      keyword: direction.destination
+      keyword: `${direction.destination} ${direction.category}`
     };
 
-    this.mapService.nearbySearch(placeService, request).then(results => {
-      // FIXME: selectedListとresultの内容が重複してしまうので、同じLatLngの地点は排除したい
-      this.suggestList = this.selectedList.concat(results);
-    }).catch(() => {
-      // TODO: 周辺施設が検索できなかった場合どうするか検討
-    });
+    this.mapService
+      .nearbySearch(placeService, request)
+      .then(results => {
+        // FIXME: selectedListとresultの内容が重複してしまうので、同じLatLngの地点は排除したい
+        this.suggestList = this.selectedList.concat(results);
+      })
+      .catch(() => {
+        // TODO: 周辺施設が検索できなかった場合どうするか検討
+      });
   }
 
   openInfoWindow(marker: MapMarker): void {
@@ -97,7 +105,9 @@ export class MapPointSearchComponent {
 
   onSelectionChange(): void {
     this.store.dispatch(
-      TripigActions.setSelectedList({ selectedList: this.suggestList.filter(s => s.selected === true) })
+      TripigActions.setSelectedList({
+        selectedList: this.suggestList.filter(s => s.selected === true)
+      })
     );
   }
 }

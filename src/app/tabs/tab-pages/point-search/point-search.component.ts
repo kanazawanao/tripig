@@ -23,8 +23,9 @@ export class PointSearchComponent {
   selectedCategory = '';
   get direction(): Direction {
     const direction: Direction = {
-      destination: `${this.destination} ${this.selectedCategory}`,
+      destination: this.destination,
       origin: '',
+      category: this.selectedCategory,
       radius: 10000,
       travelMode: google.maps.TravelMode.DRIVING
     };

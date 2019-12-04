@@ -16,7 +16,10 @@
 >
 </mat-slider>
 <mat-tab-group>
-  <mat-tab *ngFor="let category of categories">
+  <mat-tab
+    *ngFor="let category of categories"
+    [active]="category.value === selectedCategory"
+  >
     <ng-template mat-tab-label>
       <mat-icon>{{ category.icon }}</mat-icon>
     </ng-template>

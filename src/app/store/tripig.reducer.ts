@@ -12,26 +12,27 @@ export const initialState: State = {
   direction: {
     destination: '',
     origin: '',
+    category: '',
     radius: 10000,
     travelMode: google.maps.TravelMode.DRIVING
   },
-  selectedList: [],
+  selectedList: []
 };
 
 const coreReducer = createReducer(
   initialState,
-  on(TripigAction.setDirection, (state, { direction } ) => {
+  on(TripigAction.setDirection, (state, { direction }) => {
     return {
       ...state,
-      direction,
+      direction
     };
   }),
-  on(TripigAction.setSelectedList, (state, { selectedList } ) => {
+  on(TripigAction.setSelectedList, (state, { selectedList }) => {
     return {
       ...state,
-      selectedList,
+      selectedList
     };
-  }),
+  })
 );
 export function reducer(state: State | undefined, action: Action): State {
   return coreReducer(state, action);
