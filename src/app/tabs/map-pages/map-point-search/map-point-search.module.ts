@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -14,6 +14,9 @@ import { MapPointSearchComponent } from './map-point-search.component';
     RouterModule.forChild([{ path: '', component: MapPointSearchComponent }]),
     GoogleMapsModule,
     MaterialModule,
+  ],
+  schemas: [
+    CUSTOM_ELEMENTS_SCHEMA
   ]
 })
 export class MapPointSearchModule { }

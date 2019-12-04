@@ -18,7 +18,7 @@ import { Place } from 'src/app/models/place.model';
   styleUrls: ['./map-route-result.component.scss']
 })
 export class MapRouteResultComponent {
-  @ViewChild(GoogleMap, { static: false }) map!: GoogleMap;
+  @ViewChild(GoogleMap) map!: GoogleMap;
   direction$: Observable<Direction> = this.store.select(
     TripigSelector.getDirection
   );

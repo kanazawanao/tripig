@@ -17,8 +17,8 @@ import { MapService } from 'src/app/services/map.service';
   styleUrls: ['./map-point-search.component.scss']
 })
 export class MapPointSearchComponent {
-  @ViewChild(GoogleMap, { static: false }) map!: GoogleMap;
-  @ViewChild(MapInfoWindow, {static: false}) infoWindow!: MapInfoWindow;
+  @ViewChild(GoogleMap) map!: GoogleMap;
+  @ViewChild(MapInfoWindow) infoWindow!: MapInfoWindow;
   private onDestroy$ = new Subject();
   direction$: Observable<Direction> = this.store.select(
     TripigSelector.getDirection

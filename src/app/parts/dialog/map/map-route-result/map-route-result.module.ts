@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { MaterialModule } from 'src/app/material/material.module';
@@ -11,6 +11,9 @@ import { MapRouteResultComponent } from './map-route-result.component';
     CommonModule,
     GoogleMapsModule,
     MaterialModule
+  ],
+  schemas: [
+    CUSTOM_ELEMENTS_SCHEMA
   ]
 })
 export class MapRouteResultModule { }
