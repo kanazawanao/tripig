@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -16,6 +16,7 @@ export interface Category {
   styleUrls: ['./point-search.component.scss']
 })
 export class PointSearchComponent {
+  @ViewChild('destination') inputDestination!: ElementRef;
   searchForm = this.fb.group({
     destination: ['', Validators.required]
   });
@@ -52,6 +53,10 @@ export class PointSearchComponent {
     private fb: FormBuilder,
     private store: Store<TripigReducer.State>
   ) {}
+
+  ionViewDidEnter(): void {
+    new google.maps.places.Autocomplete(this.inputDestination.nativeElement);
+  }
 
   search(value: string): void {
     this.selectedCategory = value;

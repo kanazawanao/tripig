@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -15,6 +15,8 @@ export interface Mode {
   styleUrls: ['./route-search.component.scss'],
 })
 export class RouteSearchComponent {
+  @ViewChild('origin') inputOrigin!: ElementRef;
+  @ViewChild('destination') inputDestination!: ElementRef;
   travelModes: Mode[] = [
     {value: google.maps.TravelMode.WALKING, viewValue: 'directions_walk'},
     {value: google.maps.TravelMode.BICYCLING, viewValue: 'directions_bike'},
@@ -60,6 +62,11 @@ export class RouteSearchComponent {
     private fb: FormBuilder,
     private store: Store<TripigReducer.State>
   ) { }
+
+  ionViewDidEnter(): void {
+    new google.maps.places.Autocomplete(this.inputDestination.nativeElement);
+    new google.maps.places.Autocomplete(this.inputOrigin.nativeElement);
+  }
 
   search(): void {
     this.store.dispatch(TripigActions.setDirection({ direction: this.direction }));
