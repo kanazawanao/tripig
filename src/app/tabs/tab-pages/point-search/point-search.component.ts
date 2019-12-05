@@ -20,7 +20,7 @@ export class PointSearchComponent {
   get destination(): string {
     return this.searchForm.controls[this.destinationKey].value;
   }
-  selectedCategory = '';
+  selectedCategory: Category = {icon: '', index: 0, value: '', viewValue: ''};
   get direction(): Direction {
     const direction: Direction = {
       destination: this.destination,
@@ -43,8 +43,8 @@ export class PointSearchComponent {
     new google.maps.places.Autocomplete(this.inputDestination.nativeElement);
   }
 
-  search(value: string): void {
-    this.selectedCategory = value;
+  search(category: Category): void {
+    this.selectedCategory = category;
     this.store.dispatch(
       TripigActions.setDirection({ direction: this.direction })
     );

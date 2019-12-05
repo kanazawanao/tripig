@@ -12,7 +12,7 @@ export const initialState: State = {
   direction: {
     destination: '',
     origin: '',
-    category: '',
+    category: {icon: '', viewValue: '', value: '', index: 0},
     radius: 10000,
     travelMode: google.maps.TravelMode.DRIVING
   },

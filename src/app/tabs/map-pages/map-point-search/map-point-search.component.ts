@@ -20,7 +20,6 @@ import { Category, CATEGORIES } from 'src/app/parts/category.class';
 export class MapPointSearchComponent {
   @ViewChild(GoogleMap) map!: GoogleMap;
   @ViewChild(MapInfoWindow) infoWindow!: MapInfoWindow;
-  selectedCategory = '';
   private onDestroy$ = new Subject();
   direction$: Observable<Direction> = this.store.select(
     TripigSelector.getDirection
@@ -28,7 +27,7 @@ export class MapPointSearchComponent {
   selectedList$: Observable<Place[]> = this.store.select(
     TripigSelector.getSelectedList
   );
-
+  direction?: Direction;
   categories: Category[] = CATEGORIES;
   suggestList: Place[] = [];
   selectedList: Place[] = [];
@@ -48,7 +47,7 @@ export class MapPointSearchComponent {
 
   ionViewDidEnter(): void {
     this.direction$.pipe(takeUntil(this.onDestroy$)).subscribe(direction => {
-      this.selectedCategory = direction.category;
+      this.direction = direction;
       this.setMap(direction);
     });
     this.selectedList$
@@ -66,6 +65,7 @@ export class MapPointSearchComponent {
   }
 
   private setMap(direction: Direction): void {
+    console.log('setMap');
     this.mapService
       .geocode(direction.destination)
       .then(result => {
@@ -77,6 +77,15 @@ export class MapPointSearchComponent {
       });
   }
 
+  search(category: Category) {
+    console.log('search');
+    console.log(category);
+    if (this.direction) {
+      this.direction.category = category;
+      this.setMap(this.direction);
+    }
+  }
+
   private searchPlace(latLng: google.maps.LatLng, direction: Direction): void {
     const placeService = new google.maps.places.PlacesService(
       this.map.data.getMap()
@@ -85,7 +94,7 @@ export class MapPointSearchComponent {
       rankBy: google.maps.places.RankBy.PROMINENCE,
       location: latLng,
       radius: direction.radius,
-      keyword: `${direction.destination} ${direction.category}`
+      keyword: `${direction.destination} ${direction.category.value}`
     };
 
     this.mapService

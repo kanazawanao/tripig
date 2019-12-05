@@ -15,13 +15,15 @@
   [(ngModel)]="radius"
 >
 </mat-slider>
-<mat-tab-group>
-  <mat-tab
-    *ngFor="let category of categories"
-    [active]="category.value === selectedCategory"
-  >
+<mat-tab-group [selectedIndex]="direction?.category.index">
+  <mat-tab *ngFor="let category of categories">
     <ng-template mat-tab-label>
+      <button
+        mat-button
+        type="button"
+        (click)="search(category)">
       <mat-icon>{{ category.icon }}</mat-icon>
+    </button>
     </ng-template>
   </mat-tab>
 </mat-tab-group>
