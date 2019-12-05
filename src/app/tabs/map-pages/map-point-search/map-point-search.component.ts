@@ -46,10 +46,12 @@ export class MapPointSearchComponent {
   ) {}
 
   ionViewDidEnter(): void {
-    this.direction$.pipe(takeUntil(this.onDestroy$)).subscribe(direction => {
-      this.direction = direction;
-      this.setMap(direction);
-    });
+    this.direction$
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(direction => {
+        this.direction = direction;
+        this.setMap(direction);
+      });
     this.selectedList$
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(selectedList => {
