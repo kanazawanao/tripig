@@ -34,8 +34,17 @@ export class MapRouteSearchComponent {
   categories: Category[] = CATEGORIES;
   center: google.maps.LatLng = new google.maps.LatLng(37.421995, -122.084092);
   zoom = 16;
+  private dist = 0;
+  get distance(): string {
+    return `約${Math.floor(this.dist / 1000)}km`;
+  }
+  private dura = 0;
+  get duration(): string {
+    return `約${Math.floor(this.dura / 60)}分`;
+  }
   originLatLng: google.maps.LatLng = new google.maps.LatLng(37.421995, -122.084092);
   destinationLatLng: google.maps.LatLng = new google.maps.LatLng(37.421995, -122.084092);
+  middlePointLatLng: google.maps.LatLng = new google.maps.LatLng(37.421995, -122.084092);
 
   constructor(
     private location: Location,
@@ -82,6 +91,8 @@ export class MapRouteSearchComponent {
       directionsRenderer.setMap(null);
       directionsRenderer.setMap(this.map.data.getMap());
       directionsRenderer.setDirections(result);
+      this.middlePointLatLng = result.routes[0].overview_path[result.routes[0].overview_path.length / 2];
+      this.calcDistAndDura(result);
     }).catch(() => {
       this.location.back();
     });
@@ -93,10 +104,9 @@ export class MapRouteSearchComponent {
       const placeService = new google.maps.places.PlacesService(
         this.map.data.getMap()
       );
-      const latLng = this.mapService.searchMiddlePoint(this.originLatLng, this.destinationLatLng);
       const request: google.maps.places.PlaceSearchRequest = {
         rankBy: google.maps.places.RankBy.PROMINENCE,
-        location: latLng,
+        location: this.middlePointLatLng,
         radius: this.direction.radius,
         keyword: this.direction.category.value
       };
@@ -122,5 +132,14 @@ export class MapRouteSearchComponent {
         selectedList: this.suggestList.filter(s => s.selected === true)
       })
     );
+  }
+
+  private calcDistAndDura(result: google.maps.DirectionsResult): void {
+    this.dist = 0;
+    this.dura = 0;
+    result.routes[0].legs.forEach(leg => {
+      this.dist += leg.distance.value;
+      this.dura += leg.duration.value;
+    });
   }
 }

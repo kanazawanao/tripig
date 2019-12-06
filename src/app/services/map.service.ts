@@ -133,19 +133,4 @@ export class MapService {
 
     await alert.present();
   }
-
-  searchMiddlePoint(origin: google.maps.LatLng, destination: google.maps.LatLng): google.maps.LatLng {
-    const originLat = origin.lat();
-    const originLng = origin.lng();
-    const destLat = destination.lat();
-    const destLng = destination.lng();
-    const middleLat = originLat > destLat
-      ? originLat - ((originLat - destLat) / 2)
-      : destLat - ((destLat - originLat) / 2);
-    const middleLng = originLng > destLng
-      ? originLng - ((originLng - destLng) / 2)
-      : destLng - ((destLng - originLng) / 2);
-    const result: google.maps.LatLng = new google.maps.LatLng(middleLat, middleLng);
-    return result;
-  }
 }

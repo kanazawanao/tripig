@@ -18,12 +18,12 @@ export class RouteSearchComponent {
   @ViewChild('origin') inputOrigin!: ElementRef;
   @ViewChild('destination') inputDestination!: ElementRef;
   travelModes: Mode[] = [
+    { value: google.maps.TravelMode.DRIVING, viewValue: 'directions_car' },
     { value: google.maps.TravelMode.WALKING, viewValue: 'directions_walk' },
     { value: google.maps.TravelMode.BICYCLING, viewValue: 'directions_bike' },
-    { value: google.maps.TravelMode.DRIVING, viewValue: 'directions_car' },
     // 日本国内だと路線を含めたルート検索できないみたい
     // {value: google.maps.TravelMode.TRANSIT, viewValue: 'directions_transit'},
-    { value: google.maps.TravelMode.TWO_WHEELER, viewValue: 'motorcycle' }
+    { value: google.maps.TravelMode.TWO_WHEELER, viewValue: 'motorcycle' },
   ];
 
   searchForm = this.fb.group({
