@@ -16,7 +16,8 @@
           mat-button
           type="button"
           (click)="search(category)"
-          [disabled]="!searchForm.valid">
+          [disabled]="!searchForm.valid"
+          aria-label="categorySearch">
           <mat-icon>{{category.icon}}</mat-icon>
         </button>
       </mat-grid-tile>
