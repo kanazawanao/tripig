@@ -1,4 +1,4 @@
-import { Component, ViewChild, NgZone, OnInit } from '@angular/core';
+import { Component, ViewChild, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { GoogleMap } from '@angular/google-maps';
@@ -25,8 +25,18 @@ export class MapRouteResultComponent {
   selectedList$: Observable<Place[]> = this.store.select(
     TripigSelector.getSelectedList
   );
+  get googleMapLinks(): string {
+    return 'https://www.google.com/maps/dir/?api=1' +
+          this.waypointsForMap +
+          '&travelmode=driving';
+  }
   private onDestroy$ = new Subject();
-  route: string[] = [];
+  get waypointsForMap(): string {
+    return '&destination=' + this.destination.name + '&waypoints=' + this.waypoints.map(p => p.name).join(' | ');
+  }
+  waypoints: Place[] = [];
+  origin: Place = {selected: true};
+  destination: Place = {selected: true};
   center: google.maps.LatLng = new google.maps.LatLng(37.421995, -122.084092);
   zoom = 16;
 
@@ -84,6 +94,12 @@ export class MapRouteResultComponent {
           position.coords.latitude,
           position.coords.longitude
         );
+        const currentPosition: Place = {
+          name: '現在地',
+          selected: true,
+          location: latlng,
+        };
+        this.origin = currentPosition;
         this.selectedList$
           .pipe(takeUntil(this.onDestroy$))
           .subscribe(waypoints => {
@@ -93,13 +109,14 @@ export class MapRouteResultComponent {
                 directionsRenderer.setMap(this.map.data.getMap());
                 directionsRenderer.setDirections(result);
                 result.routes[0].waypoint_order.forEach(index => {
-                  const name = waypoints[index].name;
-                  if (name) {
-                    this.route.push(name);
-                  }
+                  this.waypoints.push(waypoints[index]);
                 });
                 this.calcDistAndDura(result);
-                this.route.push(direction.destination);
+                const destPosition: Place = {
+                  name: direction.destination,
+                  selected: true,
+                };
+                this.destination = destPosition;
               } else {
                 this.location.back();
               }

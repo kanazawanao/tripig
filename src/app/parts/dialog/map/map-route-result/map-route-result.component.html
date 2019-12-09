@@ -18,8 +18,14 @@
     [zoom]="zoom">
   </google-map>
   <mat-list>
-    <mat-list-item *ngFor="let point of route">
-      {{ point }}
+    <mat-list-item>
+      {{ origin.name }}
+    </mat-list-item>
+    <mat-list-item *ngFor="let point of waypoints">
+      {{ point.name }}
+    </mat-list-item>
+    <mat-list-item>
+      {{ destination.name }}
     </mat-list-item>
   </mat-list>
   <p>
@@ -32,4 +38,8 @@
     <!--  TODO: ログイン時のみ実行可能にする。ログインしてなかったらログインボタン表示する -->
     <button mat-button (click)="regist()" aria-label="regist">OK</button>
   </p>
+  <a matSuffix [href]="googleMapLinks">
+    <mat-icon>map</mat-icon>
+  </a>
+  
 </ion-content>

@@ -67,7 +67,6 @@ export class MapPointSearchComponent {
   }
 
   private setMap(direction: Direction): void {
-    console.log('setMap');
     this.mapService
       .geocode(direction.destination)
       .then(result => {
@@ -80,8 +79,6 @@ export class MapPointSearchComponent {
   }
 
   search(category: Category) {
-    console.log('search');
-    console.log(category);
     if (this.direction) {
       this.direction.category = category;
       this.setMap(this.direction);

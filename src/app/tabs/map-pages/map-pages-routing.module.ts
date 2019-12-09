@@ -11,6 +11,10 @@ const routes: Routes = [
     path: 'route',
     loadChildren: () => import('./map-route-search/map-route-search.module').then(m => m.MapRouteSearchModule)
   },
+  {
+    path: '**',
+    redirectTo: 'point'
+  },
 ];
 
 @NgModule({
