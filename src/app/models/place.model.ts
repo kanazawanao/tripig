@@ -8,4 +8,5 @@ export interface Place {
   url?: string;
   photos?: string[];
   location?: google.maps.LatLng;
+  placeId?: string;
 }

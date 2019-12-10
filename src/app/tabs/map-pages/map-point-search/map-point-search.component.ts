@@ -99,8 +99,9 @@ export class MapPointSearchComponent {
     this.mapService
       .nearbySearch(placeService, request)
       .then(results => {
-        // FIXME: selectedListとresultの内容が重複してしまうので、同じLatLngの地点は排除したい
-        this.suggestList = this.selectedList.concat(results);
+        this.suggestList = [...this.selectedList, ...results].filter((member, index, self) => {
+          return self.findIndex(s => member.placeId  === s.placeId) === index;
+        });
       })
       .catch(() => {
         // TODO: 周辺施設が検索できなかった場合どうするか検討

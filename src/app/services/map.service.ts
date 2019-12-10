@@ -96,6 +96,7 @@ export class MapService {
         selected: false,
         url: r.url,
         location: r.geometry ? r.geometry.location : undefined,
+        placeId: r.place_id,
       });
     });
     return placeList;
