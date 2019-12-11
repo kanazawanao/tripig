@@ -34,11 +34,19 @@
             [(ngModel)]="suggest.selected"
             (change)="onSelectionChange()"
             (click)="$event.stopPropagation()"
-          ></mat-checkbox>
-          {{ suggest.name }}
+          >
+            {{ suggest.name }}
+          </mat-checkbox>
+          <a
+            mat-button
+            target="_blank"
+            rel="noopener noreferrer"
+            [href]="googleSearchUrl + suggest.name"
+            (click)="$event.stopPropagation()">
+            <mat-icon matSuffix>search</mat-icon>
+          </a>
         </mat-panel-title>
       </mat-expansion-panel-header>
-      <p>{{ suggest.name }}</p>
       <div *ngFor="let photo of suggest.photos">
         <img [src]="photo" />
       </div>

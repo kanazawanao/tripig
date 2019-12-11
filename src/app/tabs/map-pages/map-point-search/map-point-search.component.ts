@@ -20,6 +20,7 @@ import { Category, CATEGORIES } from 'src/app/parts/category.class';
 export class MapPointSearchComponent {
   @ViewChild(GoogleMap) map!: GoogleMap;
   @ViewChild(MapInfoWindow) infoWindow!: MapInfoWindow;
+  googleSearchUrl = 'https://www.google.com/search?q=';
   private onDestroy$ = new Subject();
   direction$: Observable<Direction> = this.store.select(
     TripigSelector.getDirection

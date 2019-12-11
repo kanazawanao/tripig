@@ -20,6 +20,7 @@ import { Place } from 'src/app/models/place.model';
 export class MapRouteSearchComponent {
   @ViewChild(GoogleMap) map!: GoogleMap;
   @ViewChild(MapInfoWindow) infoWindow!: MapInfoWindow;
+  googleSearchUrl = 'https://www.google.com/search?q=';
   markerOptions: google.maps.MarkerOptions = { draggable: false };
   private onDestroy$ = new Subject();
   direction$: Observable<Direction> = this.store.select(
@@ -110,7 +111,6 @@ export class MapRouteSearchComponent {
         radius: this.direction.radius,
         keyword: this.direction.category.value
       };
-      console.log(request);
       this.mapService
         .nearbySearch(placeService, request)
         .then(results => {
