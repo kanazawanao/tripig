@@ -6,6 +6,7 @@ import { Place } from '../models/place.model';
 export interface State {
   direction: Direction;
   selectedList: Place[];
+  suggestList: Place[];
 }
 
 export const initialState: State = {
@@ -16,7 +17,8 @@ export const initialState: State = {
     radius: 10000,
     travelMode: google.maps.TravelMode.DRIVING
   },
-  selectedList: []
+  selectedList: [],
+  suggestList: [],
 };
 
 const coreReducer = createReducer(
@@ -32,6 +34,12 @@ const coreReducer = createReducer(
       ...state,
       selectedList
     };
+  }),
+  on(TripigAction.setSuggestList, (state, { suggestList }) => {
+    return {
+      ...state,
+      suggestList
+    };
   })
 );
 export function reducer(state: State | undefined, action: Action): State {
@@ -40,3 +48,4 @@ export function reducer(state: State | undefined, action: Action): State {
 
 export const getDirection = (state: State) => state.direction;
 export const getSelectedList = (state: State) => state.selectedList;
+export const getSuggestList = (state: State) => state.suggestList;

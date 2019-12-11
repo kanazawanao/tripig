@@ -20,7 +20,7 @@ import { Place } from 'src/app/models/place.model';
 export class MapRouteSearchComponent {
   @ViewChild(GoogleMap) map!: GoogleMap;
   @ViewChild(MapInfoWindow) infoWindow!: MapInfoWindow;
-  googleSearchUrl = 'https://www.google.com/search?q=';
+  directionsRenderer = new google.maps.DirectionsRenderer();
   markerOptions: google.maps.MarkerOptions = { draggable: false };
   private onDestroy$ = new Subject();
   direction$: Observable<Direction> = this.store.select(
@@ -29,10 +29,9 @@ export class MapRouteSearchComponent {
   selectedList$: Observable<Place[]> = this.store.select(
     TripigSelector.getSelectedList
   );
-  suggestList: Place[] = [];
   selectedList: Place[] = [];
   direction?: Direction;
-  categories: Category[] = CATEGORIES;
+  defaultCategory: Category = CATEGORIES[0];
   center: google.maps.LatLng = new google.maps.LatLng(37.421995, -122.084092);
   zoom = 16;
   private dist = 0;
@@ -82,21 +81,20 @@ export class MapRouteSearchComponent {
     }).catch(() => {
       this.location.back();
     });
-    const directionsRenderer = new google.maps.DirectionsRenderer();
     const request: google.maps.DirectionsRequest = {
       origin: direction.origin,
       destination: direction.destination,
       travelMode: direction.travelMode,
     };
     this.mapService.route(request).then(result => {
-      directionsRenderer.setMap(null);
-      directionsRenderer.setMap(this.map.data.getMap());
-      directionsRenderer.setDirections(result);
+      this.directionsRenderer.setMap(this.map.data.getMap());
+      this.directionsRenderer.setDirections(result);
       this.middlePointLatLng = result.routes[0].overview_path[result.routes[0].overview_path.length / 2];
       this.calcDistAndDura(result);
     }).catch(() => {
       this.location.back();
     });
+    this.middlePointPlaceSearch(this.defaultCategory);
   }
 
   middlePointPlaceSearch(category: Category) {
@@ -114,9 +112,12 @@ export class MapRouteSearchComponent {
       this.mapService
         .nearbySearch(placeService, request)
         .then(results => {
-          this.suggestList = [...this.selectedList, ...results].filter((member, index, self) => {
+          const suggestList = [...this.selectedList, ...results].filter((member, index, self) => {
             return self.findIndex(s => member.placeId  === s.placeId) === index;
           });
+          this.store.dispatch(
+            TripigActions.setSuggestList({ suggestList })
+          );
         })
         .catch(() => {
           // TODO: 周辺施設が検索できなかった場合どうするか検討
@@ -126,14 +127,6 @@ export class MapRouteSearchComponent {
 
   openInfoWindow(marker: MapMarker): void {
     this.infoWindow.open(marker);
-  }
-
-  onSelectionChange(): void {
-    this.store.dispatch(
-      TripigActions.setSelectedList({
-        selectedList: this.suggestList.filter(s => s.selected === true)
-      })
-    );
   }
 
   private calcDistAndDura(result: google.maps.DirectionsResult): void {

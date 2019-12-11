@@ -49,7 +49,7 @@ import { MapRouteResultModule } from 'src/app/parts/dialog/map/map-route-result/
       maxAge: 25,
       logOnly: environment.production
     }),
-    MapRouteResultModule
+    MapRouteResultModule,
   ],
   providers: [
     StatusBar,

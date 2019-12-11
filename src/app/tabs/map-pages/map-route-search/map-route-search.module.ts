@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { MaterialModule } from 'src/app/material/material.module';
 import { MapRouteSearchComponent } from './map-route-search.component';
+import { SuggestListModule } from 'src/app/parts/suggest-list/suggest-list.module';
 
 @NgModule({
   declarations: [MapRouteSearchComponent],
@@ -13,7 +14,8 @@ import { MapRouteSearchComponent } from './map-route-search.component';
     FormsModule,
     RouterModule.forChild([{ path: '', component: MapRouteSearchComponent }]),
     GoogleMapsModule,
-    MaterialModule
+    MaterialModule,
+    SuggestListModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA

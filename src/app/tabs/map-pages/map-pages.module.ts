@@ -6,7 +6,7 @@ import { MapPagesRoutingModule } from './map-pages-routing.module';
   declarations: [],
   imports: [
     CommonModule,
-    MapPagesRoutingModule
+    MapPagesRoutingModule,
   ]
 })
 export class MapPagesModule { }

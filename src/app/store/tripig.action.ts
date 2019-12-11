@@ -11,3 +11,8 @@ export const setSelectedList = createAction(
   '[Tripig] setSelectedList',
   props<{ selectedList: Place[]; }>()
 );
+
+export const setSuggestList = createAction(
+  '[Tripig] setSuggestList',
+  props<{ suggestList: Place[]; }>()
+);

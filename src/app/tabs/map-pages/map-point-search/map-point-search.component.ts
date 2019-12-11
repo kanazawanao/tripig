@@ -10,7 +10,7 @@ import * as TripigSelector from 'src/app/store/tripig.selector';
 import { Direction } from 'src/app/models/direction.model';
 import { Place } from 'src/app/models/place.model';
 import { MapService } from 'src/app/services/map.service';
-import { Category, CATEGORIES } from 'src/app/parts/category.class';
+import { Category } from 'src/app/parts/category.class';
 
 @Component({
   selector: 'app-map-point-search',
@@ -20,7 +20,6 @@ import { Category, CATEGORIES } from 'src/app/parts/category.class';
 export class MapPointSearchComponent {
   @ViewChild(GoogleMap) map!: GoogleMap;
   @ViewChild(MapInfoWindow) infoWindow!: MapInfoWindow;
-  googleSearchUrl = 'https://www.google.com/search?q=';
   private onDestroy$ = new Subject();
   direction$: Observable<Direction> = this.store.select(
     TripigSelector.getDirection
@@ -29,8 +28,6 @@ export class MapPointSearchComponent {
     TripigSelector.getSelectedList
   );
   direction?: Direction;
-  categories: Category[] = CATEGORIES;
-  suggestList: Place[] = [];
   selectedList: Place[] = [];
   min = 1;
   max = 50000;
@@ -100,9 +97,12 @@ export class MapPointSearchComponent {
     this.mapService
       .nearbySearch(placeService, request)
       .then(results => {
-        this.suggestList = [...this.selectedList, ...results].filter((member, index, self) => {
+        const suggestList = [...this.selectedList, ...results].filter((member, index, self) => {
           return self.findIndex(s => member.placeId  === s.placeId) === index;
         });
+        this.store.dispatch(
+          TripigActions.setSuggestList({ suggestList })
+        );
       })
       .catch(() => {
         // TODO: 周辺施設が検索できなかった場合どうするか検討
@@ -113,11 +113,4 @@ export class MapPointSearchComponent {
     this.infoWindow.open(marker);
   }
 
-  onSelectionChange(): void {
-    this.store.dispatch(
-      TripigActions.setSelectedList({
-        selectedList: this.suggestList.filter(s => s.selected === true)
-      })
-    );
-  }
 }
