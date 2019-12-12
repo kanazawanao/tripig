@@ -70,10 +70,10 @@ export class MapPointSearchComponent {
 
   private setMap(direction: Direction): void {
     this.mapService
-      .geocode(direction.destination)
+      .geocode({address: direction.destination})
       .then(result => {
-        this.center = result;
-        this.searchPlace(result, direction);
+        this.center = result.geometry.location;
+        this.searchPlace(result.geometry.location, direction);
       })
       .catch(() => {
         this.location.back();

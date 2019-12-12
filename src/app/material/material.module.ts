@@ -11,6 +11,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatTabsModule } from '@angular/material/tabs';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 const modules = [
   MatButtonModule,
@@ -23,7 +24,8 @@ const modules = [
   MatListModule,
   MatSliderModule,
   MatSelectModule,
-  MatTabsModule
+  MatTabsModule,
+  DragDropModule
 ];
 
 @NgModule({

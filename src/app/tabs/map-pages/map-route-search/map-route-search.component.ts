@@ -71,13 +71,13 @@ export class MapRouteSearchComponent {
   }
 
   private setRouteMap(direction: Direction): void {
-    this.mapService.geocode(direction.origin).then(result => {
-      this.originLatLng = result;
+    this.mapService.geocode({address: direction.origin}).then(result => {
+      this.originLatLng = result.geometry.location;
     }).catch(() => {
       this.location.back();
     });
-    this.mapService.geocode(direction.destination).then(result => {
-      this.destinationLatLng = result;
+    this.mapService.geocode({address: direction.destination}).then(result => {
+      this.destinationLatLng = result.geometry.location;
     }).catch(() => {
       this.location.back();
     });

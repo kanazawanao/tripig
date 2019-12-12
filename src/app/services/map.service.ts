@@ -13,10 +13,10 @@ export class MapService {
     private geolocation: Geolocation,
   ) { }
 
-  getCurrentPosition(): Promise<google.maps.LatLng> {
+  getCurrentPosition(): Promise<google.maps.GeocoderResult> {
     return new Promise((resolve, reject) => {
       this.geolocation.getCurrentPosition().then(position => {
-        resolve(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
+        resolve(this.geocode({location: (new google.maps.LatLng(position.coords.latitude, position.coords.longitude))}));
       }).catch(error => {
         console.log('Error getting location', error);
         reject(error);
@@ -24,12 +24,12 @@ export class MapService {
     });
   }
 
-  geocode(placeName: string): Promise<google.maps.LatLng> {
+  geocode(request: google.maps.GeocoderRequest): Promise<google.maps.GeocoderResult> {
     const geocoder = new google.maps.Geocoder();
     return new Promise((resolve, reject) => {
-      geocoder.geocode({ address: placeName }, (result, status) => {
+      geocoder.geocode(request, (result, status) => {
         if (this.geocodeResultCheck(status)) {
-          resolve(result[0].geometry.location);
+          resolve(result[0]);
         } else {
           reject(status);
         }

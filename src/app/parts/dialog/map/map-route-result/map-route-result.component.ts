@@ -10,6 +10,7 @@ import * as TripigSelector from 'src/app/store/tripig.selector';
 import { Direction } from 'src/app/models/direction.model';
 import { Place } from 'src/app/models/place.model';
 import { MapService } from 'src/app/services/map.service';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-map-route-result',
@@ -44,6 +45,7 @@ export class MapRouteResultComponent {
   }
   waypoints: Place[] = [];
   origin: Place = {selected: true};
+  resultList: Place[] = [];
   get originUrlValue(): string {
     return this.origin.location
       ? this.origin.location.toUrlValue()
@@ -101,18 +103,22 @@ export class MapRouteResultComponent {
         const currentPosition: Place = {
           name: '現在地',
           selected: true,
-          location: result,
+          location: result.geometry.location,
+          placeId: result.place_id
         };
         this.origin = currentPosition;
+        this.resultList.push(currentPosition);
         this.setResultRoute(direction);
       });
     } else {
-      this.mapService.geocode(direction.origin).then(result => {
+      this.mapService.geocode({address: direction.origin}).then(result => {
         this.origin = {
           selected: true,
-          location: result,
+          location: result.geometry.location,
+          placeId: result.place_id,
           name: direction.origin
         };
+        this.resultList.push(this.origin);
         this.setResultRoute(direction);
       });
     }
@@ -127,6 +133,7 @@ export class MapRouteResultComponent {
           this.directionsRenderer.setMap(this.map.data.getMap());
           this.directionsRenderer.setDirections(result);
           result.routes[0].waypoint_order.forEach(index => {
+            this.resultList.push(waypoints[index]);
             this.waypoints.push(waypoints[index]);
           });
           this.calcDistAndDura(result);
@@ -134,6 +141,7 @@ export class MapRouteResultComponent {
             name: direction.destination,
             selected: true,
           };
+          this.resultList.push(destPosition);
           this.destination = destPosition;
         }).catch(() => {
           this.dismissModal();
@@ -176,5 +184,13 @@ export class MapRouteResultComponent {
       }
     });
     return waypoints;
+  }
+
+  drop(event: CdkDragDrop<string[]>) {
+    moveItemInArray(this.resultList, event.previousIndex, event.currentIndex);
+  }
+
+  delete(place: Place) {
+    this.resultList = this.resultList.filter(r => r.placeId !== place.placeId);
   }
 }

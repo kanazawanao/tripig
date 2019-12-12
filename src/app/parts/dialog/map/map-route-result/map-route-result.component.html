@@ -17,17 +17,14 @@
     [center]="center"
     [zoom]="zoom">
   </google-map>
-  <mat-list>
-    <mat-list-item>
-      {{ origin.name }}
-    </mat-list-item>
-    <mat-list-item *ngFor="let point of waypoints">
-      {{ point.name }}
-    </mat-list-item>
-    <mat-list-item>
-      {{ destination.name }}
-    </mat-list-item>
-  </mat-list>
+  <div cdkDropList class="list" (cdkDropListDropped)="drop($event)">
+    <div class="box" *ngFor="let result of resultList" cdkDrag>
+      {{ result.name }}
+      <button mat-button (click)="delete(result)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  </div>
   <p>
     距離：{{ distance }}
   </p>
