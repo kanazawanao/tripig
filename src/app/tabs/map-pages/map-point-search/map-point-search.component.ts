@@ -59,9 +59,13 @@ export class MapPointSearchComponent {
 
   ionViewDidLeave(): void {
     this.onDestroy$.next();
-    this.store.dispatch(
-      TripigActions.setSelectedList({ selectedList: this.selectedList })
-    );
+  }
+
+  search(category: Category) {
+    if (this.direction) {
+      this.direction.category = category;
+      this.setMap(this.direction);
+    }
   }
 
   private setMap(direction: Direction): void {
@@ -76,13 +80,6 @@ export class MapPointSearchComponent {
       });
   }
 
-  search(category: Category) {
-    if (this.direction) {
-      this.direction.category = category;
-      this.setMap(this.direction);
-    }
-  }
-
   private searchPlace(latLng: google.maps.LatLng, direction: Direction): void {
     const placeService = new google.maps.places.PlacesService(
       this.map.data.getMap()
@@ -93,7 +90,6 @@ export class MapPointSearchComponent {
       radius: direction.radius,
       keyword: `${direction.destination} ${direction.category.value}`
     };
-
     this.mapService
       .nearbySearch(placeService, request)
       .then(results => {

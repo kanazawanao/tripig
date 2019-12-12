@@ -1,9 +1,7 @@
 import { Component, ViewChild, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
-import { Location } from '@angular/common';
 import { GoogleMap } from '@angular/google-maps';
-import { ModalController, AlertController } from '@ionic/angular';
-import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { ModalController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -11,6 +9,7 @@ import * as TripigState from 'src/app/store/';
 import * as TripigSelector from 'src/app/store/tripig.selector';
 import { Direction } from 'src/app/models/direction.model';
 import { Place } from 'src/app/models/place.model';
+import { MapService } from 'src/app/services/map.service';
 
 @Component({
   selector: 'app-map-route-result',
@@ -19,23 +18,37 @@ import { Place } from 'src/app/models/place.model';
 })
 export class MapRouteResultComponent {
   @ViewChild(GoogleMap) map!: GoogleMap;
-  direction$: Observable<Direction> = this.store.select(
+  private onDestroy$ = new Subject();
+  private directionsRenderer = new google.maps.DirectionsRenderer();
+  private direction$: Observable<Direction> = this.store.select(
     TripigSelector.getDirection
   );
-  selectedList$: Observable<Place[]> = this.store.select(
+  private direction?: Direction;
+  get travelmode(): string {
+    return this.direction
+      ? this.direction.travelMode.toString()
+      : '';
+  }
+  private selectedList$: Observable<Place[]> = this.store.select(
     TripigSelector.getSelectedList
   );
   get googleMapLinks(): string {
     return 'https://www.google.com/maps/dir/?api=1' +
           this.waypointsForMap +
-          '&travelmode=driving';
+          '&travelmode=' + this.travelmode;
   }
-  private onDestroy$ = new Subject();
   get waypointsForMap(): string {
-    return '&destination=' + this.destination.name + '&waypoints=' + this.waypoints.map(p => p.name).join(' | ');
+    return '&origin=' + this.originUrlValue
+      + '&destination=' + this.destination.name
+      + '&waypoints=' + this.waypoints.map(p => p.name).join(' | ');
   }
   waypoints: Place[] = [];
   origin: Place = {selected: true};
+  get originUrlValue(): string {
+    return this.origin.location
+      ? this.origin.location.toUrlValue()
+      : '';
+  }
   destination: Place = {selected: true};
   center: google.maps.LatLng = new google.maps.LatLng(37.421995, -122.084092);
   zoom = 16;
@@ -51,19 +64,18 @@ export class MapRouteResultComponent {
   }
 
   constructor(
-    private location: Location,
     private modalCtrl: ModalController,
     private router: Router,
     private store: Store<TripigState.State>,
-    private alertController: AlertController,
     private zone: NgZone,
-    private geolocation: Geolocation
+    private mapService: MapService
   ) {}
 
   ionViewDidEnter(): void {
     this.direction$
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(direction => {
+        this.direction = direction;
         this.zone.run(() => {
           this.setRouteMap(direction);
         });
@@ -84,57 +96,57 @@ export class MapRouteResultComponent {
   }
 
   private setRouteMap(direction: Direction): void {
-    const directionService = new google.maps.DirectionsService();
-    const directionsRenderer = new google.maps.DirectionsRenderer();
-    let latlng: google.maps.LatLng;
-    this.geolocation
-      .getCurrentPosition()
-      .then(position => {
-        latlng = new google.maps.LatLng(
-          position.coords.latitude,
-          position.coords.longitude
-        );
+    if (direction.origin === '') {
+      this.mapService.getCurrentPosition().then(result => {
         const currentPosition: Place = {
           name: '現在地',
           selected: true,
-          location: latlng,
+          location: result,
         };
         this.origin = currentPosition;
-        this.selectedList$
-          .pipe(takeUntil(this.onDestroy$))
-          .subscribe(waypoints => {
-            const request: google.maps.DirectionsRequest = this.CreateDirectionsRequest(latlng, direction, waypoints);
-            directionService.route(request, (result, status) => {
-              if (this.routeResultCheck(status)) {
-                directionsRenderer.setMap(this.map.data.getMap());
-                directionsRenderer.setDirections(result);
-                result.routes[0].waypoint_order.forEach(index => {
-                  this.waypoints.push(waypoints[index]);
-                });
-                this.calcDistAndDura(result);
-                const destPosition: Place = {
-                  name: direction.destination,
-                  selected: true,
-                };
-                this.destination = destPosition;
-              } else {
-                this.location.back();
-              }
-            });
+        this.setResultRoute(direction);
+      });
+    } else {
+      this.mapService.geocode(direction.origin).then(result => {
+        this.origin = {
+          selected: true,
+          location: result,
+          name: direction.origin
+        };
+        this.setResultRoute(direction);
+      });
+    }
+  }
+
+  private setResultRoute(direction: Direction) {
+    this.selectedList$
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(waypoints => {
+        const request: google.maps.DirectionsRequest = this.CreateDirectionsRequest(direction, waypoints);
+        this.mapService.route(request).then(result => {
+          this.directionsRenderer.setMap(this.map.data.getMap());
+          this.directionsRenderer.setDirections(result);
+          result.routes[0].waypoint_order.forEach(index => {
+            this.waypoints.push(waypoints[index]);
           });
-      })
-      .catch(error => {
-        console.log('Error getting location', error);
+          this.calcDistAndDura(result);
+          const destPosition: Place = {
+            name: direction.destination,
+            selected: true,
+          };
+          this.destination = destPosition;
+        }).catch(() => {
+          this.dismissModal();
+        });
       });
   }
 
   private CreateDirectionsRequest(
-    latlng: google.maps.LatLng,
     direction: Direction,
-    waypoints: Place[]
+    waypoints: Place[],
   ): google.maps.DirectionsRequest {
     return {
-      origin: latlng,
+      origin: this.origin.location,
       destination: direction.destination,
       waypoints: this.createWaypoints(waypoints),
       travelMode: direction.travelMode,
@@ -149,28 +161,6 @@ export class MapRouteResultComponent {
       this.dist += leg.distance.value;
       this.dura += leg.duration.value;
     });
-  }
-
-  private routeResultCheck(status: google.maps.DirectionsStatus): boolean {
-    if (status === google.maps.DirectionsStatus.OK) {
-      return true;
-    } else if (status === google.maps.DirectionsStatus.ZERO_RESULTS) {
-      this.presentAlert('ルートが見つかりませんでした。');
-    } else if (status === google.maps.DirectionsStatus.NOT_FOUND) {
-      this.presentAlert('入力された地点を検索することができませんでした。');
-    }
-    return false;
-  }
-
-  private async presentAlert(message: string) {
-    const alert = await this.alertController.create({
-      header: 'Alert',
-      subHeader: '検索に失敗しました',
-      message,
-      buttons: ['OK']
-    });
-
-    await alert.present();
   }
 
   private createWaypoints(

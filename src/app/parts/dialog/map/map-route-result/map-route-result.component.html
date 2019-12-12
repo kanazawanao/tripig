@@ -38,7 +38,11 @@
     <!--  TODO: ログイン時のみ実行可能にする。ログインしてなかったらログインボタン表示する -->
     <button mat-button (click)="regist()" aria-label="regist">OK</button>
   </p>
-  <a matSuffix [href]="googleMapLinks">
+  <a
+    matSuffix
+    [href]="googleMapLinks"
+    target="_blank"
+    rel="noopener noreferrer">
     <mat-icon>map</mat-icon>
   </a>
   

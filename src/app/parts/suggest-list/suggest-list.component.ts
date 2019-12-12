@@ -53,15 +53,18 @@ export class SuggestListComponent implements OnInit, OnDestroy {
     this.suggestList$
       .pipe(
         takeUntil(this.onDestroy$),
-        map(suggest => {
-          suggest.forEach(s => {
+        map(suggestList => {
+          suggestList.forEach(s => {
             if (s.placeId === place.placeId) {
               s.selected = !s.selected;
             }
           });
-          return suggest;
+          return suggestList;
         })
       ).subscribe(suggestList => {
+        this.store.dispatch(
+          TripigActions.setSuggestList({suggestList})
+        );
         this.store.dispatch(
           TripigActions.setSelectedList({
             selectedList: suggestList.filter(s => s.selected === true)

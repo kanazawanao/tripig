@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AlertController } from '@ionic/angular';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { Place } from '../models/place.model';
 
 @Injectable({
@@ -8,8 +9,20 @@ import { Place } from '../models/place.model';
 export class MapService {
 
   constructor(
-    private alertController: AlertController
+    private alertController: AlertController,
+    private geolocation: Geolocation,
   ) { }
+
+  getCurrentPosition(): Promise<google.maps.LatLng> {
+    return new Promise((resolve, reject) => {
+      this.geolocation.getCurrentPosition().then(position => {
+        resolve(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
+      }).catch(error => {
+        console.log('Error getting location', error);
+        reject(error);
+      });
+    });
+  }
 
   geocode(placeName: string): Promise<google.maps.LatLng> {
     const geocoder = new google.maps.Geocoder();
