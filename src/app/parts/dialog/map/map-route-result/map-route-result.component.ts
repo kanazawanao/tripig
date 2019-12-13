@@ -203,6 +203,11 @@ export class MapRouteResultComponent {
     this.setRoute();
   }
 
+  delete(place: Place) {
+    this.resultList = this.resultList.filter(r => r.placeId !== place.placeId);
+    this.setRoute();
+  }
+
   private setRoute() {
     this.origin = this.resultList.shift();
     this.destination = this.resultList.pop();
@@ -229,8 +234,5 @@ export class MapRouteResultComponent {
     }).catch(() => {
       this.dismissModal();
     });
-  }
-  delete(place: Place) {
-    this.resultList = this.resultList.filter(r => r.placeId !== place.placeId);
   }
 }

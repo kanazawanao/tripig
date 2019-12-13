@@ -47,3 +47,10 @@
 .list.cdk-drop-list-dragging .box:not(.cdk-drag-placeholder) {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
+
+.handle {
+  color: #ccc;
+  cursor: move;
+  width: 24px;
+  height: 24px;
+}
