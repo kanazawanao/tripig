@@ -6,7 +6,7 @@ export interface Place {
   selected: boolean;
   icon?: string;
   url?: string;
-  photos?: string[];
+  photos?: google.maps.places.PlacePhoto[];
   location?: google.maps.LatLng;
   placeId?: string;
 }

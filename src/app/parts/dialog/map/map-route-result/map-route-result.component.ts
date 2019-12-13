@@ -40,18 +40,27 @@ export class MapRouteResultComponent {
   }
   get waypointsForMap(): string {
     return '&origin=' + this.originUrlValue
-      + '&destination=' + this.destination.name
+      + '&destination=' + this.destinationName
       + '&waypoints=' + this.waypoints.map(p => p.name).join(' | ');
   }
   waypoints: Place[] = [];
-  origin: Place = {selected: true};
-  resultList: Place[] = [];
-  get originUrlValue(): string {
-    return this.origin.location
-      ? this.origin.location.toUrlValue()
+  origin?: Place = {selected: true};
+  destination?: Place = {selected: true};
+  get destinationName(): string {
+    return this.destination
+      ? this.destination.name
+        ? this.destination.name
+        : ''
       : '';
   }
-  destination: Place = {selected: true};
+  resultList: Place[] = [];
+  get originUrlValue(): string {
+    return this.origin
+      ? this.origin.location
+        ? this.origin.location.toUrlValue()
+        : ''
+      : '';
+  }
   center: google.maps.LatLng = new google.maps.LatLng(37.421995, -122.084092);
   zoom = 16;
 
@@ -125,6 +134,11 @@ export class MapRouteResultComponent {
   }
 
   private setResultRoute(direction: Direction) {
+    const destPosition: Place = {
+      name: direction.destination,
+      selected: true,
+    };
+    this.destination = destPosition;
     this.selectedList$
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(waypoints => {
@@ -137,12 +151,9 @@ export class MapRouteResultComponent {
             this.waypoints.push(waypoints[index]);
           });
           this.calcDistAndDura(result);
-          const destPosition: Place = {
-            name: direction.destination,
-            selected: true,
-          };
-          this.resultList.push(destPosition);
-          this.destination = destPosition;
+          if (this.destination) {
+            this.resultList.push(this.destination);
+          }
         }).catch(() => {
           this.dismissModal();
         });
@@ -154,8 +165,8 @@ export class MapRouteResultComponent {
     waypoints: Place[],
   ): google.maps.DirectionsRequest {
     return {
-      origin: this.origin.location,
-      destination: direction.destination,
+      origin: this.origin ? this.origin.location : undefined,
+      destination: this.destination ? this.destination.name : undefined,
       waypoints: this.createWaypoints(waypoints),
       travelMode: direction.travelMode,
       optimizeWaypoints: true
@@ -188,8 +199,37 @@ export class MapRouteResultComponent {
 
   drop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.resultList, event.previousIndex, event.currentIndex);
+    console.log(this.resultList);
+    this.setRoute();
   }
 
+  private setRoute() {
+    this.origin = this.resultList.shift();
+    this.destination = this.resultList.pop();
+    this.waypoints = [];
+    this.resultList.forEach(r => {
+      this.waypoints.push(r);
+    })
+    if(this.origin){
+      this.resultList.unshift(this.origin);
+    }
+    if(this.destination){
+      this.resultList.push(this.destination);
+    }
+    const request: google.maps.DirectionsRequest = {
+      origin: this.origin ? this.origin.location : undefined,
+      destination: this.destination ? this.destination.name : undefined,
+      waypoints: this.createWaypoints(this.waypoints),
+      travelMode: this.direction ? this.direction.travelMode : undefined
+    };
+    this.mapService.route(request).then(result => {
+      this.directionsRenderer.setMap(this.map.data.getMap());
+      this.directionsRenderer.setDirections(result);
+      this.calcDistAndDura(result);
+    }).catch(() => {
+      this.dismissModal();
+    });
+  }
   delete(place: Place) {
     this.resultList = this.resultList.filter(r => r.placeId !== place.placeId);
   }

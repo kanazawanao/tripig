@@ -32,12 +32,7 @@
       </mat-panel-title>
     </mat-expansion-panel-header>
     <div *ngFor="let photo of suggest.photos">
-      <img [src]="photo" />
+      <img [src]="photo.getUrl({maxHeight: 500, maxWidth: 500})" />
     </div>
-    <mat-list>
-      <mat-list-item *ngFor="let period of suggest.openingHours?.periods">
-        {{period.open}}～{{period.close}}
-      </mat-list-item>
-    </mat-list>
   </mat-expansion-panel>
 </mat-accordion>

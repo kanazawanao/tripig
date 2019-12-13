@@ -72,47 +72,38 @@ export class MapService {
   private routeResultCheck(status: google.maps.DirectionsStatus): boolean {
     if (status === google.maps.DirectionsStatus.OK) {
       return true;
-    } else if (status === google.maps.DirectionsStatus.ZERO_RESULTS) {
-      this.presentAlert('ルートが見つかりませんでした。');
+    } else if (status === google.maps.DirectionsStatus.INVALID_REQUEST) {
+      this.presentAlert('リクエストが無効です。');
+    } else if (status === google.maps.DirectionsStatus.MAX_WAYPOINTS_EXCEEDED) {
+      this.presentAlert('経由地点が多すぎて検索することができませんでした。最大8箇所までに絞り込んでください。');
     } else if (status === google.maps.DirectionsStatus.NOT_FOUND) {
       this.presentAlert('入力された地点を検索することができませんでした。');
+    } else if (status === google.maps.DirectionsStatus.OVER_QUERY_LIMIT) {
+      this.presentAlert('時間をおいて再度やり直してください。');
+    } else if (status === google.maps.DirectionsStatus.REQUEST_DENIED) {
+      this.presentAlert('Mapの利用が許可されていません。');
+    } else if (status === google.maps.DirectionsStatus.UNKNOWN_ERROR) {
+      this.presentAlert('サーバーエラーが発生しました。再度やり直してください。');
+    } else if (status === google.maps.DirectionsStatus.ZERO_RESULTS) {
+      this.presentAlert('ルートが見つかりませんでした。');
     }
     return false;
   }
 
   nearbySearch(
     service: google.maps.places.PlacesService,
-    request: google.maps.places.PlaceSearchRequest
+    request: google.maps.places.PlaceSearchRequest,
   ): Promise<Place[]> {
     return new Promise((resolve, reject) => {
       service.nearbySearch(request, (results, status) => {
         if (this.nearbySearchResultCheck(status)) {
+          console.log(results);
           resolve(this.ToPlaceArray(results));
         } else {
           reject(status);
         }
       });
     });
-  }
-
-  private ToPlaceArray(results: google.maps.places.PlaceResult[]): Place[] {
-    const placeList: Place[] = [];
-    const photoOptions: google.maps.places.PhotoOptions = {
-      maxHeight: 500,
-      maxWidth: 500
-    };
-    results.forEach(r => {
-      placeList.push({
-        icon: r.icon,
-        name: r.name,
-        photos: r.photos ? r.photos.map(p => p.getUrl(photoOptions)) : [],
-        selected: false,
-        url: r.url,
-        location: r.geometry ? r.geometry.location : undefined,
-        placeId: r.place_id,
-      });
-    });
-    return placeList;
   }
 
   private nearbySearchResultCheck(
@@ -135,6 +126,21 @@ export class MapService {
       this.presentAlert('お探しの周辺施設が見つかりませんでした。');
     }
     return false;
+  }
+
+  private ToPlaceArray(results: google.maps.places.PlaceResult[]): Place[] {
+    const placeList: Place[] = [];
+    results.forEach(r => {
+      placeList.push({
+        icon: r.icon,
+        name: r.name,
+        photos: r.photos,
+        selected: false,
+        location: r.geometry ? r.geometry.location : undefined,
+        placeId: r.place_id,
+      });
+    });
+    return placeList;
   }
 
   private async presentAlert(message: string) {
