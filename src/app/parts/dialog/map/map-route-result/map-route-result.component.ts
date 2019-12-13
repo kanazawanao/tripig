@@ -209,11 +209,11 @@ export class MapRouteResultComponent {
     this.waypoints = [];
     this.resultList.forEach(r => {
       this.waypoints.push(r);
-    })
-    if(this.origin){
+    });
+    if (this.origin) {
       this.resultList.unshift(this.origin);
     }
-    if(this.destination){
+    if (this.destination) {
       this.resultList.push(this.destination);
     }
     const request: google.maps.DirectionsRequest = {
