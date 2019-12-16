@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { TabsPage } from './tabs.component.page';
+import { AuthGuard } from '../guard/auth.guard';
 
 const routes: Routes = [
   {
@@ -35,7 +36,8 @@ const routes: Routes = [
             loadChildren: () =>
               import('./tab-pages/registered-routes/registered-routes.module').then(m => m.RegisteredRoutesModule)
           }
-        ]
+        ],
+        canActivate: [AuthGuard]
       },
       {
         path: 'search',
@@ -44,6 +46,16 @@ const routes: Routes = [
             path: '',
             loadChildren: () =>
               import('./map-pages/map-pages.module').then(m => m.MapPagesModule)
+          }
+        ]
+      },
+      {
+        path: 'pages',
+        children: [
+          {
+            path: '',
+            loadChildren: () =>
+              import('../pages/pages.module').then(m => m.PagesModule)
           }
         ]
       },

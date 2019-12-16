@@ -7,6 +7,8 @@ import { switchMap } from 'rxjs/operators';
 import * as firebase from 'firebase/app';
 import { User } from '../models/user.model';
 import { UserService } from './user.service';
+import { environment } from 'src/environments/environment';
+import { GooglePlus } from '@ionic-native/google-plus/ngx';
 
 @Injectable({
   providedIn: 'root'
@@ -19,11 +21,13 @@ export class AuthService {
     private router: Router,
     private afAuth: AngularFireAuth,
     private afStore: AngularFirestore,
-    private userService: UserService
+    private userService: UserService,
+    private gplus: GooglePlus,
   ) {
     this.user = this.afAuth.authState.pipe(
       switchMap(user => {
         if (user) {
+          console.log(user);
           this.userId = user.uid;
           this.loggedIn = true;
           return this.afStore.doc<User>(`users/${user.uid}`).valueChanges();
@@ -49,6 +53,22 @@ export class AuthService {
     return this.oAuthSignIn(provider);
   }
 
+  async nativeGoogleLogin(): Promise<any> {
+    try {
+      const gplusUser = await this.gplus.login({
+        webClientId: environment.webClientId,
+        offline: true,
+        scopes: 'profile email'
+      });
+
+      return await this.afAuth.auth.signInWithCredential(
+        firebase.auth.GoogleAuthProvider.credential(gplusUser.idToken)
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   facebookSignIn() {
     const provider = new firebase.auth.FacebookAuthProvider();
     return this.oAuthSignIn(provider);
@@ -56,7 +76,7 @@ export class AuthService {
 
   signOut() {
     this.afAuth.auth.signOut().then(() => {
-      this.router.navigate(['/signIn']);
+      this.router.navigate(['']);
     });
   }
 

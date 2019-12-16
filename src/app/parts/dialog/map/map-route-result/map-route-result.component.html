@@ -37,10 +37,10 @@
   <p>
     時間：{{ duration }}
   </p>
-  <p>
-    <!--  TODO: ログイン時のみ実行可能にする。ログインしてなかったらログインボタン表示する -->
+  <!-- TODO: ログイン時のみ実行可能にする。ログインしてなかったらログインボタン表示する -->
+  <div *ngIf="loggedIn">
     <button mat-button (click)="regist()" aria-label="regist">OK</button>
-  </p>
+  </div>
   <a
     matSuffix
     [href]="googleMapLinks"

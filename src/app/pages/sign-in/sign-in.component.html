@@ -1,0 +1,30 @@
+<ion-content>
+  <h2>登録またはログイン</h2>
+  <div>
+    <button mat-button aria-label="facebookSignIn">
+      <ion-icon name="logo-facebook"></ion-icon>
+      FACEBOOKでログイン
+    </button>
+  </div>
+  <div>
+    <button
+    mat-button
+    type="button"
+    (click)="googleSignIn()"
+    aria-label="googleSignIn">
+      <ion-icon name="logo-google"></ion-icon>
+      GOOGLEでログイン
+    </button>
+  </div>
+  <div>
+    <button mat-button aria-label="mailSignIn">
+      メールでサインアップする
+    </button>
+  </div>
+  <div>
+    すでにアカウントをお持ちですか？
+    <button mat-button aria-label="signIn">
+      ログイン
+    </button>
+  </div>
+</ion-content>

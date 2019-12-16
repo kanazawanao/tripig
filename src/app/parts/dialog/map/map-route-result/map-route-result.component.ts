@@ -1,16 +1,17 @@
-import { Component, ViewChild, NgZone } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { GoogleMap } from '@angular/google-maps';
 import { ModalController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, take, map, tap } from 'rxjs/operators';
 import * as TripigState from 'src/app/store/';
 import * as TripigSelector from 'src/app/store/tripig.selector';
 import { Direction } from 'src/app/models/direction.model';
 import { Place } from 'src/app/models/place.model';
 import { MapService } from 'src/app/services/map.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-map-route-result',
@@ -63,7 +64,7 @@ export class MapRouteResultComponent {
   }
   center: google.maps.LatLng = new google.maps.LatLng(37.421995, -122.084092);
   zoom = 16;
-
+  loggedIn = false;
   private dist = 0;
   get distance(): string {
     return `約${Math.floor(this.dist / 1000)}km`;
@@ -78,18 +79,23 @@ export class MapRouteResultComponent {
     private modalCtrl: ModalController,
     private router: Router,
     private store: Store<TripigState.State>,
-    private zone: NgZone,
-    private mapService: MapService
-  ) {}
+    private mapService: MapService,
+    private auth: AuthService
+  ) { }
 
   ionViewDidEnter(): void {
+    this.auth.user.pipe(
+      take(1),
+      map(user => !!user),
+      tap(loggedIn => {
+        this.loggedIn = loggedIn;
+      })
+    );
     this.direction$
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(direction => {
         this.direction = direction;
-        this.zone.run(() => {
-          this.setRouteMap(direction);
-        });
+        this.setRouteMap(direction);
       });
   }
 

@@ -97,7 +97,6 @@ export class MapService {
     return new Promise((resolve, reject) => {
       service.nearbySearch(request, (results, status) => {
         if (this.nearbySearchResultCheck(status)) {
-          console.log(results);
           resolve(this.ToPlaceArray(results));
         } else {
           reject(status);

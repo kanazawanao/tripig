@@ -9,6 +9,7 @@ import * as TripigSelector from 'src/app/store/tripig.selector';
 import { MapRouteResultComponent } from './parts/dialog/map/map-route-result/map-route-result.component';
 import { Observable } from 'rxjs';
 import { Place } from './models/place.model';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -26,6 +27,7 @@ export class AppComponent implements OnInit {
     private statusBar: StatusBar,
     private modalCtrl: ModalController,
     private store: Store<TripigState.State>,
+    private auth: AuthService,
   ) {
     this.initializeApp();
   }
@@ -48,5 +50,9 @@ export class AppComponent implements OnInit {
       component: MapRouteResultComponent
     });
     return await modal.present();
+  }
+
+  signOut() {
+    this.auth.signOut();
   }
 }
