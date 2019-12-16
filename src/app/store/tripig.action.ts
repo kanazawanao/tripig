@@ -16,3 +16,8 @@ export const setSuggestList = createAction(
   '[Tripig] setSuggestList',
   props<{ suggestList: Place[]; }>()
 );
+
+export const setLastSelectedPlace = createAction(
+  '[Tripig] setLastSelectedPlace',
+  props<{ lastSelectedPlace: Place; }>()
+);

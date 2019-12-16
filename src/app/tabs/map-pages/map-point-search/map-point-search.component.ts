@@ -27,6 +27,9 @@ export class MapPointSearchComponent {
   selectedList$: Observable<Place[]> = this.store.select(
     TripigSelector.getSelectedList
   );
+  lastSelectedPlace$: Observable<Place> = this.store.select(
+    TripigSelector.getLastSelectedPlace
+  );
   direction?: Direction;
   selectedList: Place[] = [];
   min = 1;
@@ -44,6 +47,13 @@ export class MapPointSearchComponent {
   ) {}
 
   ionViewDidEnter(): void {
+    this.lastSelectedPlace$
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(place => {
+        if (place.location) {
+          this.center = place.location;
+        }
+      });
     this.direction$
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(direction => {
@@ -105,7 +115,7 @@ export class MapPointSearchComponent {
       });
   }
 
-  openInfoWindow(marker: MapMarker): void {
+  openInfoWindow(marker: MapMarker) {
     this.infoWindow.open(marker);
   }
 

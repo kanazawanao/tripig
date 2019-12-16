@@ -9,6 +9,7 @@
     "build": "ng build",
     "build:web": "ng run tripig:app-shell:production",
     "build:ios": "ionic cordova build ios --prod --project tripig",
+    "build:android": "ionic cordova build android --prod --project tripig",
     "serve:ionic": "ionic serve --project tripig",
     "test": "ng test",
     "lint": "ng lint",

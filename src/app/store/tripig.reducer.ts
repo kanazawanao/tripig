@@ -7,6 +7,7 @@ export interface State {
   direction: Direction;
   selectedList: Place[];
   suggestList: Place[];
+  lastSelectedPlace: Place;
 }
 
 export const initialState: State = {
@@ -19,6 +20,7 @@ export const initialState: State = {
   },
   selectedList: [],
   suggestList: [],
+  lastSelectedPlace: {selected: true, location: new google.maps.LatLng(37.421995, -122.084092)},
 };
 
 const coreReducer = createReducer(
@@ -40,6 +42,12 @@ const coreReducer = createReducer(
       ...state,
       suggestList
     };
+  }),
+  on(TripigAction.setLastSelectedPlace, (state, { lastSelectedPlace }) => {
+    return {
+      ...state,
+      lastSelectedPlace
+    };
   })
 );
 export function reducer(state: State | undefined, action: Action): State {
@@ -49,3 +57,4 @@ export function reducer(state: State | undefined, action: Action): State {
 export const getDirection = (state: State) => state.direction;
 export const getSelectedList = (state: State) => state.selectedList;
 export const getSuggestList = (state: State) => state.suggestList;
+export const getLastSelectedPlace = (state: State) => state.lastSelectedPlace;

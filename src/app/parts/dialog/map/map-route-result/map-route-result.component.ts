@@ -199,7 +199,6 @@ export class MapRouteResultComponent {
 
   drop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.resultList, event.previousIndex, event.currentIndex);
-    console.log(this.resultList);
     this.setRoute();
   }
 

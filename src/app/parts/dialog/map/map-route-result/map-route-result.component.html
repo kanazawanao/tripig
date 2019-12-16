@@ -1,10 +1,10 @@
 <ion-header translucent>
   <ion-toolbar>
     <ion-title>
-      <button mat-button routerLink="/" aria-label="top">Tripig</button>
+      <button mat-button (click)="dismissModal()" aria-label="top">Tripig</button>
     </ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="dismissModal()">
+      <ion-button (click)="dismissModal()" aria-label="close">
         <mat-icon>close</mat-icon>
       </ion-button>
     </ion-buttons>

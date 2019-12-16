@@ -50,6 +50,9 @@ export class SuggestListComponent implements OnInit, OnDestroy {
   }
 
   onSelectionChange(place: Place): void {
+    this.store.dispatch(
+      TripigActions.setLastSelectedPlace({lastSelectedPlace: place})
+    );
     this.suggestList$
       .pipe(
         takeUntil(this.onDestroy$),
