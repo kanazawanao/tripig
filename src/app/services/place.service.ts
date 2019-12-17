@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestoreCollection, AngularFirestore } from '@angular/fire/firestore';
+import {
+  AngularFirestoreCollection,
+  AngularFirestore
+} from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 import { Course } from '../models/course.models';
@@ -33,7 +36,9 @@ export class PlaceService {
   }
 
   getAllPlace(): Observable<Course[]> {
-    return this.collection.valueChanges();
+    return this.collection
+      .doc(this.userId)
+      .collection<Course>('course')
+      .valueChanges();
   }
-
 }
