@@ -27,7 +27,7 @@ export class AppComponent implements OnInit {
     private statusBar: StatusBar,
     private modalCtrl: ModalController,
     private store: Store<TripigState.State>,
-    private auth: AuthService,
+    public auth: AuthService,
   ) {
     this.initializeApp();
   }

@@ -27,7 +27,6 @@ export class AuthService {
     this.user = this.afAuth.authState.pipe(
       switchMap(user => {
         if (user) {
-          console.log(user);
           this.userId = user.uid;
           this.loggedIn = true;
           return this.afStore.doc<User>(`users/${user.uid}`).valueChanges();
@@ -48,11 +47,6 @@ export class AuthService {
     }
   }
 
-  googleSignIn() {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    return this.oAuthSignIn(provider);
-  }
-
   async nativeGoogleLogin(): Promise<any> {
     try {
       const gplusUser = await this.gplus.login({
@@ -61,23 +55,23 @@ export class AuthService {
         scopes: 'profile email'
       });
 
-      return await this.afAuth.auth.signInWithCredential(
+      const credential = await this.afAuth.auth.signInWithCredential(
         firebase.auth.GoogleAuthProvider.credential(gplusUser.idToken)
       );
+      return this.userService.addUser(this.createUser(credential.user));
     } catch (err) {
       console.log(err);
     }
   }
 
-  facebookSignIn() {
-    const provider = new firebase.auth.FacebookAuthProvider();
+  googleSignIn() {
+    const provider = new firebase.auth.GoogleAuthProvider();
     return this.oAuthSignIn(provider);
   }
 
-  signOut() {
-    this.afAuth.auth.signOut().then(() => {
-      this.router.navigate(['']);
-    });
+  facebookSignIn() {
+    const provider = new firebase.auth.FacebookAuthProvider();
+    return this.oAuthSignIn(provider);
   }
 
   private async oAuthSignIn(provider: firebase.auth.AuthProvider) {
@@ -105,5 +99,11 @@ export class AuthService {
       user.profile = crediential.profile ? crediential.profile : '';
     }
     return user;
+  }
+
+  signOut() {
+    this.afAuth.auth.signOut().then(() => {
+      this.router.navigate(['']);
+    });
   }
 }

@@ -37,10 +37,33 @@
   <p>
     時間：{{ duration }}
   </p>
-  <!-- TODO: ログイン時のみ実行可能にする。ログインしてなかったらログインボタン表示する -->
-  <div *ngIf="loggedIn">
-    <button mat-button (click)="regist()" aria-label="regist">OK</button>
+  <div *ngIf="auth.loggedIn; else loginBlock">
+    <form [formGroup]="registForm">
+      <mat-form-field>
+        <input
+          matInput
+          #courseName
+          type="text"
+          placeholder="TITLE"
+          formControlName="courseName"
+          required>
+      </mat-form-field>
+      <button
+        mat-button
+        (click)="regist()"
+        [disabled]="!registForm.valid"
+        aria-label="regist">
+        Regist
+      </button>
+    </form>
   </div>
+  <ng-template #loginBlock>
+    <button
+      mat-button
+      (click)="toLoginPage()">
+      Login
+    </button>
+  </ng-template>
   <a
     matSuffix
     [href]="googleMapLinks"

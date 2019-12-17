@@ -22,11 +22,11 @@ export class SignInComponent implements OnInit {
     if (this.platform.is('cordova')) {
       // Cordova環境でのみGooglePlusプラグインでログインする
       this.auth.nativeGoogleLogin().then(() => {
-        this.router.navigate(['/']);
+        this.router.navigate(['/tabs/registered']);
       });
     } else {
       this.auth.googleSignIn().then(() => {
-        this.router.navigate(['/']);
+        this.router.navigate(['/tabs/registered']);
       });
     }
   }

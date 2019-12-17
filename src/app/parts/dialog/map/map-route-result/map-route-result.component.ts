@@ -4,14 +4,18 @@ import { GoogleMap } from '@angular/google-maps';
 import { ModalController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
-import { takeUntil, take, map, tap } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import * as TripigState from 'src/app/store/';
 import * as TripigSelector from 'src/app/store/tripig.selector';
+import * as TripigActions from 'src/app/store/tripig.action';
 import { Direction } from 'src/app/models/direction.model';
 import { Place } from 'src/app/models/place.model';
 import { MapService } from 'src/app/services/map.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { AuthService } from 'src/app/services/auth.service';
+import { PlaceService } from 'src/app/services/place.service';
+import { Course } from 'src/app/models/course.models';
+import { FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-map-route-result',
@@ -20,6 +24,13 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class MapRouteResultComponent {
   @ViewChild(GoogleMap) map!: GoogleMap;
+  registForm = this.fb.group({
+    courseName: ['', Validators.required]
+  });
+  courseNameKey = 'courseName';
+  get courseName(): string {
+    return this.registForm.controls[this.courseNameKey].value;
+  }
   private onDestroy$ = new Subject();
   private directionsRenderer = new google.maps.DirectionsRenderer();
   private direction$: Observable<Direction> = this.store.select(
@@ -80,17 +91,13 @@ export class MapRouteResultComponent {
     private router: Router,
     private store: Store<TripigState.State>,
     private mapService: MapService,
-    private auth: AuthService
+    private placeService: PlaceService,
+    private fb: FormBuilder,
+    public auth: AuthService
   ) { }
 
   ionViewDidEnter(): void {
-    this.auth.user.pipe(
-      take(1),
-      map(user => !!user),
-      tap(loggedIn => {
-        this.loggedIn = loggedIn;
-      })
-    );
+    console.log(this.auth.loggedIn);
     this.direction$
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(direction => {
@@ -108,8 +115,25 @@ export class MapRouteResultComponent {
   }
 
   regist(): void {
+    this.placeService.addPlace(this.createCourse());
+    this.store.dispatch(
+      TripigActions.setSelectedList({ selectedList: [] })
+    );
     this.modalCtrl.dismiss();
     this.router.navigate(['/tabs/registered']);
+  }
+
+  private createCourse() {
+    const course: Course = {
+      name: this.courseName,
+      route: []
+    };
+    if (this.origin && this.destination) {
+      course.route.push(this.origin);
+      this.waypoints.forEach(p => course.route.push(p));
+      course.route.push(this.destination);
+    }
+    return course;
   }
 
   private setRouteMap(direction: Direction): void {
@@ -239,5 +263,10 @@ export class MapRouteResultComponent {
     }).catch(() => {
       this.dismissModal();
     });
+  }
+
+  toLoginPage() {
+    this.dismissModal();
+    this.router.navigate(['/tabs/pages/signIn']);
   }
 }

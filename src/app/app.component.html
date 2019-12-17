@@ -8,10 +8,10 @@
           aria-label="top">
           Tripig
         </button>
-        <button
+        <button *ngIf="auth.loggedIn"
           mat-button
           (click)="signOut()">
-          signOut
+          <mat-icon>power_settings_new</mat-icon>
         </button>
       </ion-title>
       <ion-buttons *ngIf="showResultRoute" slot="end">
