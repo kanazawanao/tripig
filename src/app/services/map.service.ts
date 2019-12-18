@@ -137,6 +137,9 @@ export class MapService {
         selected: false,
         location: r.geometry ? r.geometry.location : undefined,
         placeId: r.place_id,
+        rating: r.rating,
+        // HACK: PlaceResultにuser_ratings_totalが定義されていない
+        numberOfReviews: (r as any).user_ratings_total,
       });
     });
     return placeList;

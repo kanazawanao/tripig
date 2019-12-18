@@ -9,4 +9,6 @@ export interface Place {
   photos?: google.maps.places.PlacePhoto[];
   location?: google.maps.LatLng;
   placeId?: string;
+  rating?: number;
+  numberOfReviews?: number;
 }
