@@ -1,7 +1,10 @@
 import { Component, ViewChild } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { GoogleMap } from '@angular/google-maps';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ModalController } from '@ionic/angular';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -11,11 +14,9 @@ import * as TripigActions from 'src/app/store/tripig.action';
 import { Direction } from 'src/app/models/direction.model';
 import { Place } from 'src/app/models/place.model';
 import { MapService } from 'src/app/services/map.service';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { AuthService } from 'src/app/services/auth.service';
 import { PlaceService } from 'src/app/services/place.service';
 import { Course } from 'src/app/models/course.models';
-import { FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-map-route-result',
@@ -93,6 +94,7 @@ export class MapRouteResultComponent {
     private mapService: MapService,
     private placeService: PlaceService,
     private fb: FormBuilder,
+    private inAppBrowser: InAppBrowser,
     public auth: AuthService
   ) { }
 
@@ -268,5 +270,10 @@ export class MapRouteResultComponent {
   toLoginPage() {
     this.dismissModal();
     this.router.navigate(['/tabs/pages/signIn']);
+  }
+
+  onGoogleMapLinkClick() {
+    const browser = this.inAppBrowser.create(this.googleMapLinks);
+    browser.show();
   }
 }

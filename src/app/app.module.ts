@@ -12,6 +12,7 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { reducers, metaReducers } from './store';
@@ -59,7 +60,8 @@ import { MapRouteResultModule } from 'src/app/parts/dialog/map/map-route-result/
       useClass: IonicRouteStrategy
     },
     Geolocation,
-    GooglePlus
+    GooglePlus,
+    InAppBrowser
   ],
   bootstrap: [AppComponent]
 })

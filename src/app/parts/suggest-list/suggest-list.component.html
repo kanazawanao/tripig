@@ -19,16 +19,13 @@
           (change)="onSelectionChange(suggest)"
           (click)="$event.stopPropagation()"
         >
-          {{ suggest.name }}
         </mat-checkbox>
-        <a
+        {{ suggest.name }}
+        <button
           mat-button
-          target="_blank"
-          rel="noopener noreferrer"
-          [href]="googleSearchUrl + suggest.name"
-          (click)="$event.stopPropagation()">
+          (click)="onSearchLinkClick($event, suggest)">
           <mat-icon matSuffix>search</mat-icon>
-        </a>
+        </button>
       </mat-panel-title>
     </mat-expansion-panel-header>
     <div *ngFor="let photo of suggest.photos">

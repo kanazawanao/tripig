@@ -64,12 +64,10 @@
       Login
     </button>
   </ng-template>
-  <a
-    matSuffix
-    [href]="googleMapLinks"
-    target="_blank"
-    rel="noopener noreferrer">
+  <button
+    mat-button
+    (click)="onGoogleMapLinkClick()">
     <mat-icon>map</mat-icon>
-  </a>
+  </button>
   
 </ion-content>

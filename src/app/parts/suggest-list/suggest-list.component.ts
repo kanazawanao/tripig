@@ -1,5 +1,6 @@
 import { Component, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import * as TripigState from 'src/app/store/';
 import * as TripigActions from 'src/app/store/tripig.action';
 import * as TripigSelector from 'src/app/store/tripig.selector';
@@ -30,6 +31,7 @@ export class SuggestListComponent implements OnInit, OnDestroy {
 
   constructor(
     private store: Store<TripigState.State>,
+    private inAppBrowser: InAppBrowser
   ) { }
 
   ngOnInit() {
@@ -78,5 +80,11 @@ export class SuggestListComponent implements OnInit, OnDestroy {
 
   onTabClick(category: Category) {
     this.middlePointPlaceSearch.emit(category);
+  }
+
+  onSearchLinkClick(event: MouseEvent, suggest: Place) {
+    event.stopPropagation();
+    const browser = this.inAppBrowser.create(`${this.googleSearchUrl}${suggest.name}`);
+    browser.show();
   }
 }
