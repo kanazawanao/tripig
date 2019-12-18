@@ -8,13 +8,6 @@
   ></map-marker>
   <map-info-window></map-info-window>
 </google-map>
-<mat-slider
-  [min]="min"
-  [max]="max"
-  [thumbLabel]="thumbLabel"
-  [(ngModel)]="radius"
->
-</mat-slider>
 <ion-content>
   <app-suggest-list
     (middlePointPlaceSearch)="search($event)">

@@ -32,10 +32,6 @@ export class MapPointSearchComponent {
   );
   direction?: Direction;
   selectedList: Place[] = [];
-  min = 1;
-  max = 50000;
-  radius = 10000;
-  thumbLabel = true;
   center: google.maps.LatLng = new google.maps.LatLng(37.421995, -122.084092);
   zoom = 16;
   markerOptions: google.maps.MarkerOptions = { draggable: false };
