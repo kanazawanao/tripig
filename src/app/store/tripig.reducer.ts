@@ -2,12 +2,14 @@ import { Action, createReducer, on } from '@ngrx/store';
 import * as TripigAction from './tripig.action';
 import { Direction } from '../models/direction.model';
 import { Place } from '../models/place.model';
+import { Course } from '../models/course.models';
 
 export interface State {
   direction: Direction;
   selectedList: Place[];
   suggestList: Place[];
   lastSelectedPlace: Place;
+  selectedCourse: Course;
 }
 
 export const initialState: State = {
@@ -21,6 +23,7 @@ export const initialState: State = {
   selectedList: [],
   suggestList: [],
   lastSelectedPlace: {selected: true, location: new google.maps.LatLng(37.421995, -122.084092)},
+  selectedCourse: {name: '', route: []}
 };
 
 const coreReducer = createReducer(
@@ -48,6 +51,12 @@ const coreReducer = createReducer(
       ...state,
       lastSelectedPlace
     };
+  }),
+  on(TripigAction.setSelectedCourse, (state, { selectedCourse }) => {
+    return {
+      ...state,
+      selectedCourse
+    };
   })
 );
 export function reducer(state: State | undefined, action: Action): State {
@@ -58,3 +67,4 @@ export const getDirection = (state: State) => state.direction;
 export const getSelectedList = (state: State) => state.selectedList;
 export const getSuggestList = (state: State) => state.suggestList;
 export const getLastSelectedPlace = (state: State) => state.lastSelectedPlace;
+export const getSelectedCourse = (state: State) => state.selectedCourse;

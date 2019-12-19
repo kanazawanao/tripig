@@ -1,0 +1,6 @@
+<ion-content>
+  <h2>{{selectedCourse?.name}}</h2>
+  <div *ngFor="let place of selectedCourse?.route">
+    {{ place.name }}
+  </div>
+</ion-content>

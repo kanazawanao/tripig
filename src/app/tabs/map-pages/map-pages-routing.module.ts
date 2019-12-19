@@ -12,6 +12,10 @@ const routes: Routes = [
     loadChildren: () => import('./map-route-search/map-route-search.module').then(m => m.MapRouteSearchModule)
   },
   {
+    path: 'course',
+    loadChildren: () => import('./map-selected-course/map-selected-course.module').then(m => m.MapSelectedCourseModule)
+  },
+  {
     path: '**',
     redirectTo: 'point'
   },

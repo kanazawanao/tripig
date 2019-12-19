@@ -73,6 +73,6 @@ export class RouteSearchComponent {
     this.store.dispatch(
       TripigActions.setDirection({ direction: this.direction })
     );
-    this.router.navigate(['/tabs/search/route']);
+    this.router.navigate(['/tabs/map/route']);
   }
 }

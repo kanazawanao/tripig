@@ -8,7 +8,9 @@ import { MapRouteSearchComponent } from './map-route-search.component';
 import { SuggestListModule } from 'src/app/parts/suggest-list/suggest-list.module';
 
 @NgModule({
-  declarations: [MapRouteSearchComponent],
+  declarations: [
+    MapRouteSearchComponent
+  ],
   imports: [
     CommonModule,
     FormsModule,
