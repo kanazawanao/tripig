@@ -188,7 +188,7 @@
         "server": {
           "builder": "@angular-devkit/build-angular:server",
           "options": {
-            "outputPath": "dist/tripig-server",
+            "outputPath": "www/tripig-server",
             "main": "src/main.server.ts",
             "tsConfig": "tsconfig.server.json"
           },
