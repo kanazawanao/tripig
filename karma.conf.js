@@ -3,6 +3,7 @@
 
 module.exports = function (config) {
   config.set({
+    files:['src/app/shared/mocks/google-maps-api.js'],
     basePath: '',
     frameworks: ['jasmine', '@angular-devkit/build-angular'],
     plugins: [
@@ -19,9 +20,15 @@ module.exports = function (config) {
       }
     },
     coverageIstanbulReporter: {
-      dir: require('path').join(__dirname, '../coverage'),
+      dir: require('path').join(__dirname, './coverage/tripig'),
       reports: ['html', 'lcovonly', 'text-summary'],
-      fixWebpackSourcePaths: true
+      fixWebpackSourcePaths: true,
+      thresholds: {
+        statements: 80,
+        lines: 80,
+        branches: 80,
+        functions: 80
+      }
     },
     reporters: ['progress', 'kjhtml'],
     port: 9876,

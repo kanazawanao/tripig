@@ -11,7 +11,7 @@
     "build:ios": "ionic cordova build ios --prod --project tripig",
     "build:android": "ionic cordova build android --prod --project tripig",
     "serve:ionic": "ionic serve --project tripig",
-    "test": "ng test",
+    "test": "ng test --code-coverage",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },

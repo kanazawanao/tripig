@@ -1,5 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { GoogleMapsModule } from '@angular/google-maps';
 
 import { MapRouteSearchComponent } from './map-route-search.component';
 
@@ -9,8 +10,15 @@ describe('MapRouteSearchComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MapRouteSearchComponent ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [
+        MapRouteSearchComponent
+      ],
+      schemas: [
+        CUSTOM_ELEMENTS_SCHEMA
+      ],
+      imports: [
+        GoogleMapsModule
+      ]
     })
     .compileComponents();
   }));
