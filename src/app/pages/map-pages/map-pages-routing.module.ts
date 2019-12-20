@@ -15,10 +15,6 @@ const routes: Routes = [
     path: 'course',
     loadChildren: () => import('./map-selected-course/map-selected-course.module').then(m => m.MapSelectedCourseModule)
   },
-  {
-    path: '**',
-    redirectTo: 'point'
-  },
 ];
 
 @NgModule({

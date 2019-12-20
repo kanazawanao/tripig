@@ -10,26 +10,28 @@
     </ng-template>
   </mat-tab>
 </mat-tab-group>
-<mat-accordion>
-  <mat-expansion-panel *ngFor="let suggest of suggestList" hideToggle>
-    <mat-expansion-panel-header>
-      <mat-panel-title class="title-align">
-        <mat-checkbox
-          [checked]="suggest.selected"
-          (change)="onSelectionChange(suggest)"
-          (click)="$event.stopPropagation()"
-        >
-        </mat-checkbox>
-        {{ suggest.name }} / {{ suggest.rating }}
-        <button
-          mat-button
-          (click)="onSearchLinkClick($event, suggest)">
-          <mat-icon matSuffix>search</mat-icon>
-        </button>
-      </mat-panel-title>
-    </mat-expansion-panel-header>
-    <div *ngFor="let photo of suggest.photos">
-      <img [src]="photo.getUrl({maxHeight: 500, maxWidth: 500})" />
-    </div>
-  </mat-expansion-panel>
-</mat-accordion>
+<ion-content>
+  <mat-accordion>
+    <mat-expansion-panel *ngFor="let suggest of suggestList" hideToggle>
+      <mat-expansion-panel-header>
+        <mat-panel-title class="title-align">
+          <mat-checkbox
+            [checked]="suggest.selected"
+            (change)="onSelectionChange(suggest)"
+            (click)="$event.stopPropagation()"
+          >
+          </mat-checkbox>
+          {{ suggest.name }} / {{ suggest.rating }}
+          <button
+            mat-button
+            (click)="onSearchLinkClick($event, suggest)">
+            <mat-icon matSuffix>search</mat-icon>
+          </button>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <div *ngFor="let photo of suggest.photos">
+        <img [src]="photo.getUrl({maxHeight: 500, maxWidth: 500})" />
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+</ion-content>

@@ -48,6 +48,6 @@ export class PointSearchComponent {
     this.store.dispatch(
       TripigActions.setDirection({ direction: this.direction })
     );
-    this.router.navigate(['/tabs/map/point']);
+    this.router.navigate(['/tabs/pages/map/point']);
   }
 }

@@ -28,6 +28,6 @@ export class RegisteredRoutesComponent {
     this.store.dispatch(
       TripigActions.setSelectedCourse({ selectedCourse: course })
     );
-    this.router.navigate(['/tabs/map/course']);
+    this.router.navigate(['/tabs/pages/map/course']);
   }
 }

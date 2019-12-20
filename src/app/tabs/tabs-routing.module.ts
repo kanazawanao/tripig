@@ -40,16 +40,6 @@ const routes: Routes = [
         canActivate: [AuthGuard]
       },
       {
-        path: 'map',
-        children: [
-          {
-            path: '',
-            loadChildren: () =>
-              import('./map-pages/map-pages.module').then(m => m.MapPagesModule)
-          }
-        ]
-      },
-      {
         path: 'pages',
         children: [
           {
