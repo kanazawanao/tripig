@@ -1,6 +1,8 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { GoogleMapsModule } from '@angular/google-maps';
+import { provideMockStore } from '@ngrx/store/testing';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
 
 import { MapRouteSearchComponent } from './map-route-search.component';
 
@@ -18,6 +20,10 @@ describe('MapRouteSearchComponent', () => {
       ],
       imports: [
         GoogleMapsModule
+      ],
+      providers: [
+        provideMockStore(),
+        Geolocation,
       ]
     })
     .compileComponents();
