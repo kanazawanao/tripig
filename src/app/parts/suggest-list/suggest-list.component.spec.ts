@@ -1,7 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { provideMockStore } from '@ngrx/store/testing';
 
 import { SuggestListComponent } from './suggest-list.component';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('SuggestListComponent', () => {
   let component: SuggestListComponent;
@@ -9,8 +12,19 @@ describe('SuggestListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SuggestListComponent ],
-      imports: [IonicModule.forRoot()]
+      schemas: [
+        CUSTOM_ELEMENTS_SCHEMA
+      ],
+      declarations: [
+        SuggestListComponent
+      ],
+      imports: [
+        IonicModule.forRoot()
+      ],
+      providers: [
+        provideMockStore(),
+        InAppBrowser,
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(SuggestListComponent);
