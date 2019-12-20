@@ -21,6 +21,7 @@ import { AppComponent } from './app.component';
 import { environment } from '../environments/environment';
 import { MaterialModule } from 'src/app/material/material.module';
 import { MapRouteResultModule } from 'src/app/parts/dialog/map/map-route-result/map-route-result.module';
+import { HeaderModule } from 'src/app/parts/header/header.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -51,6 +52,7 @@ import { MapRouteResultModule } from 'src/app/parts/dialog/map/map-route-result/
       logOnly: environment.production
     }),
     MapRouteResultModule,
+    HeaderModule,
   ],
   providers: [
     StatusBar,
