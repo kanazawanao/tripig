@@ -1,8 +1,4 @@
-<google-map
-  height="250px"
-  width="100%"
-  [center]="center"
-  [zoom]="zoom">
+<google-map height="250px" width="100%" [center]="center" [zoom]="zoom">
   <map-marker
     #marker
     *ngFor="let selected of selectedList"
@@ -13,7 +9,6 @@
   <map-info-window></map-info-window>
 </google-map>
 <ion-content>
-  <app-suggest-list
-    (middlePointPlaceSearch)="middlePointPlaceSearch($event)">
+  <app-suggest-list (middlePointPlaceSearch)="middlePointPlaceSearch($event)">
   </app-suggest-list>
 </ion-content>

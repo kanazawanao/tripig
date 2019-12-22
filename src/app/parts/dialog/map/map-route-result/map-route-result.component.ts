@@ -39,26 +39,32 @@ export class MapRouteResultComponent {
   );
   private direction?: Direction;
   get travelmode(): string {
-    return this.direction
-      ? this.direction.travelMode.toString()
-      : '';
+    return this.direction ? this.direction.travelMode.toString() : '';
   }
   private selectedList$: Observable<Place[]> = this.store.select(
     TripigSelector.getSelectedList
   );
   get googleMapLinks(): string {
-    return 'https://www.google.com/maps/dir/?api=1' +
-          this.waypointsForMap +
-          '&travelmode=' + this.travelmode;
+    return (
+      'https://www.google.com/maps/dir/?api=1' +
+      this.waypointsForMap +
+      '&travelmode=' +
+      this.travelmode
+    );
   }
   get waypointsForMap(): string {
-    return '&origin=' + this.originUrlValue
-      + '&destination=' + this.destinationName
-      + '&waypoints=' + this.waypoints.map(p => p.name).join(' | ');
+    return (
+      '&origin=' +
+      this.originUrlValue +
+      '&destination=' +
+      this.destinationName +
+      '&waypoints=' +
+      this.waypoints.map(p => p.name).join(' | ')
+    );
   }
   waypoints: Place[] = [];
-  origin?: Place = {selected: true};
-  destination?: Place = {selected: true};
+  origin?: Place = { selected: true };
+  destination?: Place = { selected: true };
   get destinationName(): string {
     return this.destination
       ? this.destination.name
@@ -96,16 +102,13 @@ export class MapRouteResultComponent {
     private fb: FormBuilder,
     private inAppBrowser: InAppBrowser,
     public auth: AuthService
-  ) { }
+  ) {}
 
   ionViewDidEnter(): void {
-    console.log(this.auth.loggedIn);
-    this.direction$
-      .pipe(takeUntil(this.onDestroy$))
-      .subscribe(direction => {
-        this.direction = direction;
-        this.setRouteMap(direction);
-      });
+    this.direction$.pipe(takeUntil(this.onDestroy$)).subscribe(direction => {
+      this.direction = direction;
+      this.setRouteMap(direction);
+    });
   }
 
   ionViewDidLeave(): void {
@@ -118,14 +121,12 @@ export class MapRouteResultComponent {
 
   regist(): void {
     this.placeService.addPlace(this.createCourse());
-    this.store.dispatch(
-      TripigActions.setSelectedList({ selectedList: [] })
-    );
+    this.store.dispatch(TripigActions.setSelectedList({ selectedList: [] }));
     this.modalCtrl.dismiss();
     this.router.navigate(['/tabs/registered']);
   }
 
-  private createCourse() {
+  private createCourse(): Course {
     const course: Course = {
       name: this.courseName,
       route: []
@@ -152,7 +153,7 @@ export class MapRouteResultComponent {
         this.setResultRoute(direction);
       });
     } else {
-      this.mapService.geocode({address: direction.origin}).then(result => {
+      this.mapService.geocode({ address: direction.origin }).then(result => {
         this.origin = {
           selected: true,
           location: result.geometry.location,
@@ -165,17 +166,20 @@ export class MapRouteResultComponent {
     }
   }
 
-  private setResultRoute(direction: Direction) {
+  private setResultRoute(direction: Direction): void {
     const destPosition: Place = {
       name: direction.destination,
-      selected: true,
+      selected: true
     };
     this.destination = destPosition;
-    this.selectedList$
-      .pipe(takeUntil(this.onDestroy$))
-      .subscribe(waypoints => {
-        const request: google.maps.DirectionsRequest = this.CreateDirectionsRequest(direction, waypoints);
-        this.mapService.route(request).then(result => {
+    this.selectedList$.pipe(takeUntil(this.onDestroy$)).subscribe(waypoints => {
+      const request: google.maps.DirectionsRequest = this.CreateDirectionsRequest(
+        direction,
+        waypoints
+      );
+      this.mapService
+        .route(request)
+        .then(result => {
           this.directionsRenderer.setMap(this.map.data.getMap());
           this.directionsRenderer.setDirections(result);
           result.routes[0].waypoint_order.forEach(index => {
@@ -186,15 +190,16 @@ export class MapRouteResultComponent {
           if (this.destination) {
             this.resultList.push(this.destination);
           }
-        }).catch(() => {
+        })
+        .catch(() => {
           this.dismissModal();
         });
-      });
+    });
   }
 
   private CreateDirectionsRequest(
     direction: Direction,
-    waypoints: Place[],
+    waypoints: Place[]
   ): google.maps.DirectionsRequest {
     return {
       origin: this.origin ? this.origin.location : undefined,
@@ -229,17 +234,17 @@ export class MapRouteResultComponent {
     return waypoints;
   }
 
-  drop(event: CdkDragDrop<string[]>) {
+  drop(event: CdkDragDrop<string[]>): void {
     moveItemInArray(this.resultList, event.previousIndex, event.currentIndex);
     this.setRoute();
   }
 
-  delete(place: Place) {
+  delete(place: Place): void {
     this.resultList = this.resultList.filter(r => r.placeId !== place.placeId);
     this.setRoute();
   }
 
-  private setRoute() {
+  private setRoute(): void {
     this.origin = this.resultList.shift();
     this.destination = this.resultList.pop();
     this.waypoints = [];
@@ -258,21 +263,24 @@ export class MapRouteResultComponent {
       waypoints: this.createWaypoints(this.waypoints),
       travelMode: this.direction ? this.direction.travelMode : undefined
     };
-    this.mapService.route(request).then(result => {
-      this.directionsRenderer.setMap(this.map.data.getMap());
-      this.directionsRenderer.setDirections(result);
-      this.calcDistAndDura(result);
-    }).catch(() => {
-      this.dismissModal();
-    });
+    this.mapService
+      .route(request)
+      .then(result => {
+        this.directionsRenderer.setMap(this.map.data.getMap());
+        this.directionsRenderer.setDirections(result);
+        this.calcDistAndDura(result);
+      })
+      .catch(() => {
+        this.dismissModal();
+      });
   }
 
-  toLoginPage() {
+  toLoginPage(): void {
     this.dismissModal();
     this.router.navigate(['/tabs/pages/signIn']);
   }
 
-  onGoogleMapLinkClick() {
+  onGoogleMapLinkClick(): void {
     const browser = this.inAppBrowser.create(this.googleMapLinks);
     browser.show();
   }

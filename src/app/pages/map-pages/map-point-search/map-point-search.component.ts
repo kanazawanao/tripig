@@ -50,12 +50,10 @@ export class MapPointSearchComponent {
           this.center = place.location;
         }
       });
-    this.direction$
-      .pipe(takeUntil(this.onDestroy$))
-      .subscribe(direction => {
-        this.direction = direction;
-        this.setMap(direction);
-      });
+    this.direction$.pipe(takeUntil(this.onDestroy$)).subscribe(direction => {
+      this.direction = direction;
+      this.setMap(direction);
+    });
     this.selectedList$
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(selectedList => {
@@ -67,7 +65,7 @@ export class MapPointSearchComponent {
     this.onDestroy$.next();
   }
 
-  search(category: Category) {
+  search(category: Category): void {
     if (this.direction) {
       this.direction.category = category;
       this.setMap(this.direction);
@@ -76,7 +74,7 @@ export class MapPointSearchComponent {
 
   private setMap(direction: Direction): void {
     this.mapService
-      .geocode({address: direction.destination})
+      .geocode({ address: direction.destination })
       .then(result => {
         this.center = result.geometry.location;
         this.searchPlace(result.geometry.location, direction);
@@ -99,20 +97,19 @@ export class MapPointSearchComponent {
     this.mapService
       .nearbySearch(placeService, request)
       .then(results => {
-        const suggestList = [...this.selectedList, ...results].filter((member, index, self) => {
-          return self.findIndex(s => member.placeId  === s.placeId) === index;
-        });
-        this.store.dispatch(
-          TripigActions.setSuggestList({ suggestList })
+        const suggestList = [...this.selectedList, ...results].filter(
+          (member, index, self) => {
+            return self.findIndex(s => member.placeId === s.placeId) === index;
+          }
         );
+        this.store.dispatch(TripigActions.setSuggestList({ suggestList }));
       })
       .catch(() => {
         // TODO: 周辺施設が検索できなかった場合どうするか検討
       });
   }
 
-  openInfoWindow(marker: MapMarker) {
+  openInfoWindow(marker: MapMarker): void {
     this.infoWindow.open(marker);
   }
-
 }

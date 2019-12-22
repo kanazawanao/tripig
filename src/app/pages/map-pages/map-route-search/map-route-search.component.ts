@@ -42,9 +42,18 @@ export class MapRouteSearchComponent {
   get duration(): string {
     return `約${Math.floor(this.dura / 60)}分`;
   }
-  originLatLng: google.maps.LatLng = new google.maps.LatLng(37.421995, -122.084092);
-  destinationLatLng: google.maps.LatLng = new google.maps.LatLng(37.421995, -122.084092);
-  middlePointLatLng: google.maps.LatLng = new google.maps.LatLng(37.421995, -122.084092);
+  originLatLng: google.maps.LatLng = new google.maps.LatLng(
+    37.421995,
+    -122.084092
+  );
+  destinationLatLng: google.maps.LatLng = new google.maps.LatLng(
+    37.421995,
+    -122.084092
+  );
+  middlePointLatLng: google.maps.LatLng = new google.maps.LatLng(
+    37.421995,
+    -122.084092
+  );
 
   constructor(
     private location: Location,
@@ -53,12 +62,10 @@ export class MapRouteSearchComponent {
   ) {}
 
   ionViewDidEnter(): void {
-    this.direction$
-      .pipe(takeUntil(this.onDestroy$))
-      .subscribe(direction => {
-        this.setRouteMap(direction);
-        this.direction = direction;
-      });
+    this.direction$.pipe(takeUntil(this.onDestroy$)).subscribe(direction => {
+      this.setRouteMap(direction);
+      this.direction = direction;
+    });
     this.selectedList$
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(selectedList => {
@@ -71,33 +78,45 @@ export class MapRouteSearchComponent {
   }
 
   private setRouteMap(direction: Direction): void {
-    this.mapService.geocode({address: direction.origin}).then(result => {
-      this.originLatLng = result.geometry.location;
-    }).catch(() => {
-      this.location.back();
-    });
-    this.mapService.geocode({address: direction.destination}).then(result => {
-      this.destinationLatLng = result.geometry.location;
-    }).catch(() => {
-      this.location.back();
-    });
+    this.mapService
+      .geocode({ address: direction.origin })
+      .then(result => {
+        this.originLatLng = result.geometry.location;
+      })
+      .catch(() => {
+        this.location.back();
+      });
+    this.mapService
+      .geocode({ address: direction.destination })
+      .then(result => {
+        this.destinationLatLng = result.geometry.location;
+      })
+      .catch(() => {
+        this.location.back();
+      });
     const request: google.maps.DirectionsRequest = {
       origin: direction.origin,
       destination: direction.destination,
-      travelMode: direction.travelMode,
+      travelMode: direction.travelMode
     };
-    this.mapService.route(request).then(result => {
-      this.directionsRenderer.setMap(this.map.data.getMap());
-      this.directionsRenderer.setDirections(result);
-      this.middlePointLatLng = result.routes[0].overview_path[result.routes[0].overview_path.length / 2];
-      this.calcDistAndDura(result);
-    }).catch(() => {
-      this.location.back();
-    });
+    this.mapService
+      .route(request)
+      .then(result => {
+        this.directionsRenderer.setMap(this.map.data.getMap());
+        this.directionsRenderer.setDirections(result);
+        this.middlePointLatLng =
+          result.routes[0].overview_path[
+            result.routes[0].overview_path.length / 2
+          ];
+        this.calcDistAndDura(result);
+      })
+      .catch(() => {
+        this.location.back();
+      });
     this.middlePointPlaceSearch(this.defaultCategory);
   }
 
-  middlePointPlaceSearch(category: Category) {
+  middlePointPlaceSearch(category: Category): void {
     if (this.direction) {
       this.direction.category = category;
       const placeService = new google.maps.places.PlacesService(
@@ -112,12 +131,14 @@ export class MapRouteSearchComponent {
       this.mapService
         .nearbySearch(placeService, request)
         .then(results => {
-          const suggestList = [...this.selectedList, ...results].filter((member, index, self) => {
-            return self.findIndex(s => member.placeId  === s.placeId) === index;
-          });
-          this.store.dispatch(
-            TripigActions.setSuggestList({ suggestList })
+          const suggestList = [...this.selectedList, ...results].filter(
+            (member, index, self) => {
+              return (
+                self.findIndex(s => member.placeId === s.placeId) === index
+              );
+            }
           );
+          this.store.dispatch(TripigActions.setSuggestList({ suggestList }));
         })
         .catch(() => {
           // TODO: 周辺施設が検索できなかった場合どうするか検討

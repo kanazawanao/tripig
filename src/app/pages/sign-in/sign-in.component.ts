@@ -6,19 +6,18 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-sign-in',
   templateUrl: './sign-in.component.html',
-  styleUrls: ['./sign-in.component.scss'],
+  styleUrls: ['./sign-in.component.scss']
 })
 export class SignInComponent implements OnInit {
-
   constructor(
     private router: Router,
     private platform: Platform,
-    private auth: AuthService,
-  ) { }
+    private auth: AuthService
+  ) {}
 
   ngOnInit() {}
 
-  googleSignIn() {
+  googleSignIn(): void {
     if (this.platform.is('cordova')) {
       // Cordova環境でのみGooglePlusプラグインでログインする
       this.auth.nativeGoogleLogin().then(() => {
