@@ -1,15 +1,10 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>
-      <button
-        mat-button
-        routerLink="/"
-        aria-label="top">
+      <button mat-button routerLink="/" aria-label="top">
         Tripig
       </button>
-      <button *ngIf="auth.loggedIn"
-        mat-button
-        (click)="signOut()">
+      <button *ngIf="auth.loggedIn" mat-button (click)="signOut()">
         <mat-icon>power_settings_new</mat-icon>
       </button>
     </ion-title>

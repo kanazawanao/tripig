@@ -1,12 +1,9 @@
 <mat-tab-group [selectedIndex]="direction?.category.index">
   <mat-tab *ngFor="let category of categories">
     <ng-template mat-tab-label>
-      <button
-        mat-button
-        type="button"
-        (click)="onTabClick(category)">
-      <mat-icon>{{ category.icon }}</mat-icon>
-    </button>
+      <button mat-button type="button" (click)="onTabClick(category)">
+        <mat-icon>{{ category.icon }}</mat-icon>
+      </button>
     </ng-template>
   </mat-tab>
 </mat-tab-group>
@@ -22,15 +19,13 @@
           >
           </mat-checkbox>
           {{ suggest.name }} / {{ suggest.rating }}
-          <button
-            mat-button
-            (click)="onSearchLinkClick($event, suggest)">
+          <button mat-button (click)="onSearchLinkClick($event, suggest)">
             <mat-icon matSuffix>search</mat-icon>
           </button>
         </mat-panel-title>
       </mat-expansion-panel-header>
       <div *ngFor="let photo of suggest.photos">
-        <img [src]="photo.getUrl({maxHeight: 500, maxWidth: 500})" />
+        <img [src]="photo.getUrl({ maxHeight: 500, maxWidth: 500 })" />
       </div>
     </mat-expansion-panel>
   </mat-accordion>

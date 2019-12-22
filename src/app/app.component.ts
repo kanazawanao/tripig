@@ -13,12 +13,12 @@ export class AppComponent implements OnInit {
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
-    private statusBar: StatusBar,
+    private statusBar: StatusBar
   ) {
     this.initializeApp();
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {}
 
   initializeApp(): void {
     this.platform.ready().then(() => {

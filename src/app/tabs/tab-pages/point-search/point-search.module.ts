@@ -17,4 +17,4 @@ import { PointSearchComponent } from './point-search.component';
     MaterialModule
   ]
 })
-export class PointSearchModule { }
+export class PointSearchModule {}

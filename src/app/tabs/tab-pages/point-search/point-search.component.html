@@ -7,7 +7,8 @@
         type="text"
         placeholder="ARRIVAL AT"
         formControlName="destination"
-        required>
+        required
+      />
     </mat-form-field>
     <mat-grid-list cols="4" rowHeight="2:1">
       <mat-grid-tile *ngFor="let category of categories">
@@ -16,8 +17,9 @@
           type="button"
           (click)="search(category)"
           [disabled]="!searchForm.valid"
-          aria-label="categorySearch">
-          <mat-icon>{{category.icon}}</mat-icon>
+          aria-label="categorySearch"
+        >
+          <mat-icon>{{ category.icon }}</mat-icon>
         </button>
       </mat-grid-tile>
     </mat-grid-list>

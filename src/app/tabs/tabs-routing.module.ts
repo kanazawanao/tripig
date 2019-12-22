@@ -14,7 +14,9 @@ const routes: Routes = [
           {
             path: '',
             loadChildren: () =>
-              import('./tab-pages/point-search/point-search.module').then(m => m.PointSearchModule)
+              import('./tab-pages/point-search/point-search.module').then(
+                m => m.PointSearchModule
+              )
           }
         ]
       },
@@ -24,7 +26,9 @@ const routes: Routes = [
           {
             path: '',
             loadChildren: () =>
-              import('./tab-pages/route-search/route-search.module').then(m => m.RouteSearchModule)
+              import('./tab-pages/route-search/route-search.module').then(
+                m => m.RouteSearchModule
+              )
           }
         ]
       },
@@ -34,7 +38,9 @@ const routes: Routes = [
           {
             path: '',
             loadChildren: () =>
-              import('./tab-pages/registered-routes/registered-routes.module').then(m => m.RegisteredRoutesModule)
+              import(
+                './tab-pages/registered-routes/registered-routes.module'
+              ).then(m => m.RegisteredRoutesModule)
           }
         ],
         canActivate: [AuthGuard]

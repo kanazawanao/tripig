@@ -22,7 +22,7 @@ export class AuthService {
     private afAuth: AngularFireAuth,
     private afStore: AngularFirestore,
     private userService: UserService,
-    private gplus: GooglePlus,
+    private gplus: GooglePlus
   ) {
     this.user = this.afAuth.authState.pipe(
       switchMap(user => {

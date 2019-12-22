@@ -23,7 +23,7 @@ export class RouteSearchComponent {
     { value: google.maps.TravelMode.BICYCLING, viewValue: 'directions_bike' },
     // 日本国内だと路線を含めたルート検索できないみたい
     // {value: google.maps.TravelMode.TRANSIT, viewValue: 'directions_transit'},
-    { value: google.maps.TravelMode.TWO_WHEELER, viewValue: 'motorcycle' },
+    { value: google.maps.TravelMode.TWO_WHEELER, viewValue: 'motorcycle' }
   ];
 
   searchForm = this.fb.group({
@@ -51,7 +51,7 @@ export class RouteSearchComponent {
     const direction: Direction = {
       destination: this.destination,
       origin: this.origin,
-      category: {index: 0, value: '', viewValue: '', icon: ''},
+      category: { index: 0, value: '', viewValue: '', icon: '' },
       travelMode: this.selectedMode.value,
       radius: 10000
     };

@@ -52,7 +52,7 @@ import { HeaderModule } from 'src/app/parts/header/header.module';
       logOnly: environment.production
     }),
     MapRouteResultModule,
-    HeaderModule,
+    HeaderModule
   ],
   providers: [
     StatusBar,

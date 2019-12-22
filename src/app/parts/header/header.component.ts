@@ -11,7 +11,7 @@ import { Place } from 'src/app/models/place.model';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss'],
+  styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
   showResultRoute = false;
@@ -21,23 +21,23 @@ export class HeaderComponent implements OnInit {
   constructor(
     private store: Store<TripigState.State>,
     private modalCtrl: ModalController,
-    public auth: AuthService,
-  ) { }
+    public auth: AuthService
+  ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.selectedList$.subscribe(list => {
       this.showResultRoute = list.length > 0;
     });
   }
 
-  async guide() {
+  async guide(): Promise<void> {
     const modal = await this.modalCtrl.create({
       component: MapRouteResultComponent
     });
     return await modal.present();
   }
 
-  signOut() {
+  signOut(): void {
     this.auth.signOut();
   }
 }

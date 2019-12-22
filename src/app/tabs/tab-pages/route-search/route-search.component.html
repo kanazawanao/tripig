@@ -6,7 +6,8 @@
       type="text"
       placeholder="LEAVING FROM"
       formControlName="origin"
-      required>
+      required
+    />
   </mat-form-field>
   <mat-form-field class="full-width">
     <input
@@ -15,13 +16,14 @@
       type="text"
       placeholder="ARRIVAL AT"
       formControlName="destination"
-      required>
+      required
+    />
   </mat-form-field>
   <mat-form-field class="full-width">
     <mat-label>TRAVEL MODE</mat-label>
     <mat-select formControlName="selectedTravelMode">
       <mat-select-trigger>
-        <mat-icon>{{selectedMode.viewValue}}</mat-icon>
+        <mat-icon>{{ selectedMode.viewValue }}</mat-icon>
       </mat-select-trigger>
       <mat-option *ngFor="let mode of travelModes" [value]="mode">
         <mat-icon>{{ mode.viewValue }}</mat-icon>
@@ -33,5 +35,7 @@
     type="button"
     (click)="search()"
     [disabled]="!searchForm.valid"
-    >Search</button>
+  >
+    Search
+  </button>
 </form>

@@ -1,4 +1,10 @@
-import { Component, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import {
+  Component,
+  Output,
+  EventEmitter,
+  OnInit,
+  OnDestroy
+} from '@angular/core';
 import { Store } from '@ngrx/store';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import * as TripigState from 'src/app/store/';
@@ -13,7 +19,7 @@ import { Category, CATEGORIES } from '../category.class';
 @Component({
   selector: 'app-suggest-list',
   templateUrl: './suggest-list.component.html',
-  styleUrls: ['./suggest-list.component.scss'],
+  styleUrls: ['./suggest-list.component.scss']
 })
 export class SuggestListComponent implements OnInit, OnDestroy {
   @Output() middlePointPlaceSearch: EventEmitter<any> = new EventEmitter();
@@ -32,14 +38,12 @@ export class SuggestListComponent implements OnInit, OnDestroy {
   constructor(
     private store: Store<TripigState.State>,
     private inAppBrowser: InAppBrowser
-  ) { }
+  ) {}
 
-  ngOnInit() {
-    this.direction$
-      .pipe(takeUntil(this.onDestroy$))
-      .subscribe(direction => {
-        this.direction = direction;
-      });
+  ngOnInit(): void {
+    this.direction$.pipe(takeUntil(this.onDestroy$)).subscribe(direction => {
+      this.direction = direction;
+    });
     this.suggestList$
       .pipe(takeUntil(this.onDestroy$))
       .subscribe(suggestList => {
@@ -53,7 +57,7 @@ export class SuggestListComponent implements OnInit, OnDestroy {
 
   onSelectionChange(place: Place): void {
     this.store.dispatch(
-      TripigActions.setLastSelectedPlace({lastSelectedPlace: place})
+      TripigActions.setLastSelectedPlace({ lastSelectedPlace: place })
     );
     this.suggestList$
       .pipe(
@@ -66,10 +70,9 @@ export class SuggestListComponent implements OnInit, OnDestroy {
           });
           return suggestList;
         })
-      ).subscribe(suggestList => {
-        this.store.dispatch(
-          TripigActions.setSuggestList({suggestList})
-        );
+      )
+      .subscribe(suggestList => {
+        this.store.dispatch(TripigActions.setSuggestList({ suggestList }));
         this.store.dispatch(
           TripigActions.setSelectedList({
             selectedList: suggestList.filter(s => s.selected === true)
@@ -78,13 +81,15 @@ export class SuggestListComponent implements OnInit, OnDestroy {
       });
   }
 
-  onTabClick(category: Category) {
+  onTabClick(category: Category): void {
     this.middlePointPlaceSearch.emit(category);
   }
 
-  onSearchLinkClick(event: MouseEvent, suggest: Place) {
+  onSearchLinkClick(event: MouseEvent, suggest: Place): void {
     event.stopPropagation();
-    const browser = this.inAppBrowser.create(`${this.googleSearchUrl}${suggest.name}`);
+    const browser = this.inAppBrowser.create(
+      `${this.googleSearchUrl}${suggest.name}`
+    );
     browser.show();
   }
 }

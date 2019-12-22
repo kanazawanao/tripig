@@ -20,11 +20,11 @@ export class RegisteredRoutesComponent {
     private store: Store<TripigReducer.State>
   ) {}
 
-  ionViewDidEnter() {
+  ionViewDidEnter(): void {
     this.courses$ = this.placeService.getAllPlace();
   }
 
-  select(course: Course) {
+  select(course: Course): void {
     this.store.dispatch(
       TripigActions.setSelectedCourse({ selectedCourse: course })
     );

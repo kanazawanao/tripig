@@ -1,7 +1,4 @@
-import {
-  ActionReducerMap,
-  MetaReducer,
-} from '@ngrx/store';
+import { ActionReducerMap, MetaReducer } from '@ngrx/store';
 import { environment } from '../../environments/environment';
 import * as fromTripig from './tripig.reducer';
 
@@ -10,7 +7,9 @@ export interface State {
 }
 
 export const reducers: ActionReducerMap<State> = {
-  tripig: fromTripig.reducer,
+  tripig: fromTripig.reducer
 };
 
-export const metaReducers: MetaReducer<State>[] = !environment.production ? [] : [];
+export const metaReducers: MetaReducer<State>[] = !environment.production
+  ? []
+  : [];

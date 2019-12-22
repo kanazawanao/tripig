@@ -16,4 +16,4 @@ import { RegisteredRoutesComponent } from './registered-routes.component';
     MaterialModule
   ]
 })
-export class RegisteredRoutesModule { }
+export class RegisteredRoutesModule {}

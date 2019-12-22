@@ -17,4 +17,4 @@ import { RouteSearchComponent } from './route-search.component';
     MaterialModule
   ]
 })
-export class RouteSearchModule { }
+export class RouteSearchModule {}

@@ -16,14 +16,17 @@ export const initialState: State = {
   direction: {
     destination: '',
     origin: '',
-    category: {icon: '', viewValue: '', value: '', index: 0},
+    category: { icon: '', viewValue: '', value: '', index: 0 },
     radius: 10000,
     travelMode: google.maps.TravelMode.DRIVING
   },
   selectedList: [],
   suggestList: [],
-  lastSelectedPlace: {selected: true, location: new google.maps.LatLng(37.421995, -122.084092)},
-  selectedCourse: {name: '', route: []}
+  lastSelectedPlace: {
+    selected: true,
+    location: new google.maps.LatLng(37.421995, -122.084092)
+  },
+  selectedCourse: { name: '', route: [] }
 };
 
 const coreReducer = createReducer(

@@ -12,11 +12,9 @@ import { TabsPage } from './tabs.component.page';
     CommonModule,
     FormsModule,
     TabsPageRoutingModule,
-    MaterialModule,
+    MaterialModule
   ],
   declarations: [TabsPage],
-  schemas: [
-    CUSTOM_ELEMENTS_SCHEMA
-  ]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class TabsPageModule {}
