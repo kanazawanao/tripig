@@ -22,7 +22,7 @@ import { Category, CATEGORIES } from '../category.class';
   styleUrls: ['./suggest-list.component.scss']
 })
 export class SuggestListComponent implements OnInit, OnDestroy {
-  @Output() middlePointPlaceSearch: EventEmitter<any> = new EventEmitter();
+  @Output() categoryChange: EventEmitter<any> = new EventEmitter();
   private onDestroy$ = new Subject();
   googleSearchUrl = 'https://www.google.com/search?q=';
   categories: Category[] = CATEGORIES;
@@ -82,7 +82,7 @@ export class SuggestListComponent implements OnInit, OnDestroy {
   }
 
   onTabClick(category: Category): void {
-    this.middlePointPlaceSearch.emit(category);
+    this.categoryChange.emit(category);
   }
 
   onSearchLinkClick(event: MouseEvent, suggest: Place): void {

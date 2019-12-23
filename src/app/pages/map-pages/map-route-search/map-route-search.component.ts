@@ -106,7 +106,7 @@ export class MapRouteSearchComponent {
         this.directionsRenderer.setDirections(result);
         this.middlePointLatLng =
           result.routes[0].overview_path[
-            result.routes[0].overview_path.length / 2
+            Math.round(result.routes[0].overview_path.length / 2)
           ];
         this.calcDistAndDura(result);
       })
