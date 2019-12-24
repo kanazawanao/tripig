@@ -9,6 +9,7 @@ import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import * as TripigSelector from 'src/app/store/tripig.selector';
 import { HeaderComponent } from './header.component';
 import { environment } from 'src/environments/environment';
+import { Store } from '@ngrx/store';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
@@ -36,6 +37,7 @@ describe('HeaderComponent', () => {
       ]
     }).compileComponents();
 
+    mockStore = TestBed.inject(Store) as MockStore<any>;
     fixture = TestBed.createComponent(HeaderComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

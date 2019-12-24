@@ -5,6 +5,7 @@ import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 import * as TripigSelector from 'src/app/store/tripig.selector';
 import { SuggestListComponent } from './suggest-list.component';
+import { Store } from '@ngrx/store';
 
 describe('SuggestListComponent', () => {
   let component: SuggestListComponent;
@@ -28,6 +29,7 @@ describe('SuggestListComponent', () => {
       ]
     }).compileComponents();
 
+    mockStore = TestBed.inject(Store) as MockStore<any>;
     fixture = TestBed.createComponent(SuggestListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
