@@ -5,14 +5,15 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { IonicModule } from '@ionic/angular';
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
-import { provideMockStore } from '@ngrx/store/testing';
-
+import { provideMockStore, MockStore } from '@ngrx/store/testing';
+import * as TripigSelector from 'src/app/store/tripig.selector';
 import { HeaderComponent } from './header.component';
 import { environment } from 'src/environments/environment';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
   let fixture: ComponentFixture<HeaderComponent>;
+  let mockStore: MockStore<any>;
 
   beforeEach(async(() => {
     const initialState = {
@@ -39,6 +40,10 @@ describe('HeaderComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));
+
+  beforeEach(() => {
+    mockStore.overrideSelector(TripigSelector.getSelectedList, []);
+  });
 
   afterEach(() => { fixture.destroy(); });
 
