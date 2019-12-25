@@ -1,7 +1,11 @@
 <mat-tab-group [selectedIndex]="direction?.category.index">
   <mat-tab *ngFor="let category of categories">
     <ng-template mat-tab-label>
-      <button mat-button type="button" (click)="onTabClick(category)">
+      <button
+        mat-button
+        type="button"
+        (click)="onTabClick(category)"
+        [matTooltip]="category.value">
         <mat-icon>{{ category.icon }}</mat-icon>
       </button>
     </ng-template>

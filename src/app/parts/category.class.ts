@@ -18,4 +18,5 @@ export const CATEGORIES: Category[] = [
   { value: '温泉', viewValue: '温泉', icon: 'hot_tub', index: 9 },
   { value: 'ビール', viewValue: 'バー', icon: 'local_bar', index: 10 },
   { value: '動物園', viewValue: 'Zoo', icon: 'pets', index: 11 },
+  { value: 'キャンプ', viewValue: 'キャンプ', icon: 'outdoor_grill', index: 12 },
 ];

@@ -17,9 +17,10 @@
           type="button"
           (click)="search(category)"
           [disabled]="!searchForm.valid"
+          [matTooltip]="category.value"
           aria-label="categorySearch"
         >
-          <mat-icon>{{ category.icon }}</mat-icon>
+          <mat-icon>{{ category.icon }}</mat-icon><br>
         </button>
       </mat-grid-tile>
     </mat-grid-list>

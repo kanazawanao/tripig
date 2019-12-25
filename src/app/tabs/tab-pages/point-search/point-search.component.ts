@@ -13,13 +13,14 @@ import { Category, CATEGORIES } from 'src/app/parts/category.class';
 })
 export class PointSearchComponent {
   @ViewChild('destination') inputDestination!: ElementRef;
+  private _destination = '';
   searchForm = this.fb.group({
-    destination: ['', Validators.required]
+    destination: [this._destination, Validators.required]
   });
-  destinationKey = 'destination';
   get destination(): string {
-    return this.searchForm.controls[this.destinationKey].value;
+    return this._destination;
   }
+
   selectedCategory: Category = { icon: '', index: 0, value: '', viewValue: '' };
   get direction(): Direction {
     const direction: Direction = {
@@ -40,7 +41,11 @@ export class PointSearchComponent {
   ) {}
 
   ionViewDidEnter(): void {
-    new google.maps.places.Autocomplete(this.inputDestination.nativeElement);
+    const suggest = new google.maps.places.Autocomplete(this.inputDestination.nativeElement);
+    suggest.addListener('place_changed', () => {
+      const result = suggest.getPlace();
+      this._destination = result.vicinity ? result.vicinity : result.name;
+    });
   }
 
   search(category: Category): void {

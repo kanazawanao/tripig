@@ -10,6 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 
 const modules = [
@@ -23,6 +24,7 @@ const modules = [
   MatListModule,
   MatSelectModule,
   MatTabsModule,
+  MatTooltipModule,
   DragDropModule
 ];
 

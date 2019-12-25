@@ -26,20 +26,26 @@ export class RouteSearchComponent {
     { value: google.maps.TravelMode.TWO_WHEELER, viewValue: 'motorcycle' }
   ];
 
+  private _origin = '';
+  private _destination = '';
   searchForm = this.fb.group({
-    origin: ['', Validators.required],
+    origin: [this._origin, Validators.required],
     destination: ['', Validators.required],
     selectedTravelMode: [this.travelModes[0]]
   });
 
-  private originKey = 'origin';
   get origin(): string {
-    return this.searchForm.controls[this.originKey].value;
+    return this._origin;
+  }
+  set origin(value: string) {
+    this._origin = value;
   }
 
-  private destinationKey = 'destination';
   get destination(): string {
-    return this.searchForm.controls[this.destinationKey].value;
+    return this._destination;
+  }
+  set destination(value: string) {
+    this._destination = value;
   }
 
   private selectedModeKey = 'selectedTravelMode';
@@ -65,8 +71,16 @@ export class RouteSearchComponent {
   ) {}
 
   ionViewDidEnter(): void {
-    new google.maps.places.Autocomplete(this.inputDestination.nativeElement);
-    new google.maps.places.Autocomplete(this.inputOrigin.nativeElement);
+    const suggestDest = new google.maps.places.Autocomplete(this.inputDestination.nativeElement);
+    suggestDest.addListener('place_changed', () => {
+      const result = suggestDest.getPlace();
+      this._destination = result.vicinity ? result.vicinity : result.name;
+    });
+    const suggestOrig = new google.maps.places.Autocomplete(this.inputOrigin.nativeElement);
+    suggestOrig.addListener('place_changed', () => {
+      const result = suggestOrig.getPlace();
+      this._origin = result.vicinity ? result.vicinity : result.name;
+    });
   }
 
   search(): void {
