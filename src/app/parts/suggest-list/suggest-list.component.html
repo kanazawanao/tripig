@@ -1,19 +1,24 @@
 <ion-content>
-  <mat-accordion>
+  <mat-accordion class="example-headers-align">
     <mat-expansion-panel *ngFor="let suggest of suggestList$ | async" hideToggle>
       <mat-expansion-panel-header>
-        <mat-panel-title class="title-align">
+        <mat-panel-title>
           <mat-checkbox
             [checked]="suggest.selected"
             (change)="onSelectionChange(suggest)"
             (click)="$event.stopPropagation()"
           >
           </mat-checkbox>
-          {{ suggest.name }} / <app-rating-stars [rating]="suggest.rating"></app-rating-stars>
+        </mat-panel-title>
+        <mat-panel-description>
+          <div>
+            {{ suggest.name }}
+            <app-rating-stars [rating]="suggest.rating"></app-rating-stars>
+          </div>
           <button mat-button (click)="onSearchLinkClick($event, suggest)">
             <mat-icon matSuffix>search</mat-icon>
           </button>
-        </mat-panel-title>
+        </mat-panel-description>
       </mat-expansion-panel-header>
       <div *ngFor="let photo of suggest.photos">
         <img [src]="photo.getUrl({ maxHeight: 500, maxWidth: 500 })" />
