@@ -9,7 +9,7 @@
             (click)="$event.stopPropagation()"
           >
           </mat-checkbox>
-          {{ suggest.name }} / {{ suggest.rating }}
+          {{ suggest.name }} / <app-rating-stars [rating]="suggest.rating"></app-rating-stars>
           <button mat-button (click)="onSearchLinkClick($event, suggest)">
             <mat-icon matSuffix>search</mat-icon>
           </button>

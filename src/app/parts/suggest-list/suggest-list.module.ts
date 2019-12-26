@@ -2,6 +2,7 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from 'src/app/material/material.module';
 import { SuggestListComponent } from './suggest-list.component';
+import { RatingStarsModule } from 'src/app/parts/rating-stars/rating-stars.module';
 
 @NgModule({
   schemas: [
@@ -13,6 +14,7 @@ import { SuggestListComponent } from './suggest-list.component';
   imports: [
     CommonModule,
     MaterialModule,
+    RatingStarsModule,
   ],
   exports: [
     SuggestListComponent

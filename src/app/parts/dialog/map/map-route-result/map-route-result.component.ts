@@ -129,7 +129,8 @@ export class MapRouteResultComponent {
   private createCourse(): Course {
     const course: Course = {
       name: this.courseName,
-      route: []
+      route: [],
+      travelMode: google.maps.TravelMode.DRIVING
     };
     if (this.origin && this.destination) {
       course.route.push(this.origin);

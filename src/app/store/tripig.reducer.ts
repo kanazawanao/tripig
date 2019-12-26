@@ -24,9 +24,13 @@ export const initialState: State = {
   suggestList: [],
   lastSelectedPlace: {
     selected: true,
-    location: new google.maps.LatLng(37.421995, -122.084092)
+    location: undefined
   },
-  selectedCourse: { name: '', route: [] }
+  selectedCourse: {
+    name: '',
+    route: [],
+    travelMode: google.maps.TravelMode.DRIVING
+  }
 };
 
 const coreReducer = createReducer(
