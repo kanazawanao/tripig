@@ -22,6 +22,7 @@ export class MapRouteSearchComponent {
   @ViewChild(MapInfoWindow) infoWindow!: MapInfoWindow;
   directionsRenderer = new google.maps.DirectionsRenderer();
   markerOptions: google.maps.MarkerOptions = { draggable: false };
+  infoContent = '';
   private onDestroy$ = new Subject();
   direction$: Observable<Direction> = this.store.select(
     TripigSelector.getDirection
@@ -32,7 +33,6 @@ export class MapRouteSearchComponent {
   selectedList: Place[] = [];
   direction?: Direction;
   defaultCategory: Category = CATEGORIES[0];
-  center: google.maps.LatLng = new google.maps.LatLng(37.421995, -122.084092);
   zoom = 16;
   private dist = 0;
   get distance(): string {
@@ -42,18 +42,14 @@ export class MapRouteSearchComponent {
   get duration(): string {
     return `約${Math.floor(this.dura / 60)}分`;
   }
-  originLatLng: google.maps.LatLng = new google.maps.LatLng(
+  initLatLng: google.maps.LatLng = new google.maps.LatLng(
     37.421995,
     -122.084092
   );
-  destinationLatLng: google.maps.LatLng = new google.maps.LatLng(
-    37.421995,
-    -122.084092
-  );
-  middlePointLatLng: google.maps.LatLng = new google.maps.LatLng(
-    37.421995,
-    -122.084092
-  );
+  center =  this.initLatLng;
+  originLatLng =  this.initLatLng;
+  destinationLatLng =  this.initLatLng;
+  middlePointLatLng =  this.initLatLng;
 
   constructor(
     private location: Location,
@@ -146,7 +142,8 @@ export class MapRouteSearchComponent {
     }
   }
 
-  openInfoWindow(marker: MapMarker): void {
+  openInfoWindow(marker: MapMarker, place: Place): void {
+    this.infoContent = place.name ? place.name : '';
     this.infoWindow.open(marker);
   }
 

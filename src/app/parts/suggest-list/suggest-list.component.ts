@@ -26,10 +26,10 @@ export class SuggestListComponent implements OnInit, OnDestroy {
   private onDestroy$ = new Subject();
   googleSearchUrl = 'https://www.google.com/search?q=';
   categories: Category[] = CATEGORIES;
+
   suggestList$: Observable<Place[]> = this.store.select(
     TripigSelector.getSuggestList
   );
-  suggestList: Place[] = [];
   direction$: Observable<Direction> = this.store.select(
     TripigSelector.getDirection
   );
@@ -44,11 +44,6 @@ export class SuggestListComponent implements OnInit, OnDestroy {
     this.direction$.pipe(takeUntil(this.onDestroy$)).subscribe(direction => {
       this.direction = direction;
     });
-    this.suggestList$
-      .pipe(takeUntil(this.onDestroy$))
-      .subscribe(suggestList => {
-        this.suggestList = suggestList;
-      });
   }
 
   ngOnDestroy(): void {
@@ -56,16 +51,22 @@ export class SuggestListComponent implements OnInit, OnDestroy {
   }
 
   onSelectionChange(place: Place): void {
+    place.selected = !place.selected;
     this.store.dispatch(
       TripigActions.setLastSelectedPlace({ lastSelectedPlace: place })
     );
+    if (place.selected) {
+      this.store.dispatch(TripigActions.addSelectedPlace({ selectedPlace: place }));
+    } else {
+      this.store.dispatch(TripigActions.deleteSelectedPlace({ selectedPlace: place }));
+    }
     this.suggestList$
       .pipe(
         takeUntil(this.onDestroy$),
         map(suggestList => {
-          suggestList.forEach(s => {
+          suggestList.map(s => {
             if (s.placeId === place.placeId) {
-              s.selected = !s.selected;
+              s.selected = place.selected;
             }
           });
           return suggestList;
@@ -73,11 +74,6 @@ export class SuggestListComponent implements OnInit, OnDestroy {
       )
       .subscribe(suggestList => {
         this.store.dispatch(TripigActions.setSuggestList({ suggestList }));
-        this.store.dispatch(
-          TripigActions.setSelectedList({
-            selectedList: suggestList.filter(s => s.selected === true)
-          })
-        );
       });
   }
 

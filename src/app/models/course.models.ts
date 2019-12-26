@@ -1,7 +1,7 @@
 import { Place } from './place.model';
 
 /**
- * Route
+ * Course
  */
 export interface Course {
   name: string;

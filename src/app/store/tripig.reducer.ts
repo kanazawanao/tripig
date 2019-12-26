@@ -60,7 +60,19 @@ const coreReducer = createReducer(
       ...state,
       selectedCourse
     };
-  })
+  }),
+  on(TripigAction.addSelectedPlace, (state, { selectedPlace }) => {
+    return {
+      ...state,
+      selectedList: state.selectedList.concat([selectedPlace])
+    };
+  }),
+  on(TripigAction.deleteSelectedPlace, (state, { selectedPlace }) => {
+    return {
+      ...state,
+      selectedList: state.selectedList.filter(s => s.placeId !== selectedPlace.placeId)
+    };
+  }),
 );
 export function reducer(state: State | undefined, action: Action): State {
   return coreReducer(state, action);

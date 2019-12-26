@@ -32,6 +32,7 @@ export class MapPointSearchComponent {
   );
   direction?: Direction;
   selectedList: Place[] = [];
+  infoContent = '';
   center: google.maps.LatLng = new google.maps.LatLng(37.421995, -122.084092);
   zoom = 16;
   markerOptions: google.maps.MarkerOptions = { draggable: false };
@@ -68,7 +69,7 @@ export class MapPointSearchComponent {
   search(category: Category): void {
     if (this.direction) {
       this.direction.category = category;
-      this.setMap(this.direction);
+      this.searchPlace(this.center, this.direction);
     }
   }
 
@@ -109,7 +110,8 @@ export class MapPointSearchComponent {
       });
   }
 
-  openInfoWindow(marker: MapMarker): void {
+  openInfoWindow(marker: MapMarker, place: Place): void {
+    this.infoContent = place.name ? place.name : '';
     this.infoWindow.open(marker);
   }
 }

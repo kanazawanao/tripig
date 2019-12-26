@@ -4,9 +4,9 @@
     *ngFor="let selected of selectedList"
     [position]="selected.location"
     [options]="markerOptions"
-    (mapClick)="openInfoWindow(marker)"
+    (mapClick)="openInfoWindow(marker, selected)"
   ></map-marker>
-  <map-info-window></map-info-window>
+  <map-info-window>{{ infoContent }}</map-info-window>
 </google-map>
 <ion-content>
   <app-suggest-list (categoryChange)="middlePointPlaceSearch($event)">

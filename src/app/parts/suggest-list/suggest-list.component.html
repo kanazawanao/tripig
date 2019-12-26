@@ -13,7 +13,7 @@
 </mat-tab-group>
 <ion-content>
   <mat-accordion>
-    <mat-expansion-panel *ngFor="let suggest of suggestList" hideToggle>
+    <mat-expansion-panel *ngFor="let suggest of suggestList$ | async" hideToggle>
       <mat-expansion-panel-header>
         <mat-panel-title class="title-align">
           <mat-checkbox
