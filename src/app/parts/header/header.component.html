@@ -8,10 +8,10 @@
         <mat-icon>power_settings_new</mat-icon>
       </button>
     </ion-title>
-    <ion-buttons *ngIf="showResultRoute" slot="end">
-      <ion-button (click)="guide()" aria-label="guide">
+    <ion-fab *ngIf="showResultRoute" vertical="top" horizontal="end">
+      <ion-fab-button (click)="guide()" aria-label="guide">
         <ion-icon name="rocket"></ion-icon>
-      </ion-button>
-    </ion-buttons>
+      </ion-fab-button>
+    </ion-fab>
   </ion-toolbar>
 </ion-header>
