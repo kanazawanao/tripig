@@ -168,33 +168,36 @@ export class MapRouteResultComponent {
   }
 
   private setResultRoute(direction: Direction): void {
-    const destPosition: Place = {
-      name: direction.destination,
-      selected: true
-    };
-    this.destination = destPosition;
-    this.selectedList$.pipe(takeUntil(this.onDestroy$)).subscribe(waypoints => {
-      const request: google.maps.DirectionsRequest = this.CreateDirectionsRequest(
-        direction,
-        waypoints
-      );
-      this.mapService
-        .route(request)
-        .then(result => {
-          this.directionsRenderer.setMap(this.map.data.getMap());
-          this.directionsRenderer.setDirections(result);
-          result.routes[0].waypoint_order.forEach(index => {
-            this.resultList.push(waypoints[index]);
-            this.waypoints.push(waypoints[index]);
+    this.mapService.geocode({ address: direction.destination }).then(result => {
+      this.destination = {
+        selected: true,
+        location: result.geometry.location,
+        placeId: result.place_id,
+        name: direction.destination
+      };
+      this.selectedList$.pipe(takeUntil(this.onDestroy$)).subscribe(waypoints => {
+        const request: google.maps.DirectionsRequest = this.CreateDirectionsRequest(
+          direction,
+          waypoints
+        );
+        this.mapService
+          .route(request)
+          .then(routeResult => {
+            this.directionsRenderer.setMap(this.map.data.getMap());
+            this.directionsRenderer.setDirections(routeResult);
+            routeResult.routes[0].waypoint_order.forEach(index => {
+              this.resultList.push(waypoints[index]);
+              this.waypoints.push(waypoints[index]);
+            });
+            this.calcDistAndDura(routeResult);
+            if (this.destination) {
+              this.resultList.push(this.destination);
+            }
+          })
+          .catch(() => {
+            this.dismissModal();
           });
-          this.calcDistAndDura(result);
-          if (this.destination) {
-            this.resultList.push(this.destination);
-          }
-        })
-        .catch(() => {
-          this.dismissModal();
-        });
+      });
     });
   }
 

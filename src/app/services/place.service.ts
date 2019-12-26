@@ -35,6 +35,14 @@ export class PlaceService {
       .update(Object.assign({}, JSON.parse(JSON.stringify(course))));
   }
 
+  deletePlace(course: Course): void {
+    this.collection
+      .doc(this.userId)
+      .collection<Course>('course')
+      .doc(course.id)
+      .delete();
+  }
+
   getAllPlace(): Observable<Course[]> {
     return this.collection
       .doc(this.userId)

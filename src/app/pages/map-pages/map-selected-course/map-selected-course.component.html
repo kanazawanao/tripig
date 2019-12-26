@@ -1,3 +1,13 @@
+<google-map height="250px" width="100%" [center]="center" [zoom]="zoom">
+  <map-marker
+    #marker
+    *ngFor="let place of selectedCourse?.route"
+    [position]="place.location"
+    [options]="markerOptions"
+    (mapClick)="openInfoWindow(marker, place)"
+  ></map-marker>
+  <map-info-window>{{ infoContent }}</map-info-window>
+</google-map>
 <ion-content>
   <h2>{{selectedCourse?.name}}</h2>
   <div *ngFor="let place of selectedCourse?.route">

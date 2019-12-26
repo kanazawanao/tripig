@@ -30,4 +30,8 @@ export class RegisteredRoutesComponent {
     );
     this.router.navigate(['/tabs/pages/map/course']);
   }
+
+  delete(course: Course): void {
+    this.placeService.deletePlace(course);
+  }
 }
