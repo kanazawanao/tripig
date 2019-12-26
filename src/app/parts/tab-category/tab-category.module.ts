@@ -1,21 +1,21 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MaterialModule } from 'src/app/material/material.module';
-import { SuggestListComponent } from './suggest-list.component';
+import { TabCategoryComponent } from './tab-category.component';
 
 @NgModule({
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA
   ],
   declarations: [
-    SuggestListComponent
+    TabCategoryComponent
   ],
   imports: [
     CommonModule,
-    MaterialModule,
+    MaterialModule
   ],
   exports: [
-    SuggestListComponent
+    TabCategoryComponent
   ]
 })
-export class SuggestListModule { }
+export class TabCategoryModule { }

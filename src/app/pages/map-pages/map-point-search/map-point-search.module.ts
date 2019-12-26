@@ -6,6 +6,7 @@ import { GoogleMapsModule } from '@angular/google-maps';
 import { MaterialModule } from 'src/app/material/material.module';
 import { MapPointSearchComponent } from './map-point-search.component';
 import { SuggestListModule } from 'src/app/parts/suggest-list/suggest-list.module';
+import { TabCategoryModule } from 'src/app/parts/tab-category/tab-category.module';
 
 @NgModule({
   declarations: [MapPointSearchComponent],
@@ -16,6 +17,7 @@ import { SuggestListModule } from 'src/app/parts/suggest-list/suggest-list.modul
     GoogleMapsModule,
     MaterialModule,
     SuggestListModule,
+    TabCategoryModule,
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA

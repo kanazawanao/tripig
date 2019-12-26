@@ -9,6 +9,6 @@
   <map-info-window>{{ infoContent }}</map-info-window>
 </google-map>
 <ion-content>
-  <app-suggest-list (categoryChange)="middlePointPlaceSearch($event)">
-  </app-suggest-list>
+  <app-tab-category (categoryChange)="middlePointPlaceSearch($event)"></app-tab-category>
+  <app-suggest-list></app-suggest-list>
 </ion-content>

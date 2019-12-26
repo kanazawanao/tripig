@@ -6,6 +6,7 @@ import { GoogleMapsModule } from '@angular/google-maps';
 import { MaterialModule } from 'src/app/material/material.module';
 import { MapRouteSearchComponent } from './map-route-search.component';
 import { SuggestListModule } from 'src/app/parts/suggest-list/suggest-list.module';
+import { TabCategoryModule } from 'src/app/parts/tab-category/tab-category.module';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { SuggestListModule } from 'src/app/parts/suggest-list/suggest-list.modul
     RouterModule.forChild([{ path: '', component: MapRouteSearchComponent }]),
     GoogleMapsModule,
     MaterialModule,
-    SuggestListModule
+    SuggestListModule,
+    TabCategoryModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA
