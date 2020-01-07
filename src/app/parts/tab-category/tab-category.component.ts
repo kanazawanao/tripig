@@ -6,6 +6,7 @@ import * as TripigSelector from 'src/app/store/tripig.selector';
 import { Category, CATEGORIES } from '../category.class';
 import { Direction } from 'src/app/models/direction.model';
 import { takeUntil } from 'rxjs/operators';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 
 @Component({
   selector: 'app-tab-category',
@@ -13,7 +14,7 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./tab-category.component.scss'],
 })
 export class TabCategoryComponent implements OnInit {
-  @Output() categoryChange: EventEmitter<any> = new EventEmitter();
+  @Output() categoryChange: EventEmitter<Category> = new EventEmitter();
   categories: Category[] = CATEGORIES;
   private onDestroy$ = new Subject();
   direction$: Observable<Direction> = this.store.select(
@@ -28,7 +29,7 @@ export class TabCategoryComponent implements OnInit {
     });
   }
 
-  onTabClick(category: Category): void {
-    this.categoryChange.emit(category);
+  onTabClick(event: MatTabChangeEvent): void {
+    this.categoryChange.emit(this.categories[event.index]);
   }
 }

@@ -56,7 +56,7 @@ export class MapSelectedCourseComponent {
     const destination = course.route[course.route.length - 1];
     const request: google.maps.DirectionsRequest = {
       origin: origin.location,
-      destination: destination.location,
+      destination: destination.name,
       waypoints: this.createWaypoints(course),
       travelMode: course.travelMode
     };

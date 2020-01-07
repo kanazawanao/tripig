@@ -10,7 +10,11 @@
 </google-map>
 <ion-content>
   <h2>{{selectedCourse?.name}}</h2>
-  <div *ngFor="let place of selectedCourse?.route">
-    {{ place.name }}
-  </div>
+  <mat-list>
+    <mat-list-item *ngFor="let place of selectedCourse?.route">
+      <p matLine>
+        {{ place.name }}
+      </p>
+    </mat-list-item>
+  </mat-list>
 </ion-content>
