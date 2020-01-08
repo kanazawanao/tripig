@@ -16,6 +16,7 @@ import { GooglePlus } from '@ionic-native/google-plus/ngx';
 export class AuthService {
   user: Observable<User | null | undefined>;
   userId = '';
+  photoUrl = '';
   loggedIn = false;
   constructor(
     private router: Router,
@@ -28,6 +29,7 @@ export class AuthService {
       switchMap(user => {
         if (user) {
           this.userId = user.uid;
+          this.photoUrl = user.photoURL ? user.photoURL : '';
           this.loggedIn = true;
           return this.afStore.doc<User>(`users/${user.uid}`).valueChanges();
         } else {

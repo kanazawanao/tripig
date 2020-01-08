@@ -1,5 +1,5 @@
 <ion-content>
-  <mat-accordion class="example-headers-align">
+  <mat-accordion>
     <mat-expansion-panel *ngFor="let suggest of suggestList$ | async" hideToggle>
       <mat-expansion-panel-header>
         <mat-panel-title>
@@ -10,7 +10,7 @@
           >
           </mat-checkbox>
         </mat-panel-title>
-        <mat-panel-description>
+        <mat-panel-description class="description">
           <div>
             {{ suggest.name }}
             <app-rating-stars [rating]="suggest.rating"></app-rating-stars>

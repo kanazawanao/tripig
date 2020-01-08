@@ -45,5 +45,4 @@ export class RatingStarsComponent implements OnInit {
       this.rate1 = this.starHalf;
     }
   }
-
 }
