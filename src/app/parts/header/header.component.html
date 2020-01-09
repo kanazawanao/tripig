@@ -1,12 +1,28 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>
+    <ion-title class="title">
       <button mat-button routerLink="/" aria-label="top">
         Tripig
       </button>
-      <button *ngIf="auth.loggedIn" mat-button (click)="signOut()">
-        <mat-icon>power_settings_new</mat-icon>
+      <button class="userMenu" *ngIf="auth.loggedIn; else guest" mat-button [matMenuTriggerFor]="userMenu">
+        <img class="avatar" [src]="auth.photoUrl">
       </button>
+      <mat-menu #userMenu="matMenu">
+        <button mat-menu-item>Anything</button>
+        <button mat-menu-item (click)="signOut()">
+          ログアウト
+        </button>
+      </mat-menu>
+      <ng-template #guest>
+        <button class="userMenu" mat-button [matMenuTriggerFor]="guestMenu">
+          <mat-icon>account_circle</mat-icon>
+        </button>
+        <mat-menu #guestMenu="matMenu">
+          <button mat-menu-item routerLink="/tabs/pages/signIn">
+            ログイン
+          </button>
+        </mat-menu>
+      </ng-template>
     </ion-title>
     <ion-buttons *ngIf="showResultRoute" slot="end">
       <ion-button (click)="guide()" aria-label="guide">

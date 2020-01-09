@@ -1,22 +1,25 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { MaterialModule } from 'src/app/material/material.module';
-import { SignInComponent } from './sign-in.component';
+import { SignUpComponent } from './sign-up.component';
 
 @NgModule({
   declarations: [
-    SignInComponent
+    SignUpComponent
   ],
   imports: [
     CommonModule,
-    MaterialModule,
+    FormsModule,
+    ReactiveFormsModule,
+    RouterModule.forChild([{ path: '', component: SignUpComponent }]),
     IonicModule,
-    RouterModule.forChild([{ path: '', component: SignInComponent }]),
+    MaterialModule,
   ],
   exports: [
-    SignInComponent
+    SignUpComponent
   ]
 })
-export class SignInModule { }
+export class SignUpModule { }

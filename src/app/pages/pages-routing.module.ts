@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-
 const routes: Routes = [
   {
     path: 'map',
@@ -16,6 +15,10 @@ const routes: Routes = [
   {
     path: 'signIn',
     loadChildren: () => import('./sign-in/sign-in.module').then(m => m.SignInModule)
+  },
+  {
+    path: 'signUp',
+    loadChildren: () => import('./sign-up/sign-up.module').then(m => m.SignUpModule)
   },
 ];
 

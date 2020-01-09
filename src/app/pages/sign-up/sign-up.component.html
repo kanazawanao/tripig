@@ -1,0 +1,32 @@
+<form [formGroup]="signupForm" class="form">
+  <mat-form-field class="full-width">
+    <input
+      matInput
+      #email
+      type="email"
+      placeholder="email"
+      formControlName="email"
+      required
+    />
+  </mat-form-field>
+  <mat-form-field class="full-width">
+    <input
+      matInput
+      #password
+      type="password"
+      placeholder="password"
+      formControlName="password"
+      required
+    />
+  </mat-form-field>
+  <button
+    mat-button
+    type="button"
+    (click)="signUp()"
+    [disabled]="signupForm.invalid"
+    aria-label="signUp"
+  >
+    <mat-icon>person_add</mat-icon>
+    Sign Up
+  </button>
+</form>

@@ -1,0 +1,11 @@
+$header-size: 40px !default;
+.avatar {
+  height: $header-size;
+  width: $header-size;
+  border-radius: 50%;
+  flex-shrink: 0;
+  object-fit: cover;
+}
+.userMenu {
+  float: right;
+}

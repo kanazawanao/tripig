@@ -3,9 +3,10 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import * as TripigActions from 'src/app/store/tripig.action';
 import * as TripigReducer from 'src/app/store/tripig.reducer';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { PlaceService } from 'src/app/services/place.service';
 import { Course } from 'src/app/models/course.models';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-registered-routes',
@@ -13,7 +14,10 @@ import { Course } from 'src/app/models/course.models';
   styleUrls: ['./registered-routes.component.scss']
 })
 export class RegisteredRoutesComponent {
-  courses$?: Observable<Course[]>;
+  courses$: Observable<Course[]> = this.placeService.getAllPlace();
+  courses: Course[] = [];
+
+  private onDestroy$ = new Subject();
   constructor(
     private router: Router,
     private placeService: PlaceService,
@@ -21,7 +25,15 @@ export class RegisteredRoutesComponent {
   ) {}
 
   ionViewDidEnter(): void {
-    this.courses$ = this.placeService.getAllPlace();
+    this.courses$
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe(c => {
+        this.courses = c;
+      });
+  }
+
+  ionViewDidLeave(): void {
+    this.onDestroy$.next();
   }
 
   select(course: Course): void {

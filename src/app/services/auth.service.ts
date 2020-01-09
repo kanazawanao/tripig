@@ -105,7 +105,10 @@ export class AuthService {
 
   signOut() {
     this.afAuth.auth.signOut().then(() => {
-      this.router.navigate(['']);
+      this.router.navigate(['/tabs/pages/signIn']);
+
+    }).catch((error) => {
+      console.log(error);
     });
   }
 }

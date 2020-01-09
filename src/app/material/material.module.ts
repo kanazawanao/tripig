@@ -8,6 +8,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -22,6 +23,7 @@ const modules = [
   MatIconModule,
   MatInputModule,
   MatListModule,
+  MatMenuModule,
   MatSelectModule,
   MatTabsModule,
   MatTooltipModule,
@@ -30,7 +32,12 @@ const modules = [
 
 @NgModule({
   declarations: [],
-  exports: [modules],
-  imports: [CommonModule, modules]
+  exports: [
+    modules
+  ],
+  imports: [
+    CommonModule,
+    modules
+  ]
 })
 export class MaterialModule {}

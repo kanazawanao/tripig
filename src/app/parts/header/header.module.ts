@@ -1,5 +1,6 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { MaterialModule } from 'src/app/material/material.module';
 import { HeaderComponent } from './header.component';
 
@@ -12,6 +13,7 @@ import { HeaderComponent } from './header.component';
   ],
   imports: [
     CommonModule,
+    RouterModule,
     MaterialModule,
   ],
   exports: [

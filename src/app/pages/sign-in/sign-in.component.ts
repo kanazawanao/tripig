@@ -29,4 +29,21 @@ export class SignInComponent implements OnInit {
       });
     }
   }
+
+  facebookSignIn(): void {
+    if (this.platform.is('cordova')) {
+      // Cordova環境でのみGooglePlusプラグインでログインする
+      // this.auth.nativeFacebookLogin().then(() => {
+      //   this.router.navigate(['/tabs/registered']);
+      // });
+    } else {
+      this.auth.facebookSignIn().then(() => {
+        this.router.navigate(['/tabs/registered']);
+      });
+    }
+  }
+
+  toSignUpPage() {
+    this.router.navigate(['/tabs/pages/signUp']);
+  }
 }
