@@ -14,10 +14,10 @@
           </mat-checkbox>
         </mat-panel-title>
         <mat-panel-description class="description">
-          <div>
+          <span class="name">
             {{ suggest.name }}
             <app-rating-stars [rating]="suggest.rating"></app-rating-stars>
-          </div>
+          </span>
           <button mat-button (click)="onSearchLinkClick($event, suggest)">
             <mat-icon matSuffix>search</mat-icon>
           </button>

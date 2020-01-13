@@ -5,3 +5,10 @@
 .rocket {
   padding-bottom: 40px;
 }
+.name {
+  max-width: 100%;
+  min-width: 250px;
+  display: inline-block;
+  white-space: nowrap;
+  text-align: left;
+}
