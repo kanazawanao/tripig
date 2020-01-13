@@ -13,16 +13,6 @@ export const setSelectedList = createAction(
   props<{ selectedList: Place[] }>()
 );
 
-export const addSelectedPlace = createAction(
-  '[Tripig] addSelectedPlace',
-  props<{ selectedPlace: Place }>()
-);
-
-export const deleteSelectedPlace = createAction(
-  '[Tripig] deleteSelectedPlace',
-  props<{ selectedPlace: Place }>()
-);
-
 export const setSuggestList = createAction(
   '[Tripig] setSuggestList',
   props<{ suggestList: Place[] }>()
@@ -36,4 +26,9 @@ export const setLastSelectedPlace = createAction(
 export const setSelectedCourse = createAction(
   '[Tripig] setSelectedCourse',
   props<{ selectedCourse: Course }>()
+);
+
+export const onSelectedChange = createAction(
+  '[Tripig] setSelectedChange',
+  props<{ place: Place }>()
 );

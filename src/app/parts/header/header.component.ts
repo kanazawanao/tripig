@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
-import { MapRouteResultComponent } from '../dialog/map/map-route-result/map-route-result.component';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import * as TripigState from 'src/app/store/';
@@ -14,28 +12,15 @@ import { Place } from 'src/app/models/place.model';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
-  showResultRoute = false;
   selectedList$: Observable<Place[]> = this.store.select(
     TripigSelector.getSelectedList
   );
   constructor(
     private store: Store<TripigState.State>,
-    private modalCtrl: ModalController,
     public auth: AuthService
   ) {}
 
-  ngOnInit(): void {
-    this.selectedList$.subscribe(list => {
-      this.showResultRoute = list.length > 0;
-    });
-  }
-
-  async guide(): Promise<void> {
-    const modal = await this.modalCtrl.create({
-      component: MapRouteResultComponent
-    });
-    return await modal.present();
-  }
+  ngOnInit(): void {}
 
   signOut(): void {
     this.auth.signOut();

@@ -1,6 +1,9 @@
 <ion-content>
   <mat-accordion>
-    <mat-expansion-panel *ngFor="let suggest of suggestList$ | async" hideToggle>
+    <mat-expansion-panel
+      *ngFor="let suggest of suggestList$ | async"
+      hideToggle
+    >
       <mat-expansion-panel-header>
         <mat-panel-title>
           <mat-checkbox
@@ -21,8 +24,19 @@
         </mat-panel-description>
       </mat-expansion-panel-header>
       <div *ngFor="let photo of suggest.photos">
-        <img [src]="photo.getUrl({ maxHeight: 500, maxWidth: 500 })" />
+        <img [src]="photo" />
       </div>
     </mat-expansion-panel>
   </mat-accordion>
+  <ion-fab
+    *ngIf="showResultRoute"
+    vertical="bottom"
+    horizontal="end"
+    slot="fixed"
+    class="rocket"
+  >
+    <ion-fab-button (click)="guide()" aria-label="guide">
+      <ion-icon name="rocket"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

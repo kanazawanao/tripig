@@ -7,6 +7,8 @@ import * as TripigSelector from 'src/app/store/tripig.selector';
 import { Place } from 'src/app/models/place.model';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
+import { MapRouteResultComponent } from '../dialog/map/map-route-result/map-route-result.component';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-suggest-list',
@@ -14,49 +16,62 @@ import { takeUntil, map } from 'rxjs/operators';
   styleUrls: ['./suggest-list.component.scss']
 })
 export class SuggestListComponent implements OnInit, OnDestroy {
+  showResultRoute = false;
   private onDestroy$ = new Subject();
   googleSearchUrl = 'https://www.google.com/search?q=';
 
+  selectedList$: Observable<Place[]> = this.store.select(
+    TripigSelector.getSelectedList
+  );
+  selectedList: Place[] = [];
   suggestList$: Observable<Place[]> = this.store.select(
     TripigSelector.getSuggestList
   );
-
+  suggestList: Place[] = [];
   constructor(
     private store: Store<TripigState.State>,
-    private inAppBrowser: InAppBrowser
+    private inAppBrowser: InAppBrowser,
+    private modalCtrl: ModalController
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.selectedList$.pipe(takeUntil(this.onDestroy$)).subscribe(list => {
+      this.showResultRoute = list.length > 0;
+    });
+    this.suggestList$
+      .pipe(
+        takeUntil(this.onDestroy$),
+        map(suggest => {
+          this.selectedList = this.suggestList.filter(s => s.selected);
+          this.store.dispatch(
+            TripigActions.setSelectedList({ selectedList: this.selectedList })
+          );
+          return suggest;
+        })
+      )
+      .subscribe(suggest => {
+        this.suggestList = JSON.parse(JSON.stringify(suggest));
+      });
+  }
 
   ngOnDestroy(): void {
     this.onDestroy$.next();
   }
 
   onSelectionChange(place: Place): void {
-    place.selected = !place.selected;
     this.store.dispatch(
       TripigActions.setLastSelectedPlace({ lastSelectedPlace: place })
     );
-    if (place.selected) {
-      this.store.dispatch(TripigActions.addSelectedPlace({ selectedPlace: place }));
-    } else {
-      this.store.dispatch(TripigActions.deleteSelectedPlace({ selectedPlace: place }));
-    }
-    this.suggestList$
-      .pipe(
-        takeUntil(this.onDestroy$),
-        map(suggestList => {
-          suggestList.map(s => {
-            if (s.placeId === place.placeId) {
-              s.selected = place.selected;
-            }
-          });
-          return suggestList;
+    this.store.dispatch(
+      TripigActions.setSuggestList({
+        suggestList: this.suggestList.map(sList => {
+          if (sList.placeId === place.placeId) {
+            sList.selected = !sList.selected;
+          }
+          return sList;
         })
-      )
-      .subscribe(suggestList => {
-        this.store.dispatch(TripigActions.setSuggestList({ suggestList }));
-      });
+      })
+    );
   }
 
   onSearchLinkClick(event: MouseEvent, suggest: Place): void {
@@ -65,5 +80,12 @@ export class SuggestListComponent implements OnInit, OnDestroy {
       `${this.googleSearchUrl}${suggest.name}`
     );
     browser.show();
+  }
+
+  async guide(): Promise<void> {
+    const modal = await this.modalCtrl.create({
+      component: MapRouteResultComponent
+    });
+    return await modal.present();
   }
 }

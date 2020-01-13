@@ -65,18 +65,17 @@ const coreReducer = createReducer(
       selectedCourse
     };
   }),
-  on(TripigAction.addSelectedPlace, (state, { selectedPlace }) => {
+  on(TripigAction.onSelectedChange, (state, { place }) => {
     return {
       ...state,
-      selectedList: state.selectedList.concat([selectedPlace])
+      suggestList: state.suggestList.map(s => {
+        if (s.placeId === place.placeId) {
+          s.selected = !s.selected;
+        }
+        return s;
+      })
     };
-  }),
-  on(TripigAction.deleteSelectedPlace, (state, { selectedPlace }) => {
-    return {
-      ...state,
-      selectedList: state.selectedList.filter(s => s.placeId !== selectedPlace.placeId)
-    };
-  }),
+  })
 );
 export function reducer(state: State | undefined, action: Action): State {
   return coreReducer(state, action);
