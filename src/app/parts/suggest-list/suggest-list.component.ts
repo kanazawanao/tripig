@@ -75,9 +75,10 @@ export class SuggestListComponent implements OnInit, OnDestroy {
   }
 
   onSearchLinkClick(event: MouseEvent, suggest: Place): void {
+    const encodedName = suggest.name ? encodeURIComponent(suggest.name) : '';
     event.stopPropagation();
     const browser = this.inAppBrowser.create(
-      `${this.googleSearchUrl}${suggest.name}`
+      `${this.googleSearchUrl}${encodedName}`
     );
     browser.show();
   }
