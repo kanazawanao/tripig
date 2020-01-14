@@ -40,13 +40,41 @@ export class AuthService {
     );
   }
 
+  signup(email: string, password: string): void {
+    this.afAuth
+      .auth
+      .createUserWithEmailAndPassword(email, password)
+      .then( auth => {
+        if (auth.user) {
+          auth.user.sendEmailVerification();
+        }
+      })
+      .then(() => alert('メールアドレス確認メールを送信しました。'))
+      .catch( err => {
+        console.log(err);
+        alert('アカウントの作成に失敗しました。\n' + err);
+      });
+  }
+
   async signIn(email: string, password: string) {
-    try {
-      await this.afAuth.auth.signInWithEmailAndPassword(email, password);
-    } catch (err) {
-      return console.log(err);
-      // TODO: エラー処理追加
-    }
+    this.afAuth
+      .auth
+      .signInWithEmailAndPassword(email, password)
+      .then(auth => {
+        // メールアドレス確認が済んでいるかどうか
+        if (auth.user && !auth.user.emailVerified) {
+          this.afAuth.auth.signOut();
+          return Promise.reject('メールアドレスが確認できていません。');
+        } else {
+          this.loggedIn = true;
+          return this.router.navigate(['/']);
+        }
+      })
+      .then(() => alert('ログインしました。'))
+      .catch( err => {
+        console.log(err);
+        alert('ログインに失敗しました。\n' + err);
+      });
   }
 
   async nativeGoogleLogin(): Promise<any> {
@@ -104,11 +132,16 @@ export class AuthService {
   }
 
   signOut() {
-    this.afAuth.auth.signOut().then(() => {
-      this.router.navigate(['/tabs/pages/signIn']);
-
-    }).catch((error) => {
-      console.log(error);
-    });
+    this.afAuth
+      .auth
+      .signOut()
+      .then(() => {
+        this.router.navigate(['/tabs/pages/signIn']);
+      })
+      .then(() => alert('ログアウトしました。'))
+      .catch( err => {
+        console.log(err);
+        alert('ログアウトに失敗しました。\n' + err);
+      });
   }
 }
