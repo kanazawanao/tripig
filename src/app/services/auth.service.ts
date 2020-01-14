@@ -2,49 +2,81 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { Observable, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { Observable, of, Subject } from 'rxjs';
+import { switchMap, map, take } from 'rxjs/operators';
 import * as firebase from 'firebase/app';
-import { User } from '../models/user.model';
 import { UserService } from './user.service';
 import { environment } from 'src/environments/environment';
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
+import { Session, User } from '../models/class/session';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  user: Observable<User | null | undefined>;
+  user?: Observable<User | null | undefined>;
   userId = '';
   photoUrl = '';
-  loggedIn = false;
+  public session = new Session();
+  public sessionSubject = new Subject<Session>();
+  public sessionState = this.sessionSubject.asObservable();
   constructor(
     private router: Router,
     private afAuth: AngularFireAuth,
     private afStore: AngularFirestore,
     private userService: UserService,
     private gplus: GooglePlus
-  ) {
-    this.user = this.afAuth.authState.pipe(
-      switchMap(user => {
-        if (user) {
-          this.userId = user.uid;
-          this.photoUrl = user.photoURL ? user.photoURL : '';
-          this.loggedIn = true;
-          return this.afStore.doc<User>(`users/${user.uid}`).valueChanges();
-        } else {
-          this.loggedIn = false;
-          return of(null);
-        }
-      })
-    );
+  ) {}
+
+  checkLogin(): void {
+    this.afAuth
+      .authState
+      .pipe(
+        // authの有無でObservbleを変更
+        switchMap(auth => {
+          if (!auth) {
+            return of(null);
+          } else {
+            return this.getUser(auth.uid);
+          }
+        })
+      )
+      .subscribe(auth => {
+        // ログイン状態を返り値の有無で判断
+        this.session.login = (!!auth);
+        this.session.user = (auth) ? auth : new User();
+        this.sessionSubject.next(this.session);
+      });
+  }
+
+  checkLoginState(): Observable<Session> {
+    return this.afAuth
+      .authState
+      .pipe(
+        map(auth => {
+          // ログイン状態を返り値の有無で判断
+          this.session.login = (!!auth);
+          return this.session;
+        })
+      )
+  }
+
+  private getUser(uid: string): Observable<any> {
+    return this.afStore
+      .collection('users')
+      .doc(uid)
+      .valueChanges()
+      .pipe(
+        take(1),
+        switchMap((user: User) => of(new User(uid, user.name)))
+      );
   }
 
   signup(email: string, password: string): void {
     this.afAuth
       .auth
       .createUserWithEmailAndPassword(email, password)
-      .then( auth => {
+      .then(auth => {
         if (auth.user) {
           auth.user.sendEmailVerification();
         }
@@ -66,7 +98,8 @@ export class AuthService {
           this.afAuth.auth.signOut();
           return Promise.reject('メールアドレスが確認できていません。');
         } else {
-          this.loggedIn = true;
+          this.session.login = true;
+          this.sessionSubject.next(this.session);
           return this.router.navigate(['/']);
         }
       })
@@ -114,19 +147,10 @@ export class AuthService {
   }
 
   private createUser(crediential: firebase.auth.UserCredential | any) {
-    const user: User = {
-      displayName: '',
-      email: '',
-      photoURL: '',
-      profile: '',
-      uid: ''
-    };
+    const user: User = new User();
     if (crediential) {
       user.uid = crediential.uid ? crediential.uid : '';
-      user.email = crediential.email ? crediential.email : '';
-      user.displayName = crediential.displayName ? crediential.displayName : '';
-      user.photoURL = crediential.photoURL ? crediential.photoURL : '';
-      user.profile = crediential.profile ? crediential.profile : '';
+      user.name = crediential.displayName ? crediential.displayName : '';
     }
     return user;
   }
