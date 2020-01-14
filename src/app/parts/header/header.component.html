@@ -23,12 +23,15 @@
     <mat-menu #userMenu="matMenu">
       <button mat-menu-item>Anything</button>
       <button mat-menu-item (click)="signOut()">
-        ログアウト
+        Sign Out
       </button>
     </mat-menu>
     <mat-menu #guestMenu="matMenu">
       <button mat-menu-item routerLink="/tabs/pages/signIn">
-        ログイン
+        Sign In
+      </button>
+      <button mat-menu-item routerLink="/tabs/pages/signUp">
+        Sign Up
       </button>
     </mat-menu>
   </ion-toolbar>
