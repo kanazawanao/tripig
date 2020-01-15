@@ -4,7 +4,7 @@ import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import * as TripigState from 'src/app/store/';
 import * as TripigActions from 'src/app/store/tripig.action';
 import * as TripigSelector from 'src/app/store/tripig.selector';
-import { Place } from 'src/app/models/place.model';
+import { Place } from 'src/app/models/interface/place.model';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
 import { MapRouteResultComponent } from '../dialog/map/map-route-result/map-route-result.component';

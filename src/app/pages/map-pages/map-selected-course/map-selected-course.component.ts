@@ -1,19 +1,19 @@
 import { Component, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { Store } from '@ngrx/store';
+import { MapMarker, MapInfoWindow, GoogleMap } from '@angular/google-maps';
+import { Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import * as TripigState from 'src/app/store/';
 import * as TripigSelector from 'src/app/store/tripig.selector';
-import { Observable, Subject } from 'rxjs';
-import { Course } from 'src/app/models/course.models';
-import { takeUntil } from 'rxjs/operators';
-import { MapMarker, MapInfoWindow, GoogleMap } from '@angular/google-maps';
-import { Place } from 'src/app/models/place.model';
+import { Course } from 'src/app/models/interface/course.models';
+import { Place } from 'src/app/models/interface/place.model';
 import { MapService } from 'src/app/services/map.service';
 
 @Component({
   selector: 'app-map-selected-course',
   templateUrl: './map-selected-course.component.html',
-  styleUrls: ['./map-selected-course.component.scss'],
+  styleUrls: ['./map-selected-course.component.scss']
 })
 export class MapSelectedCourseComponent {
   @ViewChild(GoogleMap) map!: GoogleMap;
@@ -26,7 +26,7 @@ export class MapSelectedCourseComponent {
     37.421995,
     -122.084092
   );
-  center =  this.initLatLng;
+  center = this.initLatLng;
   zoom = 16;
   selectedCourse?: Course;
   infoContent = '';
@@ -36,15 +36,13 @@ export class MapSelectedCourseComponent {
     private location: Location,
     private store: Store<TripigState.State>,
     private mapService: MapService
-  ) { }
+  ) {}
 
   ionViewDidEnter() {
-    this.selectedCourse$
-      .pipe(takeUntil(this.onDestroy$))
-      .subscribe(s => {
-        this.selectedCourse = s;
-        this.setRoute(s);
-      });
+    this.selectedCourse$.pipe(takeUntil(this.onDestroy$)).subscribe(s => {
+      this.selectedCourse = s;
+      this.setRoute(s);
+    });
   }
 
   ionViewDidLeave(): void {

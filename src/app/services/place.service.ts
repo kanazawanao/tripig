@@ -5,7 +5,7 @@ import {
 } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
-import { Course } from '../models/course.models';
+import { Course } from '../models/interface/course.models';
 
 @Injectable({
   providedIn: 'root'
@@ -16,9 +16,8 @@ export class PlaceService {
   private readonly PATH_COURSE = 'course';
   userId = '';
   constructor(private auth: AuthService, private afStore: AngularFirestore) {
-    this.userId = this.auth.userId;
-    this.collection = this.afStore
-      .collection(this.PATH_PLACES);
+    this.userId = this.auth.session.user.uid;
+    this.collection = this.afStore.collection(this.PATH_PLACES);
   }
 
   addPlace(course: Course): void {

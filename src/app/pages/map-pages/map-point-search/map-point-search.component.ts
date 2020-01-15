@@ -7,8 +7,8 @@ import { takeUntil } from 'rxjs/operators';
 import * as TripigState from 'src/app/store/';
 import * as TripigActions from 'src/app/store/tripig.action';
 import * as TripigSelector from 'src/app/store/tripig.selector';
-import { Direction } from 'src/app/models/direction.model';
-import { Place } from 'src/app/models/place.model';
+import { Direction } from 'src/app/models/interface/direction.model';
+import { Place } from 'src/app/models/interface/place.model';
 import { MapService } from 'src/app/services/map.service';
 import { Category } from 'src/app/parts/category.class';
 

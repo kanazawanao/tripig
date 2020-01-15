@@ -7,10 +7,10 @@ import { takeUntil } from 'rxjs/operators';
 import * as TripigState from 'src/app/store/';
 import * as TripigActions from 'src/app/store/tripig.action';
 import * as TripigSelector from 'src/app/store/tripig.selector';
-import { Direction } from 'src/app/models/direction.model';
+import { Direction } from 'src/app/models/interface/direction.model';
+import { Place } from 'src/app/models/interface/place.model';
 import { MapService } from 'src/app/services/map.service';
 import { Category, CATEGORIES } from 'src/app/parts/category.class';
-import { Place } from 'src/app/models/place.model';
 
 @Component({
   selector: 'app-map-route-search',
@@ -46,10 +46,10 @@ export class MapRouteSearchComponent {
     37.421995,
     -122.084092
   );
-  center =  this.initLatLng;
-  originLatLng =  this.initLatLng;
-  destinationLatLng =  this.initLatLng;
-  middlePointLatLng =  this.initLatLng;
+  center = this.initLatLng;
+  originLatLng = this.initLatLng;
+  destinationLatLng = this.initLatLng;
+  middlePointLatLng = this.initLatLng;
 
   constructor(
     private location: Location,

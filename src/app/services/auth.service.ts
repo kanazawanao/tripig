@@ -14,7 +14,6 @@ import { Session, User } from '../models/class/session';
   providedIn: 'root'
 })
 export class AuthService {
-  user?: Observable<User | null | undefined>;
   userId = '';
   photoUrl = '';
   public session = new Session();
@@ -29,8 +28,7 @@ export class AuthService {
   ) {}
 
   checkLogin(): void {
-    this.afAuth
-      .authState
+    this.afAuth.authState
       .pipe(
         // authの有無でObservbleを変更
         switchMap(auth => {
@@ -43,38 +41,41 @@ export class AuthService {
       )
       .subscribe(auth => {
         // ログイン状態を返り値の有無で判断
-        this.session.login = (!!auth);
-        this.session.user = (auth) ? auth : new User();
+        this.session.login = !!auth;
+        this.session.user = auth ? auth : new User();
         this.sessionSubject.next(this.session);
       });
   }
 
   checkLoginState(): Observable<Session> {
-    return this.afAuth
-      .authState
-      .pipe(
-        map(auth => {
-          // ログイン状態を返り値の有無で判断
-          this.session.login = (!!auth);
-          return this.session;
-        })
-      )
+    return this.afAuth.authState.pipe(
+      map(auth => {
+        // ログイン状態を返り値の有無で判断
+        this.session.login = !!auth;
+        return this.session;
+      })
+    );
   }
 
-  private getUser(uid: string): Observable<any> {
+  private getUser(uid: string): Observable<User> {
     return this.afStore
-      .collection('users')
-      .doc(uid)
+      .doc<User>(`users/${uid}`)
       .valueChanges()
       .pipe(
+        map(user => {
+          if (user) {
+            return user;
+          } else {
+            return new User();
+          }
+        }),
         take(1),
-        switchMap((user: User) => of(new User(uid, user.name)))
+        switchMap((user: User) => of(new User(uid, user.name, user.photoUrl)))
       );
   }
 
   signup(email: string, password: string): void {
-    this.afAuth
-      .auth
+    this.afAuth.auth
       .createUserWithEmailAndPassword(email, password)
       .then(auth => {
         if (auth.user) {
@@ -82,15 +83,14 @@ export class AuthService {
         }
       })
       .then(() => alert('メールアドレス確認メールを送信しました。'))
-      .catch( err => {
+      .catch(err => {
         console.log(err);
         alert('アカウントの作成に失敗しました。\n' + err);
       });
   }
 
   async signIn(email: string, password: string) {
-    this.afAuth
-      .auth
+    this.afAuth.auth
       .signInWithEmailAndPassword(email, password)
       .then(auth => {
         // メールアドレス確認が済んでいるかどうか
@@ -104,7 +104,7 @@ export class AuthService {
         }
       })
       .then(() => alert('ログインしました。'))
-      .catch( err => {
+      .catch(err => {
         console.log(err);
         alert('ログインに失敗しました。\n' + err);
       });
@@ -148,22 +148,23 @@ export class AuthService {
 
   private createUser(crediential: firebase.auth.UserCredential | any) {
     const user: User = new User();
+    console.log(crediential);
     if (crediential) {
       user.uid = crediential.uid ? crediential.uid : '';
       user.name = crediential.displayName ? crediential.displayName : '';
+      user.photoUrl = crediential.photoURL ? crediential.photoURL : '';
     }
     return user;
   }
 
   signOut() {
-    this.afAuth
-      .auth
+    this.afAuth.auth
       .signOut()
       .then(() => {
         this.router.navigate(['/tabs/pages/signIn']);
       })
       .then(() => alert('ログアウトしました。'))
-      .catch( err => {
+      .catch(err => {
         console.log(err);
         alert('ログアウトに失敗しました。\n' + err);
       });

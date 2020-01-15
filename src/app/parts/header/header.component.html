@@ -8,11 +8,11 @@
     <ion-buttons slot="primary">
       <button
         class="userMenu"
-        *ngIf="auth.loggedIn; else guest"
+        *ngIf="auth.session.login; else guest"
         mat-button
         [matMenuTriggerFor]="userMenu"
       >
-        <img class="avatar" [src]="auth.photoUrl" />
+        <img class="avatar" [src]="auth.session.user.photoUrl" />
       </button>
       <ng-template #guest>
         <button class="userMenu" mat-button [matMenuTriggerFor]="guestMenu">

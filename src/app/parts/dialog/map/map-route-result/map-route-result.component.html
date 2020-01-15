@@ -1,7 +1,9 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>
-      <button mat-button (click)="dismissModal()" aria-label="top">Tripig</button>
+      <button mat-button (click)="dismissModal()" aria-label="top">
+        Tripig
+      </button>
     </ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="dismissModal()" aria-label="close">
@@ -11,33 +13,28 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <google-map
-    height="250px"
-    width="100%"
-    [center]="center"
-    [zoom]="zoom">
+  <google-map height="250px" width="100%" [center]="center" [zoom]="zoom">
   </google-map>
+  <p>距離：{{ distance }} / 時間：{{ duration }}</p>
   <div cdkDropList class="list" (cdkDropListDropped)="drop($event)">
     <div class="box" *ngFor="let result of resultList" cdkDrag>
       <div class="handle" cdkDragHandle>
         <svg width="24px" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"></path>
+          <path
+            d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z"
+          ></path>
           <path d="M0 0h24v24H0z" fill="none"></path>
         </svg>
       </div>
-      {{ result.name }}
+      <span class="name">
+        {{ result.name }}
+      </span>
       <button mat-button (click)="delete(result)">
-        <mat-icon>delete</mat-icon>
+        <mat-icon matSuffix>delete</mat-icon>
       </button>
     </div>
   </div>
-  <p>
-    距離：{{ distance }}
-  </p>
-  <p>
-    時間：{{ duration }}
-  </p>
-  <div *ngIf="auth.loggedIn; else loginBlock">
+  <div *ngIf="auth.session.login; else loginBlock">
     <form [formGroup]="registForm">
       <mat-form-field>
         <input
@@ -46,28 +43,25 @@
           type="text"
           placeholder="TITLE"
           formControlName="courseName"
-          required>
+          required
+        />
       </mat-form-field>
       <button
         mat-button
         (click)="regist()"
         [disabled]="!registForm.valid"
-        aria-label="regist">
+        aria-label="regist"
+      >
         Regist
       </button>
     </form>
   </div>
   <ng-template #loginBlock>
-    <button
-      mat-button
-      (click)="toLoginPage()">
+    <button mat-button (click)="toLoginPage()">
       Login
     </button>
   </ng-template>
-  <button
-    mat-button
-    (click)="onGoogleMapLinkClick()">
+  <button mat-button (click)="onGoogleMapLinkClick()">
     <mat-icon>map</mat-icon>
   </button>
-  
 </ion-content>

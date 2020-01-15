@@ -1,7 +1,7 @@
 import { createAction, props } from '@ngrx/store';
-import { Direction } from '../models/direction.model';
-import { Place } from '../models/place.model';
-import { Course } from '../models/course.models';
+import { Direction } from '../models/interface/direction.model';
+import { Place } from '../models/interface/place.model';
+import { Course } from '../models/interface/course.models';
 
 export const setDirection = createAction(
   '[Tripig] setDirection',
