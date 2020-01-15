@@ -11,12 +11,12 @@ import { takeUntil } from 'rxjs/operators';
 import * as TripigState from 'src/app/store/';
 import * as TripigSelector from 'src/app/store/tripig.selector';
 import * as TripigActions from 'src/app/store/tripig.action';
-import { Direction } from 'src/app/models/direction.model';
-import { Place } from 'src/app/models/place.model';
+import { Direction } from 'src/app/models/interface/direction.model';
+import { Place } from 'src/app/models/interface/place.model';
+import { Course } from 'src/app/models/interface/course.models';
 import { MapService } from 'src/app/services/map.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { PlaceService } from 'src/app/services/place.service';
-import { Course } from 'src/app/models/course.models';
 
 @Component({
   selector: 'app-map-route-result',
@@ -175,29 +175,31 @@ export class MapRouteResultComponent {
         placeId: result.place_id,
         name: direction.destination
       };
-      this.selectedList$.pipe(takeUntil(this.onDestroy$)).subscribe(waypoints => {
-        const request: google.maps.DirectionsRequest = this.CreateDirectionsRequest(
-          direction,
-          waypoints
-        );
-        this.mapService
-          .route(request)
-          .then(routeResult => {
-            this.directionsRenderer.setMap(this.map.data.getMap());
-            this.directionsRenderer.setDirections(routeResult);
-            routeResult.routes[0].waypoint_order.forEach(index => {
-              this.resultList.push(waypoints[index]);
-              this.waypoints.push(waypoints[index]);
+      this.selectedList$
+        .pipe(takeUntil(this.onDestroy$))
+        .subscribe(waypoints => {
+          const request: google.maps.DirectionsRequest = this.CreateDirectionsRequest(
+            direction,
+            waypoints
+          );
+          this.mapService
+            .route(request)
+            .then(routeResult => {
+              this.directionsRenderer.setMap(this.map.data.getMap());
+              this.directionsRenderer.setDirections(routeResult);
+              routeResult.routes[0].waypoint_order.forEach(index => {
+                this.resultList.push(waypoints[index]);
+                this.waypoints.push(waypoints[index]);
+              });
+              this.calcDistAndDura(routeResult);
+              if (this.destination) {
+                this.resultList.push(this.destination);
+              }
+            })
+            .catch(() => {
+              this.dismissModal();
             });
-            this.calcDistAndDura(routeResult);
-            if (this.destination) {
-              this.resultList.push(this.destination);
-            }
-          })
-          .catch(() => {
-            this.dismissModal();
-          });
-      });
+        });
     });
   }
 

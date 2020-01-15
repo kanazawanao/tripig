@@ -3,7 +3,7 @@ import {
   AngularFirestore,
   AngularFirestoreCollection
 } from '@angular/fire/firestore';
-import { User } from '../models/user.model';
+import { User } from '../models/class/session';
 
 @Injectable({
   providedIn: 'root'
@@ -16,14 +16,10 @@ export class UserService {
 
   addUser(user: User) {
     // HACK: カスタムobjectは登録できないといわれるので、無理やり変換して登録してる
-    this.collection
-      .doc(user.uid)
-      .set(Object.assign({}, JSON.parse(JSON.stringify(user))));
+    this.collection.doc(user.uid).set(user.deserialize());
   }
 
   updateUser(user: User) {
-    this.collection
-      .doc(user.uid)
-      .update(Object.assign({}, JSON.parse(JSON.stringify(user))));
+    this.collection.doc(user.uid).update(user.deserialize());
   }
 }

@@ -4,7 +4,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import * as TripigActions from 'src/app/store/tripig.action';
 import * as TripigReducer from 'src/app/store/tripig.reducer';
-import { Direction } from 'src/app/models/direction.model';
+import { Direction } from 'src/app/models/interface/direction.model';
 import { Category, CATEGORIES } from 'src/app/parts/category.class';
 @Component({
   selector: 'app-point-search',
@@ -41,7 +41,9 @@ export class PointSearchComponent {
   ) {}
 
   ionViewDidEnter(): void {
-    const suggest = new google.maps.places.Autocomplete(this.inputDestination.nativeElement);
+    const suggest = new google.maps.places.Autocomplete(
+      this.inputDestination.nativeElement
+    );
     suggest.addListener('place_changed', () => {
       const result = suggest.getPlace();
       this._destination = result.vicinity ? result.vicinity : result.name;

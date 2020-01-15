@@ -4,7 +4,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import * as TripigActions from 'src/app/store/tripig.action';
 import * as TripigReducer from 'src/app/store/tripig.reducer';
-import { Direction } from 'src/app/models/direction.model';
+import { Direction } from 'src/app/models/interface/direction.model';
 export interface Mode {
   value: google.maps.TravelMode;
   viewValue: string;
@@ -71,12 +71,16 @@ export class RouteSearchComponent {
   ) {}
 
   ionViewDidEnter(): void {
-    const suggestDest = new google.maps.places.Autocomplete(this.inputDestination.nativeElement);
+    const suggestDest = new google.maps.places.Autocomplete(
+      this.inputDestination.nativeElement
+    );
     suggestDest.addListener('place_changed', () => {
       const result = suggestDest.getPlace();
       this._destination = result.vicinity ? result.vicinity : result.name;
     });
-    const suggestOrig = new google.maps.places.Autocomplete(this.inputOrigin.nativeElement);
+    const suggestOrig = new google.maps.places.Autocomplete(
+      this.inputOrigin.nativeElement
+    );
     suggestOrig.addListener('place_changed', () => {
       const result = suggestOrig.getPlace();
       this._origin = result.vicinity ? result.vicinity : result.name;

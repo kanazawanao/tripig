@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
-import { Place } from '../models/place.model';
+import { Place } from '../models/interface/place.model';
 
 @Injectable({
   providedIn: 'root'
