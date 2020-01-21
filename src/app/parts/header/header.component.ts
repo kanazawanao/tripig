@@ -23,11 +23,11 @@ export class HeaderComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.auth.sessionState.subscribe((session:Session) => {
-      if(session) {
+    this.auth.sessionState.subscribe((session: Session) => {
+      if (session) {
         this.login = session.login;
       }
-    })
+    });
   }
 
   signOut(): void {

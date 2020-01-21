@@ -18,12 +18,11 @@ export class LoginGuard implements CanActivate {
       .pipe(
         map(session => {
           // ログインしている場合はルート画面表示
-          if(session.login) {
+          if (session.login) {
             this.router.navigate(['/']);
           }
           return !session.login;
         })
-      )
+      );
   }
-  
 }
