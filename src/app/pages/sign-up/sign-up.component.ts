@@ -8,17 +8,15 @@ import { AuthService } from 'src/app/services/auth.service';
   styleUrls: ['./sign-up.component.scss'],
 })
 export class SignUpComponent implements OnInit {
-  private _email = '';
-  private _password = '';
   signupForm = this.fb.group({
-    email: [this._email, Validators.required],
-    password: [this._password, Validators.required],
+    email: ['', Validators.required],
+    password: ['', Validators.required],
   });
   get email(): string {
-    return this._email;
+    return this.signupForm.controls['email'].value;
   }
   get password(): string {
-    return this._password;
+    return this.signupForm.controls['password'].value;
   }
   constructor(
     private fb: FormBuilder,
