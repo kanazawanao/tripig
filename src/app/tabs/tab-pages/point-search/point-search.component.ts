@@ -32,7 +32,7 @@ export class PointSearchComponent {
     };
     return direction;
   }
-  categories: Category[] = CATEGORIES;
+  categories: Category[] = CATEGORIES.slice(0, 6);
 
   constructor(
     private router: Router,

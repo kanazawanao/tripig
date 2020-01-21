@@ -10,10 +10,11 @@
         required
       />
     </mat-form-field>
-    <mat-grid-list cols="4" rowHeight="2:1">
+    <mat-grid-list cols="3" rowHeight="2:1">
       <mat-grid-tile *ngFor="let category of categories">
         <button
-          mat-button
+          mat-mini-fab
+          color="category"
           type="button"
           (click)="search(category)"
           [disabled]="!searchForm.valid"
