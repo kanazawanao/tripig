@@ -40,7 +40,7 @@
     "@ionic/angular": "4.11.8",
     "@ngrx/store": "8.6.0",
     "@ngrx/store-devtools": "8.6.0",
-    "@types/googlemaps": "3.39.0",
+    "@types/googlemaps": "3.39.2",
     "cordova-ios": "5.1.1",
     "cordova-plugin-geolocation": "4.0.2",
     "cordova-plugin-googleplus": "7.0.1",
