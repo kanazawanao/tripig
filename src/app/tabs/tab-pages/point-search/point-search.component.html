@@ -5,7 +5,7 @@
         matInput
         #destination
         type="text"
-        placeholder="ARRIVAL AT"
+        placeholder="Search a city guide(e.g. Tokyo)"
         formControlName="destination"
         required
       />
@@ -13,7 +13,7 @@
     <mat-grid-list cols="3" rowHeight="2:1">
       <mat-grid-tile *ngFor="let category of categories">
         <button
-          mat-mini-fab
+          mat-fab
           color="category"
           type="button"
           (click)="search(category)"
