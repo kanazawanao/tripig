@@ -15,6 +15,8 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 })
 export class TabCategoryComponent implements OnInit {
   @Output() categoryChange: EventEmitter<Category> = new EventEmitter();
+  backgroundColor = 'skyblue';
+  color = '#f0fff3';
   categories: Category[] = CATEGORIES;
   private onDestroy$ = new Subject();
   direction$: Observable<Direction> = this.store.select(

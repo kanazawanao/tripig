@@ -57,7 +57,7 @@ export class RouteSearchComponent {
     const direction: Direction = {
       destination: this.destination,
       origin: this.origin,
-      category: { index: 0, value: '', viewValue: '', icon: '' },
+      category: { index: 0, value: '', viewValue: '', icon: '', custome: false },
       travelMode: this.selectedMode.value,
       radius: 10000
     };

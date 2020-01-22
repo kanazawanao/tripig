@@ -1,9 +1,15 @@
 <mat-tab-group
   [selectedIndex]="direction?.category.index"
-  (selectedTabChange)="onTabClick($event)">
+  (selectedTabChange)="onTabClick($event)"
+  [style.background-color]="backgroundColor">
   <mat-tab *ngFor="let category of categories">
     <ng-template mat-tab-label>
-      <mat-icon [matTooltip]="category.value">{{ category.icon }}</mat-icon>
+      <span *ngIf="category.custome; else default">
+        <mat-icon [matTooltip]="category.value" [svgIcon]="category.icon"></mat-icon>
+      </span>
+      <ng-template #default>
+        <mat-icon [matTooltip]="category.value">{{ category.icon }}</mat-icon>
+      </ng-template>
     </ng-template>
   </mat-tab>
 </mat-tab-group>

@@ -21,7 +21,12 @@
           [matTooltip]="category.value"
           aria-label="categorySearch"
         >
+        <span *ngIf="category.custome; else default">
+          <mat-icon [svgIcon]="category.icon"></mat-icon>
+        </span>
+        <ng-template #default>
           <mat-icon>{{ category.icon }}</mat-icon>
+        </ng-template>
         </button>
       </mat-grid-tile>
     </mat-grid-list>

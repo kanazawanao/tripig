@@ -12,11 +12,13 @@ export class SignUpComponent implements OnInit {
     email: ['', Validators.required],
     password: ['', Validators.required],
   });
+  private readonly EMAIL = 'email';
   get email(): string {
-    return this.signupForm.controls['email'].value;
+    return this.signupForm.controls[this.EMAIL].value;
   }
+  private readonly PASSWORD = 'password';
   get password(): string {
-    return this.signupForm.controls['password'].value;
+    return this.signupForm.controls[this.PASSWORD].value;
   }
   constructor(
     private fb: FormBuilder,
