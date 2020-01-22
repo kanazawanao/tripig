@@ -12,7 +12,7 @@
         mat-button
         [matMenuTriggerFor]="userMenu"
       >
-        <img class="avatar" [src]="auth.session.user.photoUrl" />
+        <img class="avatar" [src]="auth.session.user.photoUrl" alt="アバター"/>
       </button>
       <ng-template #guest>
         <button class="userMenu" mat-button [matMenuTriggerFor]="guestMenu">
