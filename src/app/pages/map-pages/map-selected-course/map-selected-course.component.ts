@@ -9,6 +9,10 @@ import * as TripigSelector from 'src/app/store/tripig.selector';
 import { Course } from 'src/app/models/interface/course.models';
 import { Place } from 'src/app/models/interface/place.model';
 import { MapService } from 'src/app/services/map.service';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { PlaceService } from 'src/app/services/place.service';
+import * as TripigActions from 'src/app/store/tripig.action';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-map-selected-course',
@@ -33,9 +37,11 @@ export class MapSelectedCourseComponent {
   directionsRenderer = new google.maps.DirectionsRenderer();
   private onDestroy$ = new Subject();
   constructor(
+    private router: Router,
     private location: Location,
     private store: Store<TripigState.State>,
-    private mapService: MapService
+    private mapService: MapService,
+    private placeService: PlaceService,
   ) {}
 
   ionViewDidEnter() {
@@ -85,5 +91,25 @@ export class MapSelectedCourseComponent {
   openInfoWindow(marker: MapMarker, place: Place): void {
     this.infoContent = place.name ? place.name : '';
     this.infoWindow.open(marker);
+  }
+
+  drop(event: CdkDragDrop<string[]>): void {
+    if (this.selectedCourse) {
+      moveItemInArray(this.selectedCourse.route, event.previousIndex, event.currentIndex);
+    }
+  }
+
+  delete(place: Place): void {
+    if (this.selectedCourse) {
+      this.selectedCourse.route = this.selectedCourse.route.filter(r => r.placeId !== place.placeId);
+    }
+  }
+
+  save() {
+    if (this.selectedCourse) {
+      this.placeService.addPlace(this.selectedCourse);
+      this.store.dispatch(TripigActions.setSelectedList({ selectedList: [] }));
+      this.router.navigate(['/tabs/registered']);
+    }
   }
 }

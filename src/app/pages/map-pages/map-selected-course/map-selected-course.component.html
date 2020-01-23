@@ -10,11 +10,24 @@
 </google-map>
 <ion-content>
   <h2>{{selectedCourse?.name}}</h2>
-  <mat-list>
-    <mat-list-item *ngFor="let place of selectedCourse?.route">
-      <p matLine>
-        {{ place.name }}
-      </p>
-    </mat-list-item>
-  </mat-list>
+  <div cdkDropList class="list" (cdkDropListDropped)="drop($event)">
+    <div class="box" *ngFor="let result of selectedCourse?.route" cdkDrag>
+      <div class="handle" cdkDragHandle>
+        <mat-icon>drag_indicator</mat-icon>
+      </div>
+      <span class="name">
+        {{ result.name }}
+      </span>
+      <button mat-button (click)="delete(result)">
+        <mat-icon matSuffix>delete</mat-icon>
+      </button>
+    </div>
+  </div>
+  <button
+    mat-button
+    (click)="save()"
+    aria-label="save"
+  >
+    Save
+  </button>
 </ion-content>

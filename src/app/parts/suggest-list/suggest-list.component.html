@@ -24,7 +24,7 @@
         </mat-panel-description>
       </mat-expansion-panel-header>
       <div *ngFor="let photo of suggest.photos">
-        <img [src]="photo" />
+        <img [src]="photo.getUrl({ maxHeight: 500, maxWidth: 500 })" />
       </div>
     </mat-expansion-panel>
   </mat-accordion>

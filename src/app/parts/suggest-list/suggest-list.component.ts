@@ -50,7 +50,7 @@ export class SuggestListComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe(suggest => {
-        this.suggestList = JSON.parse(JSON.stringify(suggest));
+        this.suggestList = suggest;
       });
   }
 
