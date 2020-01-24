@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -17,6 +18,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 const modules = [
   MatButtonModule,
+  MatCardModule,
   MatCheckboxModule,
   MatDialogModule,
   MatExpansionModule,
@@ -48,5 +50,7 @@ export class MaterialModule {
   ) {
     iconRegistry.addSvgIcon('tent', sanitizer.bypassSecurityTrustResourceUrl('./assets/custome-icons/tent.svg'));
     iconRegistry.addSvgIcon('beer', sanitizer.bypassSecurityTrustResourceUrl('./assets/custome-icons/beer.svg'));
+    iconRegistry.addSvgIcon('logo-google', sanitizer.bypassSecurityTrustResourceUrl('./assets/custome-icons/logo-google.svg'));
+    iconRegistry.addSvgIcon('logo-facebook', sanitizer.bypassSecurityTrustResourceUrl('./assets/custome-icons/logo-facebook.svg'));
   }
 }

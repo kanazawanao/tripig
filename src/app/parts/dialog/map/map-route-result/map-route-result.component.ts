@@ -144,7 +144,7 @@ export class MapRouteResultComponent {
     if (direction.origin === '') {
       this.mapService.getCurrentPosition().then(result => {
         const currentPosition: Place = {
-          name: '現在地',
+          name: result.formatted_address,
           selected: true,
           location: result.geometry.location,
           placeId: result.place_id
