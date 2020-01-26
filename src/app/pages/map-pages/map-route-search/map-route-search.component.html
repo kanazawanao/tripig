@@ -10,5 +10,5 @@
 </google-map>
 <ion-content>
   <app-tab-category (categoryChange)="middlePointPlaceSearch($event)"></app-tab-category>
-  <app-suggest-list></app-suggest-list>
+  <app-suggest-list [suggetList]="suggestList"></app-suggest-list>
 </ion-content>

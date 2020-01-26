@@ -5,7 +5,6 @@ import { Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import * as TripigState from 'src/app/store/';
-import * as TripigActions from 'src/app/store/tripig.action';
 import * as TripigSelector from 'src/app/store/tripig.selector';
 import { Direction } from 'src/app/models/interface/direction.model';
 import { Place } from 'src/app/models/interface/place.model';
@@ -31,6 +30,7 @@ export class MapRouteSearchComponent {
     TripigSelector.getSelectedList
   );
   selectedList: Place[] = [];
+  suggestList: Place[] = [];
   direction?: Direction;
   defaultCategory: Category = CATEGORIES[0];
   zoom = 16;
@@ -127,14 +127,13 @@ export class MapRouteSearchComponent {
       this.mapService
         .nearbySearch(placeService, request)
         .then(results => {
-          const suggestList = [...this.selectedList, ...results].filter(
+          this.suggestList = [...this.selectedList, ...results].filter(
             (member, index, self) => {
               return (
                 self.findIndex(s => member.placeId === s.placeId) === index
               );
             }
           );
-          this.store.dispatch(TripigActions.setSuggestList({ suggestList }));
         })
         .catch(() => {
           // TODO: 周辺施設が検索できなかった場合どうするか検討

@@ -11,10 +11,6 @@ export const getSelectedList = createSelector(
   selectTripig,
   fromTripig.getSelectedList
 );
-export const getSuggestList = createSelector(
-  selectTripig,
-  fromTripig.getSuggestList
-);
 export const getLastSelectedPlace = createSelector(
   selectTripig,
   fromTripig.getLastSelectedPlace

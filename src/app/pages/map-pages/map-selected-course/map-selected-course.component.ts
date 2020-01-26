@@ -3,7 +3,7 @@ import { Location } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { MapMarker, MapInfoWindow, GoogleMap } from '@angular/google-maps';
 import { Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, map } from 'rxjs/operators';
 import * as TripigState from 'src/app/store/';
 import * as TripigSelector from 'src/app/store/tripig.selector';
 import { Course } from 'src/app/models/interface/course.models';
@@ -45,10 +45,15 @@ export class MapSelectedCourseComponent {
   ) {}
 
   ionViewDidEnter() {
-    this.selectedCourse$.pipe(takeUntil(this.onDestroy$)).subscribe(s => {
-      this.selectedCourse = s;
-      this.setRoute(s);
-    });
+    this.selectedCourse$
+      .pipe(
+        takeUntil(this.onDestroy$),
+        map(s => s),
+      )
+      .subscribe(s => {
+        this.selectedCourse = JSON.parse(JSON.stringify(s));
+        this.setRoute(s);
+      });
   }
 
   ionViewDidLeave(): void {
@@ -93,9 +98,10 @@ export class MapSelectedCourseComponent {
     this.infoWindow.open(marker);
   }
 
-  drop(event: CdkDragDrop<string[]>): void {
+  drop(event: CdkDragDrop<Place[]>): void {
     if (this.selectedCourse) {
       moveItemInArray(this.selectedCourse.route, event.previousIndex, event.currentIndex);
+      this.store.dispatch(TripigActions.setSelectedCourse({ selectedCourse: this.selectedCourse }));
     }
   }
 

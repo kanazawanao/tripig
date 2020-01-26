@@ -6,48 +6,44 @@ import {
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 import { Course } from '../models/interface/course.models';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PlaceService {
   private collection: AngularFirestoreCollection<Course>;
-  private readonly PATH_PLACES = 'places';
   private readonly PATH_COURSE = 'course';
   userId = '';
   constructor(private auth: AuthService, private afStore: AngularFirestore) {
-    this.collection = this.afStore.collection(this.PATH_PLACES);
+    this.collection = this.afStore.collection(this.PATH_COURSE);
   }
 
   addPlace(course: Course): void {
     const id = (course.id = this.afStore.createId());
+    course.uid = this.auth.session.user.uid;
     this.collection
-      .doc(this.auth.session.user.uid)
-      .collection<Course>(this.PATH_COURSE)
       .doc(id)
       .set(Object.assign({}, JSON.parse(JSON.stringify(course))));
   }
 
   updatePlace(course: Course): void {
     this.collection
-      .doc(this.auth.session.user.uid)
-      .collection<Course>(this.PATH_COURSE)
       .doc(course.id)
       .update(Object.assign({}, JSON.parse(JSON.stringify(course))));
   }
 
   deletePlace(course: Course): void {
     this.collection
-      .doc(this.auth.session.user.uid)
-      .collection<Course>(this.PATH_COURSE)
       .doc(course.id)
       .delete();
   }
 
   getAllPlace(): Observable<Course[]> {
     return this.collection
-      .doc(this.auth.session.user.uid)
-      .collection<Course>(this.PATH_COURSE)
-      .valueChanges();
+      .valueChanges()
+      .pipe(
+        map(courses => courses.filter(c => c.uid === this.auth.session.user.uid))
+      );
   }
 }

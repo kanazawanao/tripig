@@ -7,7 +7,6 @@ import { Course } from '../models/interface/course.models';
 export interface State {
   direction: Direction;
   selectedList: Place[];
-  suggestList: Place[];
   lastSelectedPlace: Place;
   selectedCourse: Course;
 }
@@ -21,7 +20,6 @@ export const initialState: State = {
     travelMode: google.maps.TravelMode.DRIVING
   },
   selectedList: [],
-  suggestList: [],
   lastSelectedPlace: {
     selected: true,
     location: undefined
@@ -47,12 +45,6 @@ const coreReducer = createReducer(
       selectedList
     };
   }),
-  on(TripigAction.setSuggestList, (state, { suggestList }) => {
-    return {
-      ...state,
-      suggestList
-    };
-  }),
   on(TripigAction.setLastSelectedPlace, (state, { lastSelectedPlace }) => {
     return {
       ...state,
@@ -65,17 +57,6 @@ const coreReducer = createReducer(
       selectedCourse
     };
   }),
-  on(TripigAction.onSelectedChange, (state, { place }) => {
-    return {
-      ...state,
-      suggestList: state.suggestList.map(s => {
-        if (s.placeId === place.placeId) {
-          s.selected = !s.selected;
-        }
-        return s;
-      })
-    };
-  })
 );
 export function reducer(state: State | undefined, action: Action): State {
   return coreReducer(state, action);
@@ -83,6 +64,5 @@ export function reducer(state: State | undefined, action: Action): State {
 
 export const getDirection = (state: State) => state.direction;
 export const getSelectedList = (state: State) => state.selectedList;
-export const getSuggestList = (state: State) => state.suggestList;
 export const getLastSelectedPlace = (state: State) => state.lastSelectedPlace;
 export const getSelectedCourse = (state: State) => state.selectedCourse;

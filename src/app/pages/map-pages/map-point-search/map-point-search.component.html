@@ -10,5 +10,7 @@
 </google-map>
 <ion-content>
   <app-tab-category (categoryChange)="search($event)"></app-tab-category>
-  <app-suggest-list></app-suggest-list>
+  <app-suggest-list
+    [suggestList]="suggestList"
+    (selectEvent)="selectPlace($event)"></app-suggest-list>
 </ion-content>

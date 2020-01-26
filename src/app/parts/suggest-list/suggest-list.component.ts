@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import * as TripigState from 'src/app/store/';
@@ -6,7 +6,7 @@ import * as TripigActions from 'src/app/store/tripig.action';
 import * as TripigSelector from 'src/app/store/tripig.selector';
 import { Place } from 'src/app/models/interface/place.model';
 import { Observable, Subject } from 'rxjs';
-import { takeUntil, map } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { MapRouteResultComponent } from '../dialog/map/map-route-result/map-route-result.component';
 import { ModalController } from '@ionic/angular';
 
@@ -16,6 +16,8 @@ import { ModalController } from '@ionic/angular';
   styleUrls: ['./suggest-list.component.scss']
 })
 export class SuggestListComponent implements OnInit, OnDestroy {
+  @Input() suggestList: Place[] = [];
+  @Output() selectEvent = new EventEmitter<Place>();
   showResultRoute = false;
   private onDestroy$ = new Subject();
   googleSearchUrl = 'https://www.google.com/search?q=';
@@ -24,10 +26,6 @@ export class SuggestListComponent implements OnInit, OnDestroy {
     TripigSelector.getSelectedList
   );
   selectedList: Place[] = [];
-  suggestList$: Observable<Place[]> = this.store.select(
-    TripigSelector.getSuggestList
-  );
-  suggestList: Place[] = [];
   constructor(
     private store: Store<TripigState.State>,
     private inAppBrowser: InAppBrowser,
@@ -38,39 +36,15 @@ export class SuggestListComponent implements OnInit, OnDestroy {
     this.selectedList$.pipe(takeUntil(this.onDestroy$)).subscribe(list => {
       this.showResultRoute = list.length > 0;
     });
-    this.suggestList$
-      .pipe(
-        takeUntil(this.onDestroy$),
-        map(suggest => {
-          this.selectedList = this.suggestList.filter(s => s.selected);
-          this.store.dispatch(
-            TripigActions.setSelectedList({ selectedList: this.selectedList })
-          );
-          return suggest;
-        })
-      )
-      .subscribe(suggest => {
-        this.suggestList = suggest;
-      });
   }
 
   ngOnDestroy(): void {
     this.onDestroy$.next();
   }
 
-  onSelectionChange(place: Place): void {
+  onCheckBoxClick(place: Place): void {
     this.store.dispatch(
       TripigActions.setLastSelectedPlace({ lastSelectedPlace: place })
-    );
-    this.store.dispatch(
-      TripigActions.setSuggestList({
-        suggestList: this.suggestList.map(sList => {
-          if (sList.placeId === place.placeId) {
-            sList.selected = !sList.selected;
-          }
-          return sList;
-        })
-      })
     );
   }
 

@@ -32,6 +32,7 @@ export class MapPointSearchComponent {
   );
   direction?: Direction;
   selectedList: Place[] = [];
+  suggestList: Place[] = [];
   infoContent = '';
   center: google.maps.LatLng = new google.maps.LatLng(37.421995, -122.084092);
   zoom = 16;
@@ -98,12 +99,11 @@ export class MapPointSearchComponent {
     this.mapService
       .nearbySearch(placeService, request)
       .then(results => {
-        const suggestList = [...this.selectedList, ...results].filter(
+        this.suggestList = [...this.selectedList, ...results].filter(
           (member, index, self) => {
             return self.findIndex(s => member.placeId === s.placeId) === index;
           }
         );
-        this.store.dispatch(TripigActions.setSuggestList({ suggestList }));
       })
       .catch(() => {
         // TODO: 周辺施設が検索できなかった場合どうするか検討
@@ -113,5 +113,18 @@ export class MapPointSearchComponent {
   openInfoWindow(marker: MapMarker, place: Place): void {
     this.infoContent = place.name ? place.name : '';
     this.infoWindow.open(marker);
+  }
+
+  selectPlace(place: Place) {
+    console.log('selectPlace');
+    console.log(place);
+    this.suggestList.map(s => {
+      if(s.placeId === place.placeId) {
+        s.selected = s.selected;
+      }
+    });
+    this.store.dispatch(
+      TripigActions.setSelectedList({ selectedList: this.suggestList.filter(s => s.selected) })
+    );
   }
 }

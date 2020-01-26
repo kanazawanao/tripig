@@ -6,6 +6,7 @@ import { Place } from './place.model';
 export interface Course {
   name: string;
   id?: string;
+  uid?: string;
   route: Place[];
   travelMode: google.maps.TravelMode;
 }
