@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/services/auth.service';
 import { Platform } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-sign-in',
@@ -9,10 +10,23 @@ import { Router } from '@angular/router';
   styleUrls: ['./sign-in.component.scss']
 })
 export class SignInComponent implements OnInit {
+  signinForm = this.fb.group({
+    email: ['', Validators.required],
+    password: ['', Validators.required],
+  });
+  private readonly EMAIL = 'email';
+  get email(): string {
+    return this.signinForm.controls[this.EMAIL].value;
+  }
+  private readonly PASSWORD = 'password';
+  get password(): string {
+    return this.signinForm.controls[this.PASSWORD].value;
+  }
   constructor(
     private router: Router,
     private platform: Platform,
-    private auth: AuthService
+    private auth: AuthService,
+    private fb: FormBuilder,
   ) {}
 
   ngOnInit() {}
@@ -43,6 +57,9 @@ export class SignInComponent implements OnInit {
     }
   }
 
+  signIn(): void {
+    this.auth.signIn(this.email, this.password);
+  }
   toSignUpPage() {
     this.router.navigate(['/tabs/pages/signUp']);
   }

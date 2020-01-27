@@ -30,11 +30,35 @@
     </button>
     <div>
       Do you already have an account?
-      <button
-        mat-raised-button
-        aria-label="signIn">
-        Sign In
-      </button>
+      <form [formGroup]="signinForm" class="form">
+        <mat-form-field class="full-width">
+          <input
+            matInput
+            #email
+            type="email"
+            placeholder="email"
+            formControlName="email"
+            required
+          />
+        </mat-form-field>
+        <mat-form-field class="full-width">
+          <input
+            matInput
+            #password
+            type="password"
+            placeholder="password"
+            formControlName="password"
+            required
+          />
+        </mat-form-field>
+        <button
+          mat-raised-button
+          aria-label="signIn"
+          (click)="signIn()"
+          [disabled]="signinForm.invalid">
+          Sign In
+        </button>
+      </form>
     </div>
   </form>
 </ion-content>
