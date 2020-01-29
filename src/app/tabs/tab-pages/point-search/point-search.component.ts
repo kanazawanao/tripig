@@ -5,7 +5,6 @@ import * as TripigActions from 'src/app/store/tripig.action';
 import * as TripigReducer from 'src/app/store/tripig.reducer';
 import { Direction } from 'src/app/models/interface/direction.model';
 import { Category, CATEGORIES } from 'src/app/parts/category.class';
-import { MatTooltip } from '@angular/material/tooltip';
 @Component({
   selector: 'app-point-search',
   templateUrl: './point-search.component.html',
@@ -13,7 +12,6 @@ import { MatTooltip } from '@angular/material/tooltip';
 })
 export class PointSearchComponent {
   @ViewChild('destination') inputDestination!: ElementRef;
-  @ViewChild('tooltip') tooltip!: MatTooltip;
   private _destination = '';
   searchForm = this.fb.group({
     destination: [this._destination, Validators.required]
@@ -48,10 +46,6 @@ export class PointSearchComponent {
       const result = suggest.getPlace();
       this._destination = result.vicinity ? result.vicinity : result.name;
     });
-  }
-
-  ionViewDidLeave(): void {
-    this.tooltip.hide();
   }
 
   search(category: Category): void {

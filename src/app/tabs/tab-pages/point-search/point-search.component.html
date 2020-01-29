@@ -12,15 +12,16 @@
       />
     </mat-form-field>
     <mat-grid-list cols="3" rowHeight="2:1">
-      <mat-grid-tile *ngFor="let category of categories">
+      <mat-grid-tile
+        *ngFor="let category of categories">
         <button
+          #searchButton
           mat-fab
-          #tooltip="matTooltip"
           color="category"
           type="button"
           (click)="search(category)"
-          [disabled]="!searchForm.valid"
           [matTooltip]="category.value"
+          [disabled]="!searchForm.valid"
           aria-label="categorySearch"
           routerLink="/tabs/pages/map/point"
         >
