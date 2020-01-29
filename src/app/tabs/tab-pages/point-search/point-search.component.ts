@@ -1,11 +1,11 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
-import { Router } from '@angular/router';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import * as TripigActions from 'src/app/store/tripig.action';
 import * as TripigReducer from 'src/app/store/tripig.reducer';
 import { Direction } from 'src/app/models/interface/direction.model';
 import { Category, CATEGORIES } from 'src/app/parts/category.class';
+import { MatTooltip } from '@angular/material/tooltip';
 @Component({
   selector: 'app-point-search',
   templateUrl: './point-search.component.html',
@@ -13,6 +13,7 @@ import { Category, CATEGORIES } from 'src/app/parts/category.class';
 })
 export class PointSearchComponent {
   @ViewChild('destination') inputDestination!: ElementRef;
+  @ViewChild('tooltip') tooltip!: MatTooltip;
   private _destination = '';
   searchForm = this.fb.group({
     destination: [this._destination, Validators.required]
@@ -35,7 +36,6 @@ export class PointSearchComponent {
   categories: Category[] = CATEGORIES.slice(0, 6);
 
   constructor(
-    private router: Router,
     private fb: FormBuilder,
     private store: Store<TripigReducer.State>
   ) {}
@@ -50,11 +50,14 @@ export class PointSearchComponent {
     });
   }
 
+  ionViewDidLeave(): void {
+    this.tooltip.hide();
+  }
+
   search(category: Category): void {
     this.selectedCategory = category;
     this.store.dispatch(
       TripigActions.setDirection({ direction: this.direction })
     );
-    this.router.navigate(['/tabs/pages/map/point']);
   }
 }

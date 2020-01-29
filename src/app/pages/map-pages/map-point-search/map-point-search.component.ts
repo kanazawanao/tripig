@@ -116,11 +116,9 @@ export class MapPointSearchComponent {
   }
 
   selectPlace(place: Place) {
-    console.log('selectPlace');
-    console.log(place);
     this.suggestList.map(s => {
       if (s.placeId === place.placeId) {
-        s.selected = s.selected;
+        s.selected = !s.selected;
       }
     });
     this.store.dispatch(

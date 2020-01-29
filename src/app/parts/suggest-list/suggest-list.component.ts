@@ -43,6 +43,7 @@ export class SuggestListComponent implements OnInit, OnDestroy {
   }
 
   onCheckBoxClick(place: Place): void {
+    this.selectEvent.emit(place);
     this.store.dispatch(
       TripigActions.setLastSelectedPlace({ lastSelectedPlace: place })
     );

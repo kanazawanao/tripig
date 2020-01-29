@@ -15,19 +15,21 @@
       <mat-grid-tile *ngFor="let category of categories">
         <button
           mat-fab
+          #tooltip="matTooltip"
           color="category"
           type="button"
           (click)="search(category)"
           [disabled]="!searchForm.valid"
           [matTooltip]="category.value"
           aria-label="categorySearch"
+          routerLink="/tabs/pages/map/point"
         >
-        <span *ngIf="category.custome; else default">
-          <mat-icon [svgIcon]="category.icon"></mat-icon>
-        </span>
-        <ng-template #default>
-          <mat-icon>{{ category.icon }}</mat-icon>
-        </ng-template>
+          <span *ngIf="category.custome; else default">
+            <mat-icon [svgIcon]="category.icon"></mat-icon>
+          </span>
+          <ng-template #default>
+            <mat-icon>{{ category.icon }}</mat-icon>
+          </ng-template>
         </button>
       </mat-grid-tile>
     </mat-grid-list>
