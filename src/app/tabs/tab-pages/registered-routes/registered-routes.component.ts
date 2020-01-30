@@ -38,7 +38,7 @@ export class RegisteredRoutesComponent {
 
   select(course: Course): void {
     this.store.dispatch(
-      TripigActions.setSelectedCourse({ selectedCourse: course })
+      TripigActions.setSelectedCourseId({ selectedCourseId: course.id ? course.id : '' })
     );
     this.router.navigate(['/tabs/pages/map/course']);
   }

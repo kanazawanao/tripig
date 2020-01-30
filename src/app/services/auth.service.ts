@@ -148,7 +148,6 @@ export class AuthService {
 
   private createUser(crediential: firebase.auth.UserCredential | any) {
     const user: User = new User();
-    console.log(crediential);
     if (crediential) {
       user.uid = crediential.uid ? crediential.uid : '';
       user.name = crediential.displayName ? crediential.displayName : '';

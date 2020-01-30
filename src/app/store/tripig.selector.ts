@@ -15,7 +15,7 @@ export const getLastSelectedPlace = createSelector(
   selectTripig,
   fromTripig.getLastSelectedPlace
 );
-export const getSelectedCourse = createSelector(
+export const getSelectedCourseId = createSelector(
   selectTripig,
-  fromTripig.getSelectedCourse
+  fromTripig.getSelectedCourseId
 );

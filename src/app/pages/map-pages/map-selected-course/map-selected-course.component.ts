@@ -1,18 +1,18 @@
 import { Component, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { MapMarker, MapInfoWindow, GoogleMap } from '@angular/google-maps';
-import { Observable, Subject } from 'rxjs';
-import { takeUntil, map } from 'rxjs/operators';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { Subject } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
 import * as TripigState from 'src/app/store/';
 import * as TripigSelector from 'src/app/store/tripig.selector';
 import { Course } from 'src/app/models/interface/course.models';
 import { Place } from 'src/app/models/interface/place.model';
 import { MapService } from 'src/app/services/map.service';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { PlaceService } from 'src/app/services/place.service';
 import * as TripigActions from 'src/app/store/tripig.action';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-map-selected-course',
@@ -23,9 +23,6 @@ export class MapSelectedCourseComponent {
   @ViewChild(GoogleMap) map!: GoogleMap;
   @ViewChild(MapInfoWindow) infoWindow!: MapInfoWindow;
   markerOptions: google.maps.MarkerOptions = { draggable: false };
-  selectedCourse$: Observable<Course> = this.store.select(
-    TripigSelector.getSelectedCourse
-  );
   initLatLng: google.maps.LatLng = new google.maps.LatLng(
     37.421995,
     -122.084092
@@ -45,14 +42,15 @@ export class MapSelectedCourseComponent {
   ) {}
 
   ionViewDidEnter() {
-    this.selectedCourse$
+    this.store.select(TripigSelector.getSelectedCourseId)
       .pipe(
-        takeUntil(this.onDestroy$),
-        map(s => s),
+        mergeMap(id => this.placeService.getPlace(id))
       )
-      .subscribe(s => {
-        this.selectedCourse = JSON.parse(JSON.stringify(s));
-        this.setRoute(s);
+      .subscribe(course => {
+        this.selectedCourse = course;
+        if (course) {
+          this.setRoute(course);
+        }
       });
   }
 
@@ -101,7 +99,7 @@ export class MapSelectedCourseComponent {
   drop(event: CdkDragDrop<Place[]>): void {
     if (this.selectedCourse) {
       moveItemInArray(this.selectedCourse.route, event.previousIndex, event.currentIndex);
-      this.store.dispatch(TripigActions.setSelectedCourse({ selectedCourse: this.selectedCourse }));
+      this.placeService.updatePlace(this.selectedCourse);
     }
   }
 

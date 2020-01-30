@@ -46,4 +46,10 @@ export class PlaceService {
         map(courses => courses.filter(c => c.uid === this.auth.session.user.uid))
       );
   }
+
+  getPlace(id: string): Observable<Course | undefined> {
+    return this.collection
+      .doc<Course>(id)
+      .valueChanges();
+  }
 }

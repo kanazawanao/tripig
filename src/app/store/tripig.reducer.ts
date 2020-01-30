@@ -2,13 +2,12 @@ import { Action, createReducer, on } from '@ngrx/store';
 import * as TripigAction from './tripig.action';
 import { Direction } from '../models/interface/direction.model';
 import { Place } from '../models/interface/place.model';
-import { Course } from '../models/interface/course.models';
 
 export interface State {
   direction: Direction;
   selectedList: Place[];
   lastSelectedPlace: Place;
-  selectedCourse: Course;
+  selectedCourseId: string;
 }
 
 export const initialState: State = {
@@ -24,11 +23,7 @@ export const initialState: State = {
     selected: true,
     location: undefined
   },
-  selectedCourse: {
-    name: '',
-    route: [],
-    travelMode: google.maps.TravelMode.DRIVING
-  }
+  selectedCourseId: '',
 };
 
 const coreReducer = createReducer(
@@ -51,10 +46,10 @@ const coreReducer = createReducer(
       lastSelectedPlace
     };
   }),
-  on(TripigAction.setSelectedCourse, (state, { selectedCourse }) => {
+  on(TripigAction.setSelectedCourseId, (state, { selectedCourseId }) => {
     return {
       ...state,
-      selectedCourse
+      selectedCourseId
     };
   }),
 );
@@ -65,4 +60,4 @@ export function reducer(state: State | undefined, action: Action): State {
 export const getDirection = (state: State) => state.direction;
 export const getSelectedList = (state: State) => state.selectedList;
 export const getLastSelectedPlace = (state: State) => state.lastSelectedPlace;
-export const getSelectedCourse = (state: State) => state.selectedCourse;
+export const getSelectedCourseId = (state: State) => state.selectedCourseId;
