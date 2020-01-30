@@ -1,6 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
-import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { MapMarker, MapInfoWindow, GoogleMap } from '@angular/google-maps';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -12,7 +11,6 @@ import { Course } from 'src/app/models/interface/course.models';
 import { Place } from 'src/app/models/interface/place.model';
 import { MapService } from 'src/app/services/map.service';
 import { PlaceService } from 'src/app/services/place.service';
-import * as TripigActions from 'src/app/store/tripig.action';
 
 @Component({
   selector: 'app-map-selected-course',
@@ -30,11 +28,11 @@ export class MapSelectedCourseComponent {
   center = this.initLatLng;
   zoom = 16;
   selectedCourse?: Course;
+  deletedPlaces: Place[] = [];
   infoContent = '';
   directionsRenderer = new google.maps.DirectionsRenderer();
   private onDestroy$ = new Subject();
   constructor(
-    private router: Router,
     private location: Location,
     private store: Store<TripigState.State>,
     private mapService: MapService,
@@ -104,16 +102,14 @@ export class MapSelectedCourseComponent {
   }
 
   delete(place: Place): void {
+    this.deletedPlaces.push(place);
     if (this.selectedCourse) {
       this.selectedCourse.route = this.selectedCourse.route.filter(r => r.placeId !== place.placeId);
-    }
-  }
-
-  save() {
-    if (this.selectedCourse) {
-      this.placeService.addPlace(this.selectedCourse);
-      this.store.dispatch(TripigActions.setSelectedList({ selectedList: [] }));
-      this.router.navigate(['/tabs/registered']);
+      if (this.selectedCourse.route.length === 0) {
+        if (this.selectedCourse.id) {
+          this.placeService.deletePlace(this.selectedCourse.id);
+        }
+      }
     }
   }
 }

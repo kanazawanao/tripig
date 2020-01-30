@@ -18,16 +18,26 @@
       <span class="name">
         {{ result.name }}
       </span>
-      <button mat-button (click)="delete(result)">
+      <button
+        mat-button
+        aria-label="delete"
+        (click)="delete(result)">
         <mat-icon matSuffix>delete</mat-icon>
       </button>
     </div>
   </div>
   <button
     mat-button
-    (click)="save()"
-    aria-label="save"
-  >
-    Save
+    [matMenuTriggerFor]="menu"
+    aria-label="restore">
+    <mat-icon>restore_from_trash</mat-icon>
   </button>
+  <mat-menu #menu="matMenu">
+    <div *ngFor="let deletedPlace of deletedPlaces">
+      <button mat-menu-item>
+        <mat-icon>chevron_left</mat-icon>
+        {{deletedPlace.name}}
+      </button>
+    </div>
+  </mat-menu>
 </ion-content>

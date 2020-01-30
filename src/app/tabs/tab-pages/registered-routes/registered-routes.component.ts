@@ -44,6 +44,8 @@ export class RegisteredRoutesComponent {
   }
 
   delete(course: Course): void {
-    this.placeService.deletePlace(course);
+    if (course.id) {
+      this.placeService.deletePlace(course.id);
+    }
   }
 }

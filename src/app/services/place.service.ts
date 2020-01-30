@@ -33,9 +33,9 @@ export class PlaceService {
       .update(Object.assign({}, JSON.parse(JSON.stringify(course))));
   }
 
-  deletePlace(course: Course): void {
+  deletePlace(id: string): void {
     this.collection
-      .doc(course.id)
+      .doc(id)
       .delete();
   }
 
