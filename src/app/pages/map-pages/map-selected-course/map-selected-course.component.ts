@@ -1,8 +1,9 @@
 import { Component, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
-import { Store } from '@ngrx/store';
+import { Router } from '@angular/router';
 import { MapMarker, MapInfoWindow, GoogleMap } from '@angular/google-maps';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { Store } from '@ngrx/store';
 import { Subject } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 import * as TripigState from 'src/app/store/';
@@ -34,6 +35,7 @@ export class MapSelectedCourseComponent {
   private onDestroy$ = new Subject();
   constructor(
     private location: Location,
+    private route: Router,
     private store: Store<TripigState.State>,
     private mapService: MapService,
     private placeService: PlaceService,
@@ -44,11 +46,17 @@ export class MapSelectedCourseComponent {
       .pipe(
         mergeMap(id => this.placeService.getPlace(id))
       )
-      .subscribe(course => {
-        this.selectedCourse = course;
-        if (course) {
-          this.setRoute(course);
-        }
+      .pipe(
+        mergeMap(course => {
+          this.selectedCourse = course;
+          if (course) {
+            this.setRoute(course);
+          }
+          return this.placeService.getDeletedPlaces(course ? course.id ? course.id : '' : '');
+        })
+      )
+      .subscribe(deleted => {
+        this.deletedPlaces = deleted ? Object.values(deleted) : [];
       });
   }
 
@@ -102,13 +110,32 @@ export class MapSelectedCourseComponent {
   }
 
   delete(place: Place): void {
-    this.deletedPlaces.push(place);
     if (this.selectedCourse) {
+      if (this.selectedCourse.id) {
+        this.placeService.setDeletedPlace(
+          this.selectedCourse.id,
+          this.deletedPlaces.concat(this.selectedCourse.route.filter(r => r.placeId === place.placeId))
+        );
+      }
       this.selectedCourse.route = this.selectedCourse.route.filter(r => r.placeId !== place.placeId);
-      if (this.selectedCourse.route.length === 0) {
-        if (this.selectedCourse.id) {
-          this.placeService.deletePlace(this.selectedCourse.id);
-        }
+
+      if (this.selectedCourse.route.length === 0 && this.selectedCourse.id) {
+        this.placeService.deletePlace(this.selectedCourse.id);
+        this.route.navigate(['/tabs/registered']);
+      }
+    }
+  }
+
+  restore(deletedPlace: Place): void {
+    this.deletedPlaces = this.deletedPlaces.filter(d => d.placeId !== deletedPlace.placeId);
+    if (this.selectedCourse) {
+      this.selectedCourse.route.push(deletedPlace);
+      this.placeService.updatePlace(this.selectedCourse);
+      if (this.selectedCourse.id) {
+        this.placeService.setDeletedPlace(
+          this.selectedCourse.id,
+          this.deletedPlaces
+        );
       }
     }
   }

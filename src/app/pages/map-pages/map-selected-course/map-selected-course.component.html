@@ -29,12 +29,15 @@
   <button
     mat-button
     [matMenuTriggerFor]="menu"
-    aria-label="restore">
+    aria-label="restoreMenu">
     <mat-icon>restore_from_trash</mat-icon>
   </button>
   <mat-menu #menu="matMenu">
     <div *ngFor="let deletedPlace of deletedPlaces">
-      <button mat-menu-item>
+      <button
+        mat-menu-item
+        aria-label="restore"
+        (click)="restore(deletedPlace)">
         <mat-icon>chevron_left</mat-icon>
         {{deletedPlace.name}}
       </button>

@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 import { Course } from '../models/interface/course.models';
 import { map } from 'rxjs/operators';
+import { Place } from '../models/interface/place.model';
 
 @Injectable({
   providedIn: 'root'
@@ -37,6 +38,22 @@ export class PlaceService {
     this.collection
       .doc(id)
       .delete();
+  }
+
+  setDeletedPlace(id: string, places: Place[]): void {
+    this.collection
+      .doc(id)
+      .collection('deleted')
+      .doc('places')
+      .set(Object.assign({}, JSON.parse(JSON.stringify(places))));
+  }
+
+  getDeletedPlaces(id: string | undefined): Observable<Place[] | undefined> {
+    return this.collection
+      .doc(id)
+      .collection('deleted')
+      .doc<Place[]>('places')
+      .valueChanges();
   }
 
   getAllPlace(): Observable<Course[]> {
