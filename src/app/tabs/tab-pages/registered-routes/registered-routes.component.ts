@@ -7,6 +7,8 @@ import { Subject } from 'rxjs';
 import { PlaceService } from 'src/app/services/place.service';
 import { Course } from 'src/app/models/interface/course.models';
 import { takeUntil } from 'rxjs/operators';
+import { InviteGroupComponent } from 'src/app/parts/dialog/invite-group/invite-group.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-registered-routes',
@@ -19,6 +21,7 @@ export class RegisteredRoutesComponent {
   private onDestroy$ = new Subject();
   constructor(
     private router: Router,
+    public dialog: MatDialog,
     private placeService: PlaceService,
     private store: Store<TripigReducer.State>
   ) {}
@@ -47,5 +50,19 @@ export class RegisteredRoutesComponent {
     if (course.id) {
       this.placeService.deletePlace(course.id);
     }
+  }
+
+  inviteGroup(course: Course) {
+    this.openDialog(course);
+  }
+
+  openDialog(course: Course): void {
+    const dialogRef = this.dialog.open(InviteGroupComponent, {
+      width: '250px',
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      course.uids.push(result);
+    });
   }
 }

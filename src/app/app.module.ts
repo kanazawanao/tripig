@@ -22,6 +22,7 @@ import { AppComponent } from './app.component';
 import { environment } from '../environments/environment';
 import { MaterialModule } from 'src/app/material/material.module';
 import { MapRouteResultModule } from 'src/app/parts/dialog/map/map-route-result/map-route-result.module';
+import { InviteGroupModule } from 'src/app/parts/dialog/invite-group/invite-group.module';
 import { HeaderModule } from 'src/app/parts/header/header.module';
 
 @NgModule({
@@ -54,6 +55,7 @@ import { HeaderModule } from 'src/app/parts/header/header.module';
       logOnly: environment.production
     }),
     MapRouteResultModule,
+    InviteGroupModule,
     HeaderModule
   ],
   providers: [
