@@ -70,7 +70,7 @@ export class AuthService {
           }
         }),
         take(1),
-        switchMap((user: User) => of(new User(uid, user.name, user.photoUrl)))
+        switchMap((user: User) => of(new User(uid, user.name, user.email, user.photoUrl)))
       );
   }
 
@@ -80,6 +80,7 @@ export class AuthService {
       .then(auth => {
         if (auth.user) {
           auth.user.sendEmailVerification();
+          this.userService.addUser(this.createUser(auth.user));
         }
       })
       .then(() => alert('メールアドレス確認メールを送信しました。'))
@@ -147,10 +148,12 @@ export class AuthService {
   }
 
   private createUser(crediential: firebase.auth.UserCredential | any) {
+    console.log(crediential);
     const user: User = new User();
     if (crediential) {
       user.uid = crediential.uid ? crediential.uid : '';
       user.name = crediential.displayName ? crediential.displayName : '';
+      user.email = crediential.email ? crediential.email : '';
       user.photoUrl = crediential.photoURL ? crediential.photoURL : '';
     }
     return user;

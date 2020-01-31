@@ -1,12 +1,14 @@
 export class User {
   uid: string;
   name: string;
+  email: string;
   photoUrl: string;
 
-  constructor(uid?: string, name?: string, photoUrl?: string) {
+  constructor(uid?: string, name?: string, email?: string, photoUrl?: string) {
     // 変更
     this.uid = uid ? uid : '';
     this.name = name ? name : '';
+    this.email = email ? email : '';
     this.photoUrl = photoUrl ? photoUrl : '';
   }
 

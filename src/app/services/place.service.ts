@@ -22,7 +22,7 @@ export class PlaceService {
 
   addPlace(course: Course): void {
     const id = (course.id = this.afStore.createId());
-    course.uid = this.auth.session.user.uid;
+    course.uids = [this.auth.session.user.uid];
     this.collection
       .doc(id)
       .set(Object.assign({}, JSON.parse(JSON.stringify(course))));
@@ -60,7 +60,7 @@ export class PlaceService {
     return this.collection
       .valueChanges()
       .pipe(
-        map(courses => courses.filter(c => c.uid === this.auth.session.user.uid))
+        map(courses => courses.filter(c => c.uids ? c.uids.filter(uid => uid === this.auth.session.user.uid) : []))
       );
   }
 

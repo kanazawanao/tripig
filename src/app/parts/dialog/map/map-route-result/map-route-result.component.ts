@@ -130,6 +130,7 @@ export class MapRouteResultComponent {
     const course: Course = {
       name: this.courseName,
       route: [],
+      uids: [],
       travelMode: google.maps.TravelMode.DRIVING
     };
     if (this.origin && this.destination) {
