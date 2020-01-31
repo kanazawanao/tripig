@@ -23,7 +23,7 @@
     "@angular/core": "9.0.0-rc.11",
     "@angular/fire": "5.2.3",
     "@angular/forms": "9.0.0-rc.11",
-    "@angular/google-maps": "9.0.0-rc.8",
+    "@angular/google-maps": "9.0.0-rc.9",
     "@angular/material": "8.2.3",
     "@angular/platform-browser": "9.0.0-rc.11",
     "@angular/platform-browser-dynamic": "9.0.0-rc.11",
