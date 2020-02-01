@@ -118,6 +118,7 @@ export class MapSelectedCourseComponent {
         );
       }
       this.selectedCourse.route = this.selectedCourse.route.filter(r => r.placeId !== place.placeId);
+      this.placeService.updatePlace(this.selectedCourse);
 
       if (this.selectedCourse.route.length === 0 && this.selectedCourse.id) {
         this.placeService.deletePlace(this.selectedCourse.id);

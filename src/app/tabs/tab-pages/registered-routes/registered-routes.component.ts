@@ -63,6 +63,7 @@ export class RegisteredRoutesComponent {
 
     dialogRef.afterClosed().subscribe(result => {
       course.uids.push(result);
+      this.placeService.updatePlace(course);
     });
   }
 }

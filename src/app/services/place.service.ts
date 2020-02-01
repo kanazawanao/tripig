@@ -60,7 +60,7 @@ export class PlaceService {
     return this.collection
       .valueChanges()
       .pipe(
-        map(courses => courses.filter(c => c.uids ? c.uids.filter(uid => uid === this.auth.session.user.uid) : []))
+        map(courses => courses.filter(c => c.uids ? c.uids.includes(this.auth.session.user.uid) : false))
       );
   }
 

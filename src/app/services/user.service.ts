@@ -4,6 +4,8 @@ import {
   AngularFirestoreCollection
 } from '@angular/fire/firestore';
 import { User } from '../models/class/session';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -14,12 +16,20 @@ export class UserService {
     this.collection = this.afStore.collection<User>('users');
   }
 
-  addUser(user: User) {
+  addUser(user: User): void {
     // HACK: カスタムobjectは登録できないといわれるので、無理やり変換して登録してる
     this.collection.doc(user.uid).set(user.deserialize());
   }
 
-  updateUser(user: User) {
+  updateUser(user: User): void {
     this.collection.doc(user.uid).update(user.deserialize());
+  }
+
+  getUserByEmail(email: string): Observable<User | undefined> {
+    return this.collection
+      .valueChanges()
+      .pipe(
+        map(users => users.find(u => u.email === email))
+      );
   }
 }
