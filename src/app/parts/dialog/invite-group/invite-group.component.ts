@@ -35,9 +35,10 @@ export class InviteGroupComponent implements OnInit, OnDestroy {
     this.onDestroy$.next();
   }
   onNoClick() {
+    // HACK:メールアドレス検索が有効だと危険なので対策を考える。uid検索がいい？
     this.userService.getUserByEmail(this.emailFormControl.value)
     .subscribe(u => {
-      if(u){
+      if (u) {
         this.dialogRef.close(u.uid);
       } else {
         alert('見つかりませんでした。');
