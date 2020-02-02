@@ -3,13 +3,14 @@ import { Location } from '@angular/common';
 import { GoogleMap, MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, mergeMap } from 'rxjs/operators';
 import * as TripigState from 'src/app/store/';
+import * as TripigActions from 'src/app/store/tripig.action';
 import * as TripigSelector from 'src/app/store/tripig.selector';
 import { Direction } from 'src/app/models/interface/direction.model';
 import { Place } from 'src/app/models/interface/place.model';
 import { MapService } from 'src/app/services/map.service';
-import { Category, CATEGORIES } from 'src/app/parts/category.class';
+import { Category } from 'src/app/parts/category.class';
 
 @Component({
   selector: 'app-map-route-search',
@@ -26,13 +27,15 @@ export class MapRouteSearchComponent {
   direction$: Observable<Direction> = this.store.select(
     TripigSelector.getDirection
   );
+  category$: Observable<Category> = this.store.select(
+    TripigSelector.getCategory
+  );
   selectedList$: Observable<Place[]> = this.store.select(
     TripigSelector.getSelectedList
   );
   selectedList: Place[] = [];
   suggestList: Place[] = [];
   direction?: Direction;
-  defaultCategory: Category = CATEGORIES[0];
   zoom = 16;
   private dist = 0;
   get distance(): string {
@@ -58,9 +61,16 @@ export class MapRouteSearchComponent {
   ) {}
 
   ionViewDidEnter(): void {
-    this.direction$.pipe(takeUntil(this.onDestroy$)).subscribe(direction => {
-      this.setRouteMap(direction);
-      this.direction = direction;
+    this.direction$.pipe(
+      takeUntil(this.onDestroy$),
+      mergeMap(direction => {
+        this.direction = direction;
+        return this.category$;
+      })
+    ).subscribe(category => {
+      if (this.direction) {
+        this.setRouteMap(this.direction, category);
+      }
     });
     this.selectedList$
       .pipe(takeUntil(this.onDestroy$))
@@ -73,7 +83,7 @@ export class MapRouteSearchComponent {
     this.onDestroy$.next();
   }
 
-  private setRouteMap(direction: Direction): void {
+  private setRouteMap(direction: Direction, category: Category): void {
     this.mapService
       .geocode({ address: direction.origin })
       .then(result => {
@@ -105,16 +115,15 @@ export class MapRouteSearchComponent {
             Math.round(result.routes[0].overview_path.length / 2)
           ];
         this.calcDistAndDura(result);
+        this.middlePointPlaceSearch(category);
       })
       .catch(() => {
         this.location.back();
       });
-    this.middlePointPlaceSearch(this.defaultCategory);
   }
 
   middlePointPlaceSearch(category: Category): void {
     if (this.direction) {
-      this.direction.category = category;
       const placeService = new google.maps.places.PlacesService(
         this.map.data.getMap()
       );
@@ -122,7 +131,7 @@ export class MapRouteSearchComponent {
         rankBy: google.maps.places.RankBy.PROMINENCE,
         location: this.middlePointLatLng,
         radius: this.direction.radius,
-        keyword: this.direction.category.value
+        keyword: category.value
       };
       this.mapService
         .nearbySearch(placeService, request)
@@ -153,5 +162,16 @@ export class MapRouteSearchComponent {
       this.dist += leg.distance.value;
       this.dura += leg.duration.value;
     });
+  }
+
+  selectPlace(place: Place) {
+    this.suggestList.map(s => {
+      if (s.placeId === place.placeId) {
+        s.selected = !s.selected;
+      }
+    });
+    this.store.dispatch(
+      TripigActions.setSelectedList({ selectedList: this.suggestList.filter(s => s.selected) })
+    );
   }
 }

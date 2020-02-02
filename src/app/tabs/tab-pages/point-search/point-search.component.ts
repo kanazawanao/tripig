@@ -25,7 +25,6 @@ export class PointSearchComponent {
     const direction: Direction = {
       destination: this.destination,
       origin: '',
-      category: this.selectedCategory,
       radius: 10000,
       travelMode: google.maps.TravelMode.DRIVING
     };
@@ -49,9 +48,11 @@ export class PointSearchComponent {
   }
 
   search(category: Category): void {
-    this.selectedCategory = category;
     this.store.dispatch(
       TripigActions.setDirection({ direction: this.direction })
+    );
+    this.store.dispatch(
+      TripigActions.setCategory({ category })
     );
   }
 }

@@ -34,7 +34,7 @@ export class InviteGroupComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.onDestroy$.next();
   }
-  onNoClick() {
+  addUserByEmail() {
     // HACK:メールアドレス検索が有効だと危険なので対策を考える。uid検索がいい？
     this.userService.getUserByEmail(this.emailFormControl.value)
     .subscribe(u => {

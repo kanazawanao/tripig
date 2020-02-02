@@ -1,5 +1,5 @@
 <mat-tab-group
-  [selectedIndex]="direction?.category.index"
+  [selectedIndex]="category?.index"
   (selectedTabChange)="onTabClick($event)"
   [style.background-color]="backgroundColor">
   <mat-tab *ngFor="let category of categories">

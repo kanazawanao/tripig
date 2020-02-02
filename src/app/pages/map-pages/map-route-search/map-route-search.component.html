@@ -8,7 +8,9 @@
   ></map-marker>
   <map-info-window>{{ infoContent }}</map-info-window>
 </google-map>
+<app-tab-category></app-tab-category>
 <ion-content>
-  <app-tab-category (categoryChange)="middlePointPlaceSearch($event)"></app-tab-category>
-  <app-suggest-list [suggetList]="suggestList"></app-suggest-list>
+  <app-suggest-list
+    [suggetList]="suggestList"
+    (selectEvent)="selectPlace($event)"></app-suggest-list>
 </ion-content>

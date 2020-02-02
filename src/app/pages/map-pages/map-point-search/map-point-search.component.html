@@ -8,8 +8,8 @@
   ></map-marker>
   <map-info-window>{{ infoContent }}</map-info-window>
 </google-map>
+<app-tab-category></app-tab-category>
 <ion-content>
-  <app-tab-category (categoryChange)="search($event)"></app-tab-category>
   <app-suggest-list
     [suggestList]="suggestList"
     (selectEvent)="selectPlace($event)"></app-suggest-list>

@@ -3,7 +3,7 @@ import { Location } from '@angular/common';
 import { GoogleMap, MapMarker, MapInfoWindow } from '@angular/google-maps';
 import { Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, mergeMap } from 'rxjs/operators';
 import * as TripigState from 'src/app/store/';
 import * as TripigActions from 'src/app/store/tripig.action';
 import * as TripigSelector from 'src/app/store/tripig.selector';
@@ -24,6 +24,9 @@ export class MapPointSearchComponent {
   direction$: Observable<Direction> = this.store.select(
     TripigSelector.getDirection
   );
+  category$: Observable<Category> = this.store.select(
+    TripigSelector.getCategory
+  );
   selectedList$: Observable<Place[]> = this.store.select(
     TripigSelector.getSelectedList
   );
@@ -34,7 +37,7 @@ export class MapPointSearchComponent {
   selectedList: Place[] = [];
   suggestList: Place[] = [];
   infoContent = '';
-  center: google.maps.LatLng = new google.maps.LatLng(37.421995, -122.084092);
+  center?: google.maps.LatLng;
   zoom = 16;
   markerOptions: google.maps.MarkerOptions = { draggable: false };
 
@@ -45,16 +48,17 @@ export class MapPointSearchComponent {
   ) {}
 
   ionViewDidEnter(): void {
-    this.lastSelectedPlace$
-      .pipe(takeUntil(this.onDestroy$))
-      .subscribe(place => {
-        if (place.location) {
-          this.center = place.location;
-        }
-      });
-    this.direction$.pipe(takeUntil(this.onDestroy$)).subscribe(direction => {
-      this.direction = direction;
-      this.setMap(direction);
+    this.setCenterOfLastSelectedPlace();
+    this.direction$.pipe(
+      takeUntil(this.onDestroy$),
+      mergeMap(direction => {
+        this.direction = direction;
+        return this.category$;
+      })
+    ).subscribe(category => {
+      if (this.direction) {
+        this.setMap(this.direction, category);
+      }
     });
     this.selectedList$
       .pipe(takeUntil(this.onDestroy$))
@@ -67,34 +71,39 @@ export class MapPointSearchComponent {
     this.onDestroy$.next();
   }
 
-  search(category: Category): void {
-    if (this.direction) {
-      this.direction.category = category;
-      this.searchPlace(this.center, this.direction);
-    }
+  private setCenterOfLastSelectedPlace(): void {
+    this.lastSelectedPlace$
+      .pipe(
+        takeUntil(this.onDestroy$)
+      )
+      .subscribe(place => {
+        if (place.location) {
+          this.center = place.location;
+        }
+      });
   }
 
-  private setMap(direction: Direction): void {
+  private setMap(direction: Direction, category: Category): void {
     this.mapService
       .geocode({ address: direction.destination })
       .then(result => {
         this.center = result.geometry.location;
-        this.searchPlace(result.geometry.location, direction);
+        this.searchSuggestList(direction, category);
       })
       .catch(() => {
         this.location.back();
       });
   }
 
-  private searchPlace(latLng: google.maps.LatLng, direction: Direction): void {
+  private searchSuggestList(direction: Direction, category: Category) {
     const placeService = new google.maps.places.PlacesService(
       this.map.data.getMap()
     );
     const request: google.maps.places.PlaceSearchRequest = {
       rankBy: google.maps.places.RankBy.PROMINENCE,
-      location: latLng,
+      location: this.center,
       radius: direction.radius,
-      keyword: `${direction.destination} ${direction.category.value}`
+      keyword: `${direction.destination} ${category.value}`
     };
     this.mapService
       .nearbySearch(placeService, request)
@@ -109,6 +118,7 @@ export class MapPointSearchComponent {
         // TODO: 周辺施設が検索できなかった場合どうするか検討
       });
   }
+
 
   openInfoWindow(marker: MapMarker, place: Place): void {
     this.infoContent = place.name ? place.name : '';

@@ -7,6 +7,10 @@ export const getDirection = createSelector(
   selectTripig,
   fromTripig.getDirection
 );
+export const getCategory = createSelector(
+  selectTripig,
+  fromTripig.getCategory
+);
 export const getSelectedList = createSelector(
   selectTripig,
   fromTripig.getSelectedList

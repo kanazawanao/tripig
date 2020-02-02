@@ -5,6 +5,7 @@ import { Store } from '@ngrx/store';
 import * as TripigActions from 'src/app/store/tripig.action';
 import * as TripigReducer from 'src/app/store/tripig.reducer';
 import { Direction } from 'src/app/models/interface/direction.model';
+import { Category, CATEGORIES } from 'src/app/parts/category.class';
 export interface Mode {
   value: google.maps.TravelMode;
   viewValue: string;
@@ -25,7 +26,7 @@ export class RouteSearchComponent {
     // {value: google.maps.TravelMode.TRANSIT, viewValue: 'directions_transit'},
     { value: google.maps.TravelMode.TWO_WHEELER, viewValue: 'motorcycle' }
   ];
-
+  initCategory: Category = CATEGORIES[0];
   private _origin = '';
   private _destination = '';
   searchForm = this.fb.group({
@@ -57,7 +58,6 @@ export class RouteSearchComponent {
     const direction: Direction = {
       destination: this.destination,
       origin: this.origin,
-      category: { index: 0, value: '', viewValue: '', icon: '', custome: false },
       travelMode: this.selectedMode.value,
       radius: 10000
     };
@@ -90,6 +90,9 @@ export class RouteSearchComponent {
   search(): void {
     this.store.dispatch(
       TripigActions.setDirection({ direction: this.direction })
+    );
+    this.store.dispatch(
+      TripigActions.setCategory({ category: this.initCategory })
     );
     this.router.navigate(['/tabs/pages/map/route']);
   }
