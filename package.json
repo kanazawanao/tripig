@@ -21,7 +21,7 @@
     "@angular/cdk": "9.0.0",
     "@angular/common": "9.0.0",
     "@angular/core": "9.0.0",
-    "@angular/fire": "5.4.0",
+    "@angular/fire": "5.4.2",
     "@angular/forms": "9.0.0",
     "@angular/google-maps": "9.0.0-rc.9",
     "@angular/material": "9.0.0",
