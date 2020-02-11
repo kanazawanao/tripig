@@ -1,41 +1,43 @@
-<mat-accordion>
-  <mat-expansion-panel
-    *ngFor="let suggest of suggestList"
-    hideToggle
+<ion-content>
+  <mat-accordion>
+    <mat-expansion-panel
+      *ngFor="let suggest of suggestList"
+      hideToggle
+    >
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-checkbox
+            [(ngModel)]="suggest.selected"
+            (change)="onCheckBoxClick(suggest)"
+            (click)="$event.stopPropagation()"
+          >
+          </mat-checkbox>
+        </mat-panel-title>
+        <mat-panel-description class="description">
+          <span class="name">
+            {{ suggest.name }}
+            <app-rating-stars [rating]="suggest.rating"></app-rating-stars>
+          </span>
+          <button mat-button (click)="onSearchLinkClick($event, suggest)">
+            <mat-icon matSuffix>search</mat-icon>
+          </button>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <div *ngFor="let photo of suggest.photos">
+        <img [src]="photo.getUrl({ maxHeight: 500, maxWidth: 500 })" />
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+  <ion-fab
+    cdkDrag
+    *ngIf="showResultRoute"
+    vertical="bottom"
+    horizontal="end"
+    slot="fixed"
+    class="rocket"
   >
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        <mat-checkbox
-          [(ngModel)]="suggest.selected"
-          (change)="onCheckBoxClick(suggest)"
-          (click)="$event.stopPropagation()"
-        >
-        </mat-checkbox>
-      </mat-panel-title>
-      <mat-panel-description class="description">
-        <span class="name">
-          {{ suggest.name }}
-          <app-rating-stars [rating]="suggest.rating"></app-rating-stars>
-        </span>
-        <button mat-button (click)="onSearchLinkClick($event, suggest)">
-          <mat-icon matSuffix>search</mat-icon>
-        </button>
-      </mat-panel-description>
-    </mat-expansion-panel-header>
-    <div *ngFor="let photo of suggest.photos">
-      <img [src]="photo.getUrl({ maxHeight: 500, maxWidth: 500 })" />
-    </div>
-  </mat-expansion-panel>
-</mat-accordion>
-<ion-fab
-  cdkDrag
-  *ngIf="showResultRoute"
-  vertical="bottom"
-  horizontal="end"
-  slot="fixed"
-  class="rocket"
->
-  <ion-fab-button (click)="guide()" aria-label="guide">
-    <ion-icon name="rocket"></ion-icon>
-  </ion-fab-button>
-</ion-fab>
+    <ion-fab-button (click)="guide()" aria-label="guide">
+      <ion-icon name="rocket"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
