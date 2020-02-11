@@ -163,7 +163,7 @@ export class MapService {
       placeList.push({
         icon: r.icon,
         name: r.name,
-        photos: r.photos,
+        photos: r.photos ? r.photos.map(p => p.getUrl({ maxHeight: 500, maxWidth: 500 })) : [],
         selected: false,
         location: r.geometry ? r.geometry.location : undefined,
         placeId: r.place_id,

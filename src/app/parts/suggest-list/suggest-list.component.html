@@ -1,5 +1,21 @@
 <ion-content>
-  <mat-accordion>
+  <mat-selection-list
+    #suggests
+    (selectionChange)="onSelectedChange($event)">
+    <mat-list-option
+      checkboxPosition="before"
+      *ngFor="let suggest of suggestList">
+      <span class="name">
+        {{ suggest.name }}
+        <button mat-button (click)="onSearchLinkClick($event, suggest)">
+          <mat-icon>search</mat-icon>
+        </button>
+        <app-rating-stars [rating]="suggest.rating"></app-rating-stars>
+        <mat-divider></mat-divider>
+      </span>
+    </mat-list-option>
+  </mat-selection-list>
+  <!-- <mat-accordion>
     <mat-expansion-panel
       *ngFor="let suggest of suggestList"
       hideToggle
@@ -8,8 +24,7 @@
         <mat-panel-title>
           <mat-checkbox
             [(ngModel)]="suggest.selected"
-            (change)="onCheckBoxClick(suggest)"
-            (click)="$event.stopPropagation()"
+            (change)="onCheckBoxClick($event, suggest)"
           >
           </mat-checkbox>
         </mat-panel-title>
@@ -24,10 +39,10 @@
         </mat-panel-description>
       </mat-expansion-panel-header>
       <div *ngFor="let photo of suggest.photos">
-        <img [src]="photo.getUrl({ maxHeight: 500, maxWidth: 500 })" />
+        <img [src]="photo" />
       </div>
     </mat-expansion-panel>
-  </mat-accordion>
+  </mat-accordion> -->
   <ion-fab
     cdkDrag
     *ngIf="showResultRoute"

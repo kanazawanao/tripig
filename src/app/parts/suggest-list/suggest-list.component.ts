@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import * as TripigState from 'src/app/store/';
@@ -9,6 +9,7 @@ import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MapRouteResultComponent } from '../dialog/map/map-route-result/map-route-result.component';
 import { ModalController } from '@ionic/angular';
+import { MatSelectionList, MatSelectionListChange } from '@angular/material/list';
 
 @Component({
   selector: 'app-suggest-list',
@@ -16,6 +17,7 @@ import { ModalController } from '@ionic/angular';
   styleUrls: ['./suggest-list.component.scss']
 })
 export class SuggestListComponent implements OnInit, OnDestroy {
+  @ViewChild('suggests') checkList!: MatSelectionList;
   @Input() suggestList: Place[] = [];
   @Output() selectEvent = new EventEmitter<Place>();
   showResultRoute = false;
@@ -42,8 +44,8 @@ export class SuggestListComponent implements OnInit, OnDestroy {
     this.onDestroy$.next();
   }
 
-  onCheckBoxClick(place: Place): void {
-    this.selectEvent.emit(place);
+  onCheckBoxClick(event: MouseEvent, place: Place): void {
+    event.stopPropagation();
     this.store.dispatch(
       TripigActions.setLastSelectedPlace({ lastSelectedPlace: place })
     );
@@ -63,5 +65,9 @@ export class SuggestListComponent implements OnInit, OnDestroy {
       component: MapRouteResultComponent
     });
     return await modal.present();
+  }
+
+  onSelectedChange(change: MatSelectionListChange) {
+    console.log(change.source.options.map(o => console.log(o)));
   }
 }
