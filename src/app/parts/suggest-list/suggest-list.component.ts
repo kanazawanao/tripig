@@ -27,7 +27,6 @@ export class SuggestListComponent implements OnInit, OnDestroy {
   selectedList$: Observable<Place[]> = this.store.select(
     TripigSelector.getSelectedList
   );
-  selectedList: Place[] = [];
   constructor(
     private store: Store<TripigState.State>,
     private inAppBrowser: InAppBrowser,
@@ -68,6 +67,14 @@ export class SuggestListComponent implements OnInit, OnDestroy {
   }
 
   onSelectedChange(change: MatSelectionListChange) {
-    console.log(change.source.options.map(o => console.log(o)));
+    const selected: Place[] = [];
+    change.source.options.map((o, i) => {
+      if (o.selected) {
+        selected.push(this.suggestList[i]);
+      }
+    });
+    this.store.dispatch(
+      TripigActions.setSelectedList({ selectedList: selected })
+    );
   }
 }
