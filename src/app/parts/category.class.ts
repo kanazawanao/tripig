@@ -7,7 +7,7 @@ export interface Category {
 }
 
 export const CATEGORIES: Category[] = [
-  { value: '観光', viewValue: 'Any Categories', icon: 'local_see', index: 0, custome: false },
+  { value: '観光', viewValue: 'Sightseeing', icon: 'local_see', index: 0, custome: false },
   { value: 'レストラン', viewValue: 'Restaurant', icon: 'restaurant', index: 1, custome: false },
   { value: 'ショッピング', viewValue: 'Shopping', icon: 'shopping_cart', index: 2, custome: false },
   { value: 'カフェ', viewValue: 'Cafe', icon: 'local_cafe', index: 3, custome: false },

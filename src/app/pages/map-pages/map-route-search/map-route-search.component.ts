@@ -45,14 +45,10 @@ export class MapRouteSearchComponent {
   get duration(): string {
     return `約${Math.floor(this.dura / 60)}分`;
   }
-  initLatLng: google.maps.LatLng = new google.maps.LatLng(
-    37.421995,
-    -122.084092
-  );
-  center = this.initLatLng;
-  originLatLng = this.initLatLng;
-  destinationLatLng = this.initLatLng;
-  middlePointLatLng = this.initLatLng;
+  center?: google.maps.LatLng;
+  originLatLng?: google.maps.LatLng;
+  destinationLatLng?: google.maps.LatLng;
+  middlePointLatLng?: google.maps.LatLng;
 
   constructor(
     private location: Location,
