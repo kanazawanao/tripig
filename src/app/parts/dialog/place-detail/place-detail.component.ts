@@ -11,7 +11,8 @@ export class PlaceDetailComponent implements OnInit {
 
   constructor(
     private dialogRef: MatDialogRef<PlaceDetailComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: Place) { }
+    @Inject(MAT_DIALOG_DATA) public data: Place
+  ) { }
 
   ngOnInit() {}
 

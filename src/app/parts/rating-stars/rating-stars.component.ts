@@ -7,10 +7,10 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class RatingStarsComponent implements OnInit {
   @Input() rating = 0;
+  @Input() color = '#FDCC0D';
   star = 'star';
   starBorder = 'star_border';
   starHalf = 'star_half';
-  color = '#FDCC0D';
   rate1 = this.starBorder;
   rate2 = this.starBorder;
   rate3 = this.starBorder;

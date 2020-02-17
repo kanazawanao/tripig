@@ -122,7 +122,7 @@ export class MapRouteResultComponent implements OnInit, OnDestroy {
   regist(): void {
     this.placeService.addPlace(this.createCourse());
     this.store.dispatch(TripigActions.setSelectedList({ selectedList: [] }));
-    this.dialogRef.close();
+    this.dismissModal();
     this.router.navigate(['/tabs/registered']);
   }
 
@@ -252,6 +252,30 @@ export class MapRouteResultComponent implements OnInit, OnDestroy {
   }
 
   private setRoute(): void {
+    this.setRouteInfo();
+    const request: google.maps.DirectionsRequest = this.createDirectionRequest();
+    this.mapService
+      .route(request)
+      .then(result => {
+        this.directionsRenderer.setMap(this.map.data.getMap());
+        this.directionsRenderer.setDirections(result);
+        this.calcDistAndDura(result);
+      })
+      .catch(() => {
+        this.dismissModal();
+      });
+  }
+
+  private createDirectionRequest(): google.maps.DirectionsRequest {
+    return {
+      origin: this.origin ? this.origin.location : undefined,
+      destination: this.destination ? this.destination.name : undefined,
+      waypoints: this.createWaypoints(this.waypoints),
+      travelMode: this.direction ? this.direction.travelMode : undefined
+    };
+  }
+
+  private setRouteInfo() {
     this.origin = this.resultList.shift();
     this.destination = this.resultList.pop();
     this.waypoints = [];
@@ -264,22 +288,6 @@ export class MapRouteResultComponent implements OnInit, OnDestroy {
     if (this.destination) {
       this.resultList.push(this.destination);
     }
-    const request: google.maps.DirectionsRequest = {
-      origin: this.origin ? this.origin.location : undefined,
-      destination: this.destination ? this.destination.name : undefined,
-      waypoints: this.createWaypoints(this.waypoints),
-      travelMode: this.direction ? this.direction.travelMode : undefined
-    };
-    this.mapService
-      .route(request)
-      .then(result => {
-        this.directionsRenderer.setMap(this.map.data.getMap());
-        this.directionsRenderer.setDirections(result);
-        this.calcDistAndDura(result);
-      })
-      .catch(() => {
-        this.dismissModal();
-      });
   }
 
   toLoginPage(): void {

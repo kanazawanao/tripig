@@ -113,9 +113,6 @@ export class MapPointSearchComponent {
             return self.findIndex(s => member.placeId === s.placeId) === index;
           }
         );
-      })
-      .catch(() => {
-        // TODO: 周辺施設が検索できなかった場合どうするか検討
       });
   }
 

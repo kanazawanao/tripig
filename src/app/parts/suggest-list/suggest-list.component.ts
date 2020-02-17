@@ -1,15 +1,15 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ViewChild } from '@angular/core';
+import { MatSelectionList, MatSelectionListChange } from '@angular/material/list';
+import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import * as TripigState from 'src/app/store/';
 import * as TripigActions from 'src/app/store/tripig.action';
 import * as TripigSelector from 'src/app/store/tripig.selector';
 import { Place } from 'src/app/models/interface/place.model';
-import { Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 import { MapRouteResultComponent } from '../dialog/map/map-route-result/map-route-result.component';
-import { MatSelectionList, MatSelectionListChange } from '@angular/material/list';
-import { MatDialog } from '@angular/material/dialog';
 import { PlaceDetailComponent } from '../dialog/place-detail/place-detail.component';
 
 @Component({
