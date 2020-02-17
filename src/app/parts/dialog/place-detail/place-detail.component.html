@@ -1,7 +1,10 @@
 <mat-card>
   <mat-card-header>
-    {{data?.name}}
-    <app-rating-stars [rating]="data?.rating"></app-rating-stars>
+    <mat-card-title>{{ data?.name }}</mat-card-title>
+    <mat-card-subtitle>
+      <app-rating-stars [rating]="data?.rating"></app-rating-stars>
+      <mat-icon>comment</mat-icon>{{data?.numberOfReviews}}件
+    </mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
     <div *ngFor="let photo of data?.photos">
