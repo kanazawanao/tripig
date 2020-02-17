@@ -1,9 +1,8 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { GoogleMap } from '@angular/google-maps';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { ModalController } from '@ionic/angular';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
@@ -17,13 +16,14 @@ import { Course } from 'src/app/models/interface/course.models';
 import { MapService } from 'src/app/services/map.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { PlaceService } from 'src/app/services/place.service';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-map-route-result',
   templateUrl: './map-route-result.component.html',
   styleUrls: ['./map-route-result.component.scss']
 })
-export class MapRouteResultComponent {
+export class MapRouteResultComponent implements OnInit, OnDestroy {
   @ViewChild(GoogleMap) map!: GoogleMap;
   registForm = this.fb.group({
     courseName: ['', Validators.required]
@@ -94,7 +94,7 @@ export class MapRouteResultComponent {
   }
 
   constructor(
-    private modalCtrl: ModalController,
+    private dialogRef: MatDialogRef<MapRouteResultComponent>,
     private router: Router,
     private store: Store<TripigState.State>,
     private mapService: MapService,
@@ -104,25 +104,25 @@ export class MapRouteResultComponent {
     public auth: AuthService
   ) {}
 
-  ionViewDidEnter(): void {
+  ngOnInit(): void {
     this.direction$.pipe(takeUntil(this.onDestroy$)).subscribe(direction => {
       this.direction = direction;
       this.setRouteMap(direction);
     });
   }
 
-  ionViewDidLeave(): void {
+  ngOnDestroy(): void {
     this.onDestroy$.next();
   }
 
   dismissModal(): void {
-    this.modalCtrl.dismiss();
+    this.dialogRef.close();
   }
 
   regist(): void {
     this.placeService.addPlace(this.createCourse());
     this.store.dispatch(TripigActions.setSelectedList({ selectedList: [] }));
-    this.modalCtrl.dismiss();
+    this.dialogRef.close();
     this.router.navigate(['/tabs/registered']);
   }
 

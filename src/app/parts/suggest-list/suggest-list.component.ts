@@ -8,7 +8,6 @@ import { Place } from 'src/app/models/interface/place.model';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { MapRouteResultComponent } from '../dialog/map/map-route-result/map-route-result.component';
-import { ModalController } from '@ionic/angular';
 import { MatSelectionList, MatSelectionListChange } from '@angular/material/list';
 import { MatDialog } from '@angular/material/dialog';
 import { PlaceDetailComponent } from '../dialog/place-detail/place-detail.component';
@@ -32,7 +31,6 @@ export class SuggestListComponent implements OnInit, OnDestroy {
   constructor(
     private store: Store<TripigState.State>,
     private inAppBrowser: InAppBrowser,
-    private modalCtrl: ModalController,
     public dialog: MatDialog
   ) {}
 
@@ -62,11 +60,8 @@ export class SuggestListComponent implements OnInit, OnDestroy {
     browser.show();
   }
 
-  async guide(): Promise<void> {
-    const modal = await this.modalCtrl.create({
-      component: MapRouteResultComponent
-    });
-    return await modal.present();
+  openRouteResultDialog(): void {
+    this.dialog.open(MapRouteResultComponent);
   }
 
   onSelectedChange(change: MatSelectionListChange) {
@@ -81,8 +76,7 @@ export class SuggestListComponent implements OnInit, OnDestroy {
     );
   }
 
-  openDialog(event: MouseEvent, suggest: Place): void {
-    console.log(suggest);
+  openPlaceDetailDialog(event: MouseEvent, suggest: Place): void {
     event.stopPropagation();
     this.dialog.open(PlaceDetailComponent, {
       data: suggest

@@ -1,66 +1,48 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>
-      <button mat-button (click)="dismissModal()" aria-label="top">
-        Tripig
-      </button>
-    </ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="dismissModal()" aria-label="close">
-        <mat-icon>close</mat-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
-<ion-content>
-  <google-map
-    height="250px"
-    width="100%"
-    [center]="center"
-    [zoom]="zoom">
-  </google-map>
-  <p>距離：{{ distance }} / 時間：{{ duration }}</p>
-  <div cdkDropList class="list" (cdkDropListDropped)="drop($event)">
-    <div class="box" *ngFor="let result of resultList" cdkDrag>
-      <div class="handle" cdkDragHandle>
-        <mat-icon>drag_indicator</mat-icon>
-      </div>
-      <span class="name">
-        {{ result.name }}
-      </span>
-      <button mat-button (click)="delete(result)">
-        <mat-icon matSuffix>delete</mat-icon>
-      </button>
+<google-map
+  height="250px"
+  width="100%"
+  [center]="center"
+  [zoom]="zoom">
+</google-map>
+<p>距離：{{ distance }} / 時間：{{ duration }}</p>
+<div cdkDropList class="list" (cdkDropListDropped)="drop($event)">
+  <div class="box" *ngFor="let result of resultList" cdkDrag>
+    <div class="handle" cdkDragHandle>
+      <mat-icon>drag_indicator</mat-icon>
     </div>
-  </div>
-  <div *ngIf="auth.session.login; else loginBlock">
-    <form [formGroup]="registForm">
-      <mat-form-field>
-        <input
-          matInput
-          #courseName
-          type="text"
-          placeholder="TITLE"
-          formControlName="courseName"
-          required
-        />
-      </mat-form-field>
-      <button
-        mat-button
-        (click)="regist()"
-        [disabled]="!registForm.valid"
-        aria-label="regist"
-      >
-        Regist
-      </button>
-    </form>
-  </div>
-  <ng-template #loginBlock>
-    <button mat-button (click)="toLoginPage()">
-      Login
+    <span class="name">
+      {{ result.name }}
+    </span>
+    <button mat-button (click)="delete(result)">
+      <mat-icon matSuffix>delete</mat-icon>
     </button>
-  </ng-template>
-  <button mat-button (click)="onGoogleMapLinkClick()">
-    <mat-icon>map</mat-icon>
+  </div>
+</div>
+<div *ngIf="auth.session.login; else loginBlock">
+  <form [formGroup]="registForm">
+    <mat-form-field>
+      <input
+        matInput
+        #courseName
+        type="text"
+        placeholder="TITLE"
+        formControlName="courseName"
+        required/>
+    </mat-form-field>
+    <button
+      mat-button
+      (click)="regist()"
+      [disabled]="!registForm.valid"
+      aria-label="regist">
+      Regist
+    </button>
+  </form>
+</div>
+<ng-template #loginBlock>
+  <button mat-button (click)="toLoginPage()">
+    Login
   </button>
-</ion-content>
+</ng-template>
+<button mat-button (click)="onGoogleMapLinkClick()">
+  <mat-icon>map</mat-icon>
+</button>

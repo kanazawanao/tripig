@@ -5,7 +5,7 @@
     <mat-list-option
       checkboxPosition="before"
       *ngFor="let suggest of suggestList">
-      <span class="name" (click)="openDialog($event, suggest)">
+      <span class="name" (click)="openPlaceDetailDialog($event, suggest)">
         {{ suggest.name }}
         <button mat-button (click)="onSearchLinkClick($event, suggest)">
           <mat-icon>search</mat-icon>
@@ -21,7 +21,7 @@
     horizontal="end"
     slot="fixed"
     class="rocket">
-    <ion-fab-button (click)="guide()" aria-label="guide">
+    <ion-fab-button (click)="openRouteResultDialog()" aria-label="routeResult">
       <ion-icon name="rocket"></ion-icon>
     </ion-fab-button>
   </ion-fab>
