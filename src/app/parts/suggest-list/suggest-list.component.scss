@@ -2,9 +2,15 @@
   display: flex;
   justify-content: space-between;
 }
+
 .rocket {
   padding-bottom: 40px;
 }
+
+.list-item .mat-list-option {
+  height: auto;
+}
+
 .name {
   max-width: 100%;
   min-width: 250px;

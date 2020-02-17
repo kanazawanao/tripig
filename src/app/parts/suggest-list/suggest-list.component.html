@@ -1,7 +1,8 @@
 <ion-content>
   <mat-selection-list
     #suggests
-    (selectionChange)="onSelectedChange($event)">
+    (selectionChange)="onSelectedChange($event)"
+    class="list-item">
     <mat-list-option
       checkboxPosition="before"
       *ngFor="let suggest of suggestList">
@@ -12,6 +13,7 @@
         </button>
         <app-rating-stars [rating]="suggest.rating"></app-rating-stars>
       </span>
+      <mat-divider></mat-divider>
     </mat-list-option>
   </mat-selection-list>
   <ion-fab

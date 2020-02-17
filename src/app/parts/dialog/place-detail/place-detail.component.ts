@@ -16,7 +16,7 @@ export class PlaceDetailComponent implements OnInit {
 
   ngOnInit() {}
 
-  onCloseClick() {
+  onCancelClick() {
     this.dialogRef.close();
   }
 }
