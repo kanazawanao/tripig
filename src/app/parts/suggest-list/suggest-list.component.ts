@@ -10,6 +10,8 @@ import { takeUntil } from 'rxjs/operators';
 import { MapRouteResultComponent } from '../dialog/map/map-route-result/map-route-result.component';
 import { ModalController } from '@ionic/angular';
 import { MatSelectionList, MatSelectionListChange } from '@angular/material/list';
+import { MatDialog } from '@angular/material/dialog';
+import { PlaceDetailComponent } from '../dialog/place-detail/place-detail.component';
 
 @Component({
   selector: 'app-suggest-list',
@@ -30,7 +32,8 @@ export class SuggestListComponent implements OnInit, OnDestroy {
   constructor(
     private store: Store<TripigState.State>,
     private inAppBrowser: InAppBrowser,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    public dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -76,5 +79,13 @@ export class SuggestListComponent implements OnInit, OnDestroy {
     this.store.dispatch(
       TripigActions.setSelectedList({ selectedList: selected })
     );
+  }
+
+  openDialog(event: MouseEvent, suggest: Place): void {
+    console.log(suggest);
+    event.stopPropagation();
+    this.dialog.open(PlaceDetailComponent, {
+      data: suggest
+    });
   }
 }

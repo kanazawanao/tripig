@@ -94,7 +94,6 @@ export class AuthService {
     this.afAuth.auth
       .signInWithEmailAndPassword(email, password)
       .then(auth => {
-        // メールアドレス確認が済んでいるかどうか
         if (auth.user && !auth.user.emailVerified) {
           this.afAuth.auth.signOut();
           return Promise.reject('メールアドレスが確認できていません。');

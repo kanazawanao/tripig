@@ -5,7 +5,7 @@
     <mat-list-option
       checkboxPosition="before"
       *ngFor="let suggest of suggestList">
-      <span class="name">
+      <span class="name" (click)="openDialog($event, suggest)">
         {{ suggest.name }}
         <button mat-button (click)="onSearchLinkClick($event, suggest)">
           <mat-icon>search</mat-icon>
@@ -15,42 +15,13 @@
       </span>
     </mat-list-option>
   </mat-selection-list>
-  <!-- <mat-accordion>
-    <mat-expansion-panel
-      *ngFor="let suggest of suggestList"
-      hideToggle
-    >
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          <mat-checkbox
-            [(ngModel)]="suggest.selected"
-            (change)="onCheckBoxClick($event, suggest)"
-          >
-          </mat-checkbox>
-        </mat-panel-title>
-        <mat-panel-description class="description">
-          <span class="name">
-            {{ suggest.name }}
-            <app-rating-stars [rating]="suggest.rating"></app-rating-stars>
-          </span>
-          <button mat-button (click)="onSearchLinkClick($event, suggest)">
-            <mat-icon matSuffix>search</mat-icon>
-          </button>
-        </mat-panel-description>
-      </mat-expansion-panel-header>
-      <div *ngFor="let photo of suggest.photos">
-        <img [src]="photo" />
-      </div>
-    </mat-expansion-panel>
-  </mat-accordion> -->
   <ion-fab
     cdkDrag
     *ngIf="showResultRoute"
     vertical="bottom"
     horizontal="end"
     slot="fixed"
-    class="rocket"
-  >
+    class="rocket">
     <ion-fab-button (click)="guide()" aria-label="guide">
       <ion-icon name="rocket"></ion-icon>
     </ion-fab-button>

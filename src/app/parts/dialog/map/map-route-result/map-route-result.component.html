@@ -13,7 +13,11 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <google-map height="250px" width="100%" [center]="center" [zoom]="zoom">
+  <google-map
+    height="250px"
+    width="100%"
+    [center]="center"
+    [zoom]="zoom">
   </google-map>
   <p>距離：{{ distance }} / 時間：{{ duration }}</p>
   <div cdkDropList class="list" (cdkDropListDropped)="drop($event)">

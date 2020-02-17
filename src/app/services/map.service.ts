@@ -163,13 +163,12 @@ export class MapService {
       placeList.push({
         icon: r.icon,
         name: r.name,
-        photos: r.photos ? r.photos.map(p => p.getUrl({ maxHeight: 500, maxWidth: 500 })) : [],
+        photos: r.photos ? r.photos : [],
         selected: false,
         location: r.geometry ? r.geometry.location : undefined,
         placeId: r.place_id,
         rating: r.rating,
-        // HACK: PlaceResultにuser_ratings_totalが定義されていない
-        numberOfReviews: (r as any).user_ratings_total
+        numberOfReviews: r.user_ratings_total
       });
     });
     return placeList;

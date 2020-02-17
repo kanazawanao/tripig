@@ -17,7 +17,6 @@ export class UserService {
   }
 
   addUser(user: User): void {
-    // HACK: カスタムobjectは登録できないといわれるので、無理やり変換して登録してる
     this.collection.doc(user.uid).set(user.deserialize());
   }
 
