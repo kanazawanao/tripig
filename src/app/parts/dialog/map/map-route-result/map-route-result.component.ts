@@ -3,6 +3,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { GoogleMap } from '@angular/google-maps';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { MatDialogRef } from '@angular/material/dialog';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
@@ -16,7 +17,6 @@ import { Course } from 'src/app/models/interface/course.models';
 import { MapService } from 'src/app/services/map.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { PlaceService } from 'src/app/services/place.service';
-import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-map-route-result',
@@ -80,28 +80,25 @@ export class MapRouteResultComponent implements OnInit, OnDestroy {
         : ''
       : '';
   }
-  center: google.maps.LatLng = new google.maps.LatLng(37.421995, -122.084092);
   zoom = 16;
-  loggedIn = false;
   private dist = 0;
   get distance(): string {
     return `約${Math.floor(this.dist / 1000)}km`;
   }
-
   private dura = 0;
   get duration(): string {
     return `約${Math.floor(this.dura / 60)}分`;
   }
 
   constructor(
+    public auth: AuthService,
     private dialogRef: MatDialogRef<MapRouteResultComponent>,
     private router: Router,
+    private fb: FormBuilder,
+    private inAppBrowser: InAppBrowser,
     private store: Store<TripigState.State>,
     private mapService: MapService,
     private placeService: PlaceService,
-    private fb: FormBuilder,
-    private inAppBrowser: InAppBrowser,
-    public auth: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -127,18 +124,22 @@ export class MapRouteResultComponent implements OnInit, OnDestroy {
   }
 
   private createCourse(): Course {
-    const course: Course = {
-      name: this.courseName,
-      route: [],
-      uids: [],
-      travelMode: google.maps.TravelMode.DRIVING
-    };
+    const course: Course = this.createDefaultCourse();
     if (this.origin && this.destination) {
       course.route.push(this.origin);
       this.waypoints.forEach(p => course.route.push(p));
       course.route.push(this.destination);
     }
     return course;
+  }
+
+  private createDefaultCourse(): Course {
+    return {
+      name: this.courseName,
+      route: [],
+      uids: [],
+      travelMode: google.maps.TravelMode.DRIVING
+    };
   }
 
   private setRouteMap(direction: Direction): void {
@@ -275,7 +276,7 @@ export class MapRouteResultComponent implements OnInit, OnDestroy {
     };
   }
 
-  private setRouteInfo() {
+  private setRouteInfo(): void {
     this.origin = this.resultList.shift();
     this.destination = this.resultList.pop();
     this.waypoints = [];
