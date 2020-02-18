@@ -1,11 +1,13 @@
 <ion-content>
   <mat-selection-list
     #suggests
-    (selectionChange)="onSelectedChange($event)"
+    (selectionChange)="onSelectedChange(suggests.selectedOptions.selected)"
     class="list-item">
     <mat-list-option
       checkboxPosition="before"
-      *ngFor="let suggest of suggestList">
+      *ngFor="let suggest of suggestList"
+      [value]="suggest"
+      [selected]="suggest.selected">
       <span class="name" (click)="openPlaceDetailDialog($event, suggest)">
         {{ suggest.name }}
         <button mat-button (click)="onSearchLinkClick($event, suggest)">

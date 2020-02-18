@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ViewChild } from '@angular/core';
-import { MatSelectionList, MatSelectionListChange } from '@angular/material/list';
+import { MatSelectionList, MatListOption } from '@angular/material/list';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
@@ -64,13 +64,14 @@ export class SuggestListComponent implements OnInit, OnDestroy {
     this.dialog.open(MapRouteResultComponent);
   }
 
-  onSelectedChange(change: MatSelectionListChange) {
-    const selected: Place[] = [];
-    change.source.options.map((o, i) => {
+  onSelectedChange(options: MatListOption[]) {
+    let selected: Place[] = [];
+    options.map((o, i) => {
       if (o.selected) {
-        selected.push(this.suggestList[i]);
+        selected.push(Object.assign({}, this.suggestList[i]));
       }
     });
+    selected.forEach(s => s.selected = true);
     this.store.dispatch(
       TripigActions.setSelectedList({ selectedList: selected })
     );

@@ -116,7 +116,6 @@ export class MapPointSearchComponent {
       });
   }
 
-
   openInfoWindow(marker: MapMarker, place: Place): void {
     this.infoContent = place.name ? place.name : '';
     this.infoWindow.open(marker);
