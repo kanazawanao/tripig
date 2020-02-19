@@ -66,9 +66,9 @@ export class SuggestListComponent implements OnInit, OnDestroy {
 
   onSelectedChange(options: MatListOption[]) {
     const selected: Place[] = [];
-    options.map((o, i) => {
-      if (o.selected) {
-        selected.push(Object.assign({}, this.suggestList[i]));
+    options.map((option) => {
+      if (option.selected) {
+        selected.push(Object.assign({}, option.value));
       }
     });
     selected.forEach(s => s.selected = true);
