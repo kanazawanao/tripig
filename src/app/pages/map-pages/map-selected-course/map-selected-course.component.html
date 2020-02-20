@@ -33,7 +33,8 @@
     <mat-icon>restore_from_trash</mat-icon>
   </button>
   <mat-menu #menu="matMenu">
-    <div *ngFor="let deletedPlace of deletedPlaces">
+    <div *ngFor="let deletedPlace of deletedPlaces; index as i">
+      {{ i }}
       <button
         mat-menu-item
         aria-label="restore"

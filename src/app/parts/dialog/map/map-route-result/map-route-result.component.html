@@ -4,44 +4,48 @@
   [zoom]="zoom">
 </google-map>
 <p>距離：{{ distance }} / 時間：{{ duration }}</p>
-<div cdkDropList class="list" (cdkDropListDropped)="drop($event)">
-  <div class="box" *ngFor="let result of resultList" cdkDrag>
-    <div class="handle" cdkDragHandle>
-      <mat-icon>drag_indicator</mat-icon>
+<mat-dialog-content class="route-list">
+  <div cdkDropList class="list" (cdkDropListDropped)="drop($event)">
+    <div *ngFor="let result of resultList; index as i" class="box" cdkDrag>
+      <div class="handle" cdkDragHandle>
+        <mat-icon>drag_indicator</mat-icon>
+      </div>
+      <span class="name">
+        {{ i + 1 }}.{{ result.name }}
+      </span>
+      <button mat-button (click)="delete(result)">
+        <mat-icon matSuffix>delete</mat-icon>
+      </button>
     </div>
-    <span class="name">
-      {{ result.name }}
-    </span>
-    <button mat-button (click)="delete(result)">
-      <mat-icon matSuffix>delete</mat-icon>
-    </button>
   </div>
-</div>
-<div *ngIf="auth.session.login; else loginBlock">
-  <form [formGroup]="registForm">
-    <mat-form-field>
-      <input
-        matInput
-        #courseName
-        type="text"
-        placeholder="TITLE"
-        formControlName="courseName"
-        required/>
-    </mat-form-field>
-    <button
-      mat-button
-      (click)="regist()"
-      [disabled]="!registForm.valid"
-      aria-label="regist">
-      Regist
+</mat-dialog-content>
+<mat-dialog-actions>
+  <div *ngIf="auth.session.login; else loginBlock">
+    <form [formGroup]="registForm">
+      <mat-form-field>
+        <input
+          matInput
+          #courseName
+          type="text"
+          placeholder="TITLE"
+          formControlName="courseName"
+          required/>
+      </mat-form-field>
+      <button
+        mat-button
+        (click)="regist()"
+        [disabled]="!registForm.valid"
+        aria-label="regist">
+        Regist
+      </button>
+    </form>
+  </div>
+  <ng-template #loginBlock>
+    <button mat-button (click)="toLoginPage()">
+      Login
     </button>
-  </form>
-</div>
-<ng-template #loginBlock>
-  <button mat-button (click)="toLoginPage()">
-    Login
+  </ng-template>
+  <button mat-button (click)="onGoogleMapLinkClick()">
+    <mat-icon>map</mat-icon>
   </button>
-</ng-template>
-<button mat-button (click)="onGoogleMapLinkClick()">
-  <mat-icon>map</mat-icon>
-</button>
+</mat-dialog-actions>

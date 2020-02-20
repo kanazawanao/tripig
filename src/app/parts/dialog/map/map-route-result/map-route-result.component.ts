@@ -89,6 +89,7 @@ export class MapRouteResultComponent implements OnInit, OnDestroy {
   get duration(): string {
     return `約${Math.floor(this.dura / 60)}分`;
   }
+  legs: google.maps.DirectionsLeg[] = [];
 
   constructor(
     public auth: AuthService,
@@ -222,6 +223,7 @@ export class MapRouteResultComponent implements OnInit, OnDestroy {
     this.dist = 0;
     this.dura = 0;
     result.routes[0].legs.forEach(leg => {
+      this.legs.push(leg);
       this.dist += leg.distance.value;
       this.dura += leg.duration.value;
     });
