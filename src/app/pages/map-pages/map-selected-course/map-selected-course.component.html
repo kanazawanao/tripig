@@ -11,12 +11,12 @@
 <ion-content>
   <h2>{{selectedCourse?.name}}</h2>
   <div cdkDropList class="list" (cdkDropListDropped)="drop($event)">
-    <div class="box" *ngFor="let result of selectedCourse?.route" cdkDrag>
+    <div class="box" *ngFor="let result of selectedCourse?.route; index as i" cdkDrag>
       <div class="handle" cdkDragHandle>
         <mat-icon>drag_indicator</mat-icon>
       </div>
       <span class="name">
-        {{ result.name }}
+        {{ i }}.{{ result.name }}
       </span>
       <button
         mat-button
@@ -34,13 +34,12 @@
   </button>
   <mat-menu #menu="matMenu">
     <div *ngFor="let deletedPlace of deletedPlaces; index as i">
-      {{ i }}
       <button
         mat-menu-item
         aria-label="restore"
         (click)="restore(deletedPlace)">
         <mat-icon>chevron_left</mat-icon>
-        {{deletedPlace.name}}
+        {{ i }}.{{ deletedPlace.name }}
       </button>
     </div>
   </mat-menu>
