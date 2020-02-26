@@ -1,16 +1,16 @@
-import { Component, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
+import { Component, ViewChild } from '@angular/core';
 import { GoogleMap, MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
-import { takeUntil, mergeMap } from 'rxjs/operators';
+import { mergeMap, takeUntil } from 'rxjs/operators';
+import { Place } from 'src/app/models/class/place.model';
+import { Direction } from 'src/app/models/interface/direction.model';
+import { Category } from 'src/app/parts/category.class';
+import { MapService } from 'src/app/services/map.service';
 import * as TripigState from 'src/app/store/';
 import { actions } from 'src/app/store/tripig.action';
 import { selectors } from 'src/app/store/tripig.selector';
-import { Direction } from 'src/app/models/interface/direction.model';
-import { Place } from 'src/app/models/interface/place.model';
-import { MapService } from 'src/app/services/map.service';
-import { Category } from 'src/app/parts/category.class';
 
 @Component({
   selector: 'app-map-route-search',

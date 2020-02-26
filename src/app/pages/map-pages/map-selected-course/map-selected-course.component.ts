@@ -1,17 +1,17 @@
-import { Component, ViewChild } from '@angular/core';
-import { Location } from '@angular/common';
-import { Router } from '@angular/router';
-import { MapMarker, MapInfoWindow, GoogleMap } from '@angular/google-maps';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { Location } from '@angular/common';
+import { Component, ViewChild } from '@angular/core';
+import { GoogleMap, MapInfoWindow, MapMarker } from '@angular/google-maps';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subject } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
-import * as TripigState from 'src/app/store/';
-import { selectors } from 'src/app/store/tripig.selector';
-import { Course } from 'src/app/models/interface/course.models';
-import { Place } from 'src/app/models/interface/place.model';
+import { Course } from 'src/app/models/class/course.models';
+import { Place } from 'src/app/models/class/place.model';
 import { MapService } from 'src/app/services/map.service';
 import { PlaceService } from 'src/app/services/place.service';
+import * as TripigState from 'src/app/store/';
+import { selectors } from 'src/app/store/tripig.selector';
 
 @Component({
   selector: 'app-map-selected-course',

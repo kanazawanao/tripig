@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { Course } from 'src/app/models/class/course.models';
+import { InviteGroupComponent } from 'src/app/parts/dialog/invite-group/invite-group.component';
+import { PlaceService } from 'src/app/services/place.service';
 import { actions } from 'src/app/store/tripig.action';
 import * as TripigReducer from 'src/app/store/tripig.reducer';
-import { Subject } from 'rxjs';
-import { PlaceService } from 'src/app/services/place.service';
-import { Course } from 'src/app/models/interface/course.models';
-import { takeUntil } from 'rxjs/operators';
-import { InviteGroupComponent } from 'src/app/parts/dialog/invite-group/invite-group.component';
-import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-registered-routes',

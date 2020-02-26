@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { Place } from 'src/app/models/class/place.model';
+import { Session } from 'src/app/models/class/session';
+import { AuthService } from 'src/app/services/auth.service';
 import * as TripigState from 'src/app/store/';
 import { selectors } from 'src/app/store/tripig.selector';
-import { AuthService } from 'src/app/services/auth.service';
-import { Place } from 'src/app/models/interface/place.model';
-import { Session } from 'src/app/models/class/session';
 
 @Component({
   selector: 'app-header',

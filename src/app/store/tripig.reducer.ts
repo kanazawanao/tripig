@@ -1,8 +1,8 @@
-import { Action, createReducer, on } from '@ngrx/store';
 import { actions } from './tripig.action';
+import { Place } from '../models/class/place.model';
 import { Direction } from '../models/interface/direction.model';
-import { Place } from '../models/interface/place.model';
 import { Category } from '../parts/category.class';
+import { Action, createReducer, on } from '@ngrx/store';
 
 export interface State {
   direction: Direction;

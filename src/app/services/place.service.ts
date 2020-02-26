@@ -1,16 +1,13 @@
-import { Injectable } from '@angular/core';
-import {
-  AngularFirestoreCollection,
-  AngularFirestore
-} from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
-import { Course } from '../models/interface/course.models';
+import { Course } from '../models/class/course.models';
+import { Place } from '../models/class/place.model';
+import { Injectable } from '@angular/core';
+import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Place } from '../models/interface/place.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PlaceService {
   private collection: AngularFirestoreCollection<Course>;
@@ -23,21 +20,15 @@ export class PlaceService {
   addPlace(course: Course): void {
     const id = (course.id = this.afStore.createId());
     course.uids = [this.auth.session.user.uid];
-    this.collection
-      .doc(id)
-      .set(Object.assign({}, JSON.parse(JSON.stringify(course))));
+    this.collection.doc(id).set(course.deserialize());
   }
 
   updatePlace(course: Course): void {
-    this.collection
-      .doc(course.id)
-      .update(Object.assign({}, JSON.parse(JSON.stringify(course))));
+    this.collection.doc(course.id).update(course.deserialize());
   }
 
   deletePlace(id: string): void {
-    this.collection
-      .doc(id)
-      .delete();
+    this.collection.doc(id).delete();
   }
 
   setDeletedPlace(id: string, places: Place[]): void {
@@ -59,14 +50,10 @@ export class PlaceService {
   getAllPlace(): Observable<Course[]> {
     return this.collection
       .valueChanges()
-      .pipe(
-        map(courses => courses.filter(c => c.uids ? c.uids.includes(this.auth.session.user.uid) : false))
-      );
+      .pipe(map((courses) => courses.filter((c) => (c.uids ? c.uids.includes(this.auth.session.user.uid) : false))));
   }
 
   getPlace(id: string): Observable<Course | undefined> {
-    return this.collection
-      .doc<Course>(id)
-      .valueChanges();
+    return this.collection.doc<Course>(id).valueChanges();
   }
 }

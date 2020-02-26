@@ -1,6 +1,6 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Place } from 'src/app/models/interface/place.model';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Place } from 'src/app/models/class/place.model';
 
 @Component({
   selector: 'app-place-detail',
@@ -8,11 +8,7 @@ import { Place } from 'src/app/models/interface/place.model';
   styleUrls: ['./place-detail.component.scss'],
 })
 export class PlaceDetailComponent implements OnInit {
-
-  constructor(
-    private dialogRef: MatDialogRef<PlaceDetailComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: Place
-  ) { }
+  constructor(private dialogRef: MatDialogRef<PlaceDetailComponent>, @Inject(MAT_DIALOG_DATA) public data: Place) {}
 
   ngOnInit() {}
 

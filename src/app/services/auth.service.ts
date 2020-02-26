@@ -11,7 +11,7 @@ import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { Session, User } from '../models/class/session';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   userId = '';
@@ -24,22 +24,22 @@ export class AuthService {
     private afAuth: AngularFireAuth,
     private afStore: AngularFirestore,
     private userService: UserService,
-    private gplus: GooglePlus
+    private gplus: GooglePlus,
   ) {}
 
   checkLogin(): void {
     this.afAuth.authState
       .pipe(
         // authの有無でObservbleを変更
-        switchMap(auth => {
+        switchMap((auth) => {
           if (!auth) {
             return of(null);
           } else {
             return this.getUser(auth.uid);
           }
-        })
+        }),
       )
-      .subscribe(auth => {
+      .subscribe((auth) => {
         // ログイン状態を返り値の有無で判断
         this.session.login = !!auth;
         this.session.user = auth ? auth : new User();
@@ -49,11 +49,11 @@ export class AuthService {
 
   checkLoginState(): Observable<Session> {
     return this.afAuth.authState.pipe(
-      map(auth => {
+      map((auth) => {
         // ログイン状態を返り値の有無で判断
         this.session.login = !!auth;
         return this.session;
-      })
+      }),
     );
   }
 
@@ -62,7 +62,7 @@ export class AuthService {
       .doc<User>(`users/${uid}`)
       .valueChanges()
       .pipe(
-        map(user => {
+        map((user) => {
           if (user) {
             return user;
           } else {
@@ -70,21 +70,21 @@ export class AuthService {
           }
         }),
         take(1),
-        switchMap((user: User) => of(new User(uid, user.name, user.email, user.photoUrl)))
+        switchMap((user: User) => of(new User(uid, user.name, user.email, user.photoUrl))),
       );
   }
 
   signup(email: string, password: string): void {
     this.afAuth.auth
       .createUserWithEmailAndPassword(email, password)
-      .then(auth => {
+      .then((auth) => {
         if (auth.user) {
           auth.user.sendEmailVerification();
           this.userService.addUser(this.createUser(auth.user));
         }
       })
       .then(() => alert('メールアドレス確認メールを送信しました。'))
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
         alert('アカウントの作成に失敗しました。\n' + err);
       });
@@ -93,7 +93,7 @@ export class AuthService {
   async signIn(email: string, password: string) {
     this.afAuth.auth
       .signInWithEmailAndPassword(email, password)
-      .then(auth => {
+      .then((auth) => {
         if (auth.user && !auth.user.emailVerified) {
           this.afAuth.auth.signOut();
           return Promise.reject('メールアドレスが確認できていません。');
@@ -104,7 +104,7 @@ export class AuthService {
         }
       })
       .then(() => alert('ログインしました。'))
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
         alert('ログインに失敗しました。\n' + err);
       });
@@ -115,12 +115,10 @@ export class AuthService {
       const gplusUser = await this.gplus.login({
         webClientId: environment.webClientId,
         offline: true,
-        scopes: 'profile email'
+        scopes: 'profile email',
       });
 
-      const credential = await this.afAuth.auth.signInWithCredential(
-        firebase.auth.GoogleAuthProvider.credential(gplusUser.idToken)
-      );
+      const credential = await this.afAuth.auth.signInWithCredential(firebase.auth.GoogleAuthProvider.credential(gplusUser.idToken));
       return this.userService.addUser(this.createUser(credential.user));
     } catch (err) {
       console.log(err);
@@ -164,7 +162,7 @@ export class AuthService {
         this.router.navigate(['/tabs/pages/signIn']);
       })
       .then(() => alert('ログアウトしました。'))
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
         alert('ログアウトに失敗しました。\n' + err);
       });

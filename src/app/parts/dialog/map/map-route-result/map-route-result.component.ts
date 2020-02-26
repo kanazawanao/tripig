@@ -1,22 +1,22 @@
-import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { GoogleMap } from '@angular/google-maps';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
+import { GoogleMap } from '@angular/google-maps';
 import { MatDialogRef } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import * as TripigState from 'src/app/store/';
-import { selectors } from 'src/app/store/tripig.selector';
-import { actions } from 'src/app/store/tripig.action';
+import { Course } from 'src/app/models/class/course.models';
+import { Place } from 'src/app/models/class/place.model';
 import { Direction } from 'src/app/models/interface/direction.model';
-import { Place } from 'src/app/models/interface/place.model';
-import { Course } from 'src/app/models/interface/course.models';
-import { MapService } from 'src/app/services/map.service';
 import { AuthService } from 'src/app/services/auth.service';
+import { MapService } from 'src/app/services/map.service';
 import { PlaceService } from 'src/app/services/place.service';
+import * as TripigState from 'src/app/store/';
+import { actions } from 'src/app/store/tripig.action';
+import { selectors } from 'src/app/store/tripig.selector';
 
 @Component({
   selector: 'app-map-route-result',
@@ -118,12 +118,9 @@ export class MapRouteResultComponent implements OnInit, OnDestroy {
   }
 
   private createDefaultCourse(): Course {
-    return {
-      name: this.courseName,
-      route: [],
-      uids: [],
-      travelMode: google.maps.TravelMode.DRIVING,
-    };
+    const course = new Course(this.courseName);
+    course.name = this.courseName;
+    return course;
   }
 
   private setRouteMap(direction: Direction): void {

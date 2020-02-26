@@ -1,14 +1,11 @@
 import { Injectable } from '@angular/core';
-import {
-  AngularFirestore,
-  AngularFirestoreCollection
-} from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 import { User } from '../models/class/session';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService {
   private collection: AngularFirestoreCollection<User>;
@@ -25,10 +22,6 @@ export class UserService {
   }
 
   getUserByEmail(email: string): Observable<User | undefined> {
-    return this.collection
-      .valueChanges()
-      .pipe(
-        map(users => users.find(u => u.email === email))
-      );
+    return this.collection.valueChanges().pipe(map((users) => users.find((u) => u.email === email)));
   }
 }
