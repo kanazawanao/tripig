@@ -1,0 +1,7 @@
+www/
+dist/
+plugin/
+coverage/
+node_modules/
+.firebase/
+.vscode/
