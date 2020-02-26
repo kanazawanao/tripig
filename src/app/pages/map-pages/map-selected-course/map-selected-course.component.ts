@@ -7,7 +7,7 @@ import { Store } from '@ngrx/store';
 import { Subject } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 import * as TripigState from 'src/app/store/';
-import * as TripigSelector from 'src/app/store/tripig.selector';
+import { selectors } from 'src/app/store/tripig.selector';
 import { Course } from 'src/app/models/interface/course.models';
 import { Place } from 'src/app/models/interface/place.model';
 import { MapService } from 'src/app/services/map.service';
@@ -16,16 +16,13 @@ import { PlaceService } from 'src/app/services/place.service';
 @Component({
   selector: 'app-map-selected-course',
   templateUrl: './map-selected-course.component.html',
-  styleUrls: ['./map-selected-course.component.scss']
+  styleUrls: ['./map-selected-course.component.scss'],
 })
 export class MapSelectedCourseComponent {
   @ViewChild(GoogleMap) map!: GoogleMap;
   @ViewChild(MapInfoWindow) infoWindow!: MapInfoWindow;
   markerOptions: google.maps.MarkerOptions = { draggable: false };
-  initLatLng: google.maps.LatLng = new google.maps.LatLng(
-    37.421995,
-    -122.084092
-  );
+  initLatLng: google.maps.LatLng = new google.maps.LatLng(37.421995, -122.084092);
   center = this.initLatLng;
   zoom = 16;
   selectedCourse?: Course;
@@ -42,20 +39,19 @@ export class MapSelectedCourseComponent {
   ) {}
 
   ionViewDidEnter() {
-    this.store.select(TripigSelector.getSelectedCourseId)
+    this.store
+      .select(selectors.getSelectedCourseId)
+      .pipe(mergeMap((id) => this.placeService.getPlace(id)))
       .pipe(
-        mergeMap(id => this.placeService.getPlace(id))
-      )
-      .pipe(
-        mergeMap(course => {
+        mergeMap((course) => {
           this.selectedCourse = course;
           if (course) {
             this.setRoute(course);
           }
-          return this.placeService.getDeletedPlaces(course ? course.id ? course.id : '' : '');
-        })
+          return this.placeService.getDeletedPlaces(course ? (course.id ? course.id : '') : '');
+        }),
       )
-      .subscribe(deleted => {
+      .subscribe((deleted) => {
         this.deletedPlaces = deleted ? Object.values(deleted) : [];
       });
   }
@@ -71,11 +67,11 @@ export class MapSelectedCourseComponent {
       origin: origin.location,
       destination: destination.name,
       waypoints: this.createWaypoints(course),
-      travelMode: course.travelMode
+      travelMode: course.travelMode,
     };
     this.mapService
       .route(request)
-      .then(result => {
+      .then((result) => {
         this.directionsRenderer.setMap(this.map.data.getMap());
         this.directionsRenderer.setDirections(result);
       })
@@ -86,10 +82,10 @@ export class MapSelectedCourseComponent {
 
   private createWaypoints(course: Course): google.maps.DirectionsWaypoint[] {
     const waypoints: google.maps.DirectionsWaypoint[] = [];
-    course.route.slice(1, course.route.length - 1).forEach(selected => {
+    course.route.slice(1, course.route.length - 1).forEach((selected) => {
       if (selected.location) {
         const p: google.maps.DirectionsWaypoint = {
-          location: selected.location
+          location: selected.location,
         };
         waypoints.push(p);
       }
@@ -114,10 +110,10 @@ export class MapSelectedCourseComponent {
       if (this.selectedCourse.id) {
         this.placeService.setDeletedPlace(
           this.selectedCourse.id,
-          this.deletedPlaces.concat(this.selectedCourse.route.filter(r => r.placeId === place.placeId))
+          this.deletedPlaces.concat(this.selectedCourse.route.filter((r) => r.placeId === place.placeId)),
         );
       }
-      this.selectedCourse.route = this.selectedCourse.route.filter(r => r.placeId !== place.placeId);
+      this.selectedCourse.route = this.selectedCourse.route.filter((r) => r.placeId !== place.placeId);
       this.placeService.updatePlace(this.selectedCourse);
 
       if (this.selectedCourse.route.length === 0 && this.selectedCourse.id) {
@@ -128,15 +124,12 @@ export class MapSelectedCourseComponent {
   }
 
   restore(deletedPlace: Place): void {
-    this.deletedPlaces = this.deletedPlaces.filter(d => d.placeId !== deletedPlace.placeId);
+    this.deletedPlaces = this.deletedPlaces.filter((d) => d.placeId !== deletedPlace.placeId);
     if (this.selectedCourse) {
       this.selectedCourse.route.push(deletedPlace);
       this.placeService.updatePlace(this.selectedCourse);
       if (this.selectedCourse.id) {
-        this.placeService.setDeletedPlace(
-          this.selectedCourse.id,
-          this.deletedPlaces
-        );
+        this.placeService.setDeletedPlace(this.selectedCourse.id, this.deletedPlaces);
       }
     }
   }

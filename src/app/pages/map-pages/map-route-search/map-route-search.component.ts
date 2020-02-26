@@ -5,8 +5,8 @@ import { Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil, mergeMap } from 'rxjs/operators';
 import * as TripigState from 'src/app/store/';
-import * as TripigActions from 'src/app/store/tripig.action';
-import * as TripigSelector from 'src/app/store/tripig.selector';
+import { actions } from 'src/app/store/tripig.action';
+import { selectors } from 'src/app/store/tripig.selector';
 import { Direction } from 'src/app/models/interface/direction.model';
 import { Place } from 'src/app/models/interface/place.model';
 import { MapService } from 'src/app/services/map.service';
@@ -15,7 +15,7 @@ import { Category } from 'src/app/parts/category.class';
 @Component({
   selector: 'app-map-route-search',
   templateUrl: './map-route-search.component.html',
-  styleUrls: ['./map-route-search.component.scss']
+  styleUrls: ['./map-route-search.component.scss'],
 })
 export class MapRouteSearchComponent {
   @ViewChild(GoogleMap) map!: GoogleMap;
@@ -24,15 +24,9 @@ export class MapRouteSearchComponent {
   markerOptions: google.maps.MarkerOptions = { draggable: false };
   infoContent = '';
   private onDestroy$ = new Subject();
-  direction$: Observable<Direction> = this.store.select(
-    TripigSelector.getDirection
-  );
-  category$: Observable<Category> = this.store.select(
-    TripigSelector.getCategory
-  );
-  selectedList$: Observable<Place[]> = this.store.select(
-    TripigSelector.getSelectedList
-  );
+  direction$: Observable<Direction> = this.store.select(selectors.getDirection);
+  category$: Observable<Category> = this.store.select(selectors.getCategory);
+  selectedList$: Observable<Place[]> = this.store.select(selectors.getSelectedList);
   selectedList: Place[] = [];
   suggestList: Place[] = [];
   direction?: Direction;
@@ -50,29 +44,25 @@ export class MapRouteSearchComponent {
   destinationLatLng?: google.maps.LatLng;
   middlePointLatLng?: google.maps.LatLng;
 
-  constructor(
-    private location: Location,
-    private store: Store<TripigState.State>,
-    private mapService: MapService
-  ) {}
+  constructor(private location: Location, private store: Store<TripigState.State>, private mapService: MapService) {}
 
   ionViewDidEnter(): void {
-    this.direction$.pipe(
-      takeUntil(this.onDestroy$),
-      mergeMap(direction => {
-        this.direction = direction;
-        return this.category$;
-      })
-    ).subscribe(category => {
-      if (this.direction) {
-        this.setRouteMap(this.direction, category);
-      }
-    });
-    this.selectedList$
-      .pipe(takeUntil(this.onDestroy$))
-      .subscribe(selectedList => {
-        this.selectedList = selectedList;
+    this.direction$
+      .pipe(
+        takeUntil(this.onDestroy$),
+        mergeMap((direction) => {
+          this.direction = direction;
+          return this.category$;
+        }),
+      )
+      .subscribe((category) => {
+        if (this.direction) {
+          this.setRouteMap(this.direction, category);
+        }
       });
+    this.selectedList$.pipe(takeUntil(this.onDestroy$)).subscribe((selectedList) => {
+      this.selectedList = selectedList;
+    });
   }
 
   ionViewDidLeave(): void {
@@ -82,7 +72,7 @@ export class MapRouteSearchComponent {
   private setRouteMap(direction: Direction, category: Category): void {
     this.mapService
       .geocode({ address: direction.origin })
-      .then(result => {
+      .then((result) => {
         this.originLatLng = result.geometry.location;
       })
       .catch(() => {
@@ -90,7 +80,7 @@ export class MapRouteSearchComponent {
       });
     this.mapService
       .geocode({ address: direction.destination })
-      .then(result => {
+      .then((result) => {
         this.destinationLatLng = result.geometry.location;
       })
       .catch(() => {
@@ -99,17 +89,14 @@ export class MapRouteSearchComponent {
     const request: google.maps.DirectionsRequest = {
       origin: direction.origin,
       destination: direction.destination,
-      travelMode: direction.travelMode
+      travelMode: direction.travelMode,
     };
     this.mapService
       .route(request)
-      .then(result => {
+      .then((result) => {
         this.directionsRenderer.setMap(this.map.data.getMap());
         this.directionsRenderer.setDirections(result);
-        this.middlePointLatLng =
-          result.routes[0].overview_path[
-            Math.round(result.routes[0].overview_path.length / 2)
-          ];
+        this.middlePointLatLng = result.routes[0].overview_path[Math.round(result.routes[0].overview_path.length / 2)];
         this.calcDistAndDura(result);
         this.middlePointPlaceSearch(category);
       })
@@ -120,26 +107,18 @@ export class MapRouteSearchComponent {
 
   middlePointPlaceSearch(category: Category): void {
     if (this.direction) {
-      const placeService = new google.maps.places.PlacesService(
-        this.map.data.getMap()
-      );
+      const placeService = new google.maps.places.PlacesService(this.map.data.getMap());
       const request: google.maps.places.PlaceSearchRequest = {
         rankBy: google.maps.places.RankBy.PROMINENCE,
         location: this.middlePointLatLng,
         radius: this.direction.radius,
-        keyword: category.value
+        keyword: category.value,
       };
-      this.mapService
-        .nearbySearch(placeService, request)
-        .then(results => {
-          this.suggestList = [...this.selectedList, ...results].filter(
-            (member, index, self) => {
-              return (
-                self.findIndex(s => member.placeId === s.placeId) === index
-              );
-            }
-          );
+      this.mapService.nearbySearch(placeService, request).then((results) => {
+        this.suggestList = [...this.selectedList, ...results].filter((member, index, self) => {
+          return self.findIndex((s) => member.placeId === s.placeId) === index;
         });
+      });
     }
   }
 
@@ -151,20 +130,18 @@ export class MapRouteSearchComponent {
   private calcDistAndDura(result: google.maps.DirectionsResult): void {
     this.dist = 0;
     this.dura = 0;
-    result.routes[0].legs.forEach(leg => {
+    result.routes[0].legs.forEach((leg) => {
       this.dist += leg.distance.value;
       this.dura += leg.duration.value;
     });
   }
 
   selectPlace(place: Place) {
-    this.suggestList.map(s => {
+    this.suggestList.map((s) => {
       if (s.placeId === place.placeId) {
         s.selected = !s.selected;
       }
     });
-    this.store.dispatch(
-      TripigActions.setSelectedList({ selectedList: this.suggestList.filter(s => s.selected) })
-    );
+    this.store.dispatch(actions.setSelectedList({ selectedList: this.suggestList.filter((s) => s.selected) }));
   }
 }
