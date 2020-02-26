@@ -9,37 +9,26 @@
   <map-info-window>{{ infoContent }}</map-info-window>
 </google-map>
 <ion-content>
-  <h2>{{selectedCourse?.name}}</h2>
+  <h2>{{ selectedCourse?.name }}</h2>
   <div cdkDropList class="list" (cdkDropListDropped)="drop($event)">
     <div class="box" *ngFor="let result of selectedCourse?.route; index as i" cdkDrag>
       <div class="handle" cdkDragHandle>
         <mat-icon>drag_indicator</mat-icon>
       </div>
-      <span class="name">
-        {{ i }}.{{ result.name }}
-      </span>
-      <button
-        mat-button
-        aria-label="delete"
-        (click)="delete(result)">
+      <span class="name"> {{ i + 1 }}.{{ result.name }} </span>
+      <button mat-button aria-label="delete" (click)="delete(result)">
         <mat-icon matSuffix>delete</mat-icon>
       </button>
     </div>
   </div>
-  <button
-    mat-button
-    [matMenuTriggerFor]="menu"
-    aria-label="restoreMenu">
+  <button mat-button [matMenuTriggerFor]="menu" aria-label="restoreMenu">
     <mat-icon>restore_from_trash</mat-icon>
   </button>
   <mat-menu #menu="matMenu">
     <div *ngFor="let deletedPlace of deletedPlaces; index as i">
-      <button
-        mat-menu-item
-        aria-label="restore"
-        (click)="restore(deletedPlace)">
+      <button mat-menu-item aria-label="restore" (click)="restore(deletedPlace)">
         <mat-icon>chevron_left</mat-icon>
-        {{ i }}.{{ deletedPlace.name }}
+        {{ i + 1 }}.{{ deletedPlace.name }}
       </button>
     </div>
   </mat-menu>
