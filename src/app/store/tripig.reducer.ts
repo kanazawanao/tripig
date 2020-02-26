@@ -1,5 +1,5 @@
 import { Action, createReducer, on } from '@ngrx/store';
-import * as TripigAction from './tripig.action';
+import { actions } from './tripig.action';
 import { Direction } from '../models/interface/direction.model';
 import { Place } from '../models/interface/place.model';
 import { Category } from '../parts/category.class';
@@ -17,47 +17,47 @@ export const initialState: State = {
     destination: '',
     origin: '',
     radius: 10000,
-    travelMode: google.maps.TravelMode.DRIVING
+    travelMode: google.maps.TravelMode.DRIVING,
   },
   category: { icon: '', viewValue: '', value: '', index: 0, custome: false },
   selectedList: [],
   lastSelectedPlace: {
     selected: true,
-    location: undefined
+    location: undefined,
   },
   selectedCourseId: '',
 };
 
 const coreReducer = createReducer(
   initialState,
-  on(TripigAction.setDirection, (state, { direction }) => {
+  on(actions.setDirection, (state, { direction }) => {
     return {
       ...state,
-      direction
+      direction,
     };
   }),
-  on(TripigAction.setCategory, (state, { category }) => {
+  on(actions.setCategory, (state, { category }) => {
     return {
       ...state,
-      category
+      category,
     };
   }),
-  on(TripigAction.setSelectedList, (state, { selectedList }) => {
+  on(actions.setSelectedList, (state, { selectedList }) => {
     return {
       ...state,
-      selectedList
+      selectedList,
     };
   }),
-  on(TripigAction.setLastSelectedPlace, (state, { lastSelectedPlace }) => {
+  on(actions.setLastSelectedPlace, (state, { lastSelectedPlace }) => {
     return {
       ...state,
-      lastSelectedPlace
+      lastSelectedPlace,
     };
   }),
-  on(TripigAction.setSelectedCourseId, (state, { selectedCourseId }) => {
+  on(actions.setSelectedCourseId, (state, { selectedCourseId }) => {
     return {
       ...state,
-      selectedCourseId
+      selectedCourseId,
     };
   }),
 );

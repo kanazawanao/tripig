@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import * as TripigActions from 'src/app/store/tripig.action';
+import { actions } from 'src/app/store/tripig.action';
 import * as TripigReducer from 'src/app/store/tripig.reducer';
 import { Subject } from 'rxjs';
 import { PlaceService } from 'src/app/services/place.service';
@@ -13,7 +13,7 @@ import { MatDialog } from '@angular/material/dialog';
 @Component({
   selector: 'app-registered-routes',
   templateUrl: './registered-routes.component.html',
-  styleUrls: ['./registered-routes.component.scss']
+  styleUrls: ['./registered-routes.component.scss'],
 })
 export class RegisteredRoutesComponent {
   courses: Course[] = [];
@@ -23,14 +23,14 @@ export class RegisteredRoutesComponent {
     private router: Router,
     public dialog: MatDialog,
     private placeService: PlaceService,
-    private store: Store<TripigReducer.State>
+    private store: Store<TripigReducer.State>,
   ) {}
 
   ionViewDidEnter(): void {
     this.placeService
       .getAllPlace()
       .pipe(takeUntil(this.onDestroy$))
-      .subscribe(c => {
+      .subscribe((c) => {
         this.courses = c;
       });
   }
@@ -39,10 +39,12 @@ export class RegisteredRoutesComponent {
     this.onDestroy$.next();
   }
 
+  createTravelPlanning() {
+    this.router.navigate(['/tabs/pages/plan']);
+  }
+
   select(course: Course): void {
-    this.store.dispatch(
-      TripigActions.setSelectedCourseId({ selectedCourseId: course.id ? course.id : '' })
-    );
+    this.store.dispatch(actions.setSelectedCourseId({ selectedCourseId: course.id ? course.id : '' }));
     this.router.navigate(['/tabs/pages/map/course']);
   }
 
@@ -61,7 +63,7 @@ export class RegisteredRoutesComponent {
       width: '250px',
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       course.uids.push(result);
       this.placeService.updatePlace(course);
     });

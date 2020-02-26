@@ -13,64 +13,54 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: () =>
-              import('./tab-pages/point-search/point-search.module').then(
-                m => m.PointSearchModule
-              )
-          }
-        ]
+            loadChildren: () => import('./tab-pages/point-search/point-search.module').then((m) => m.PointSearchModule),
+          },
+        ],
       },
       {
         path: 'route',
         children: [
           {
             path: '',
-            loadChildren: () =>
-              import('./tab-pages/route-search/route-search.module').then(
-                m => m.RouteSearchModule
-              )
-          }
-        ]
+            loadChildren: () => import('./tab-pages/route-search/route-search.module').then((m) => m.RouteSearchModule),
+          },
+        ],
       },
       {
         path: 'registered',
         children: [
           {
             path: '',
-            loadChildren: () =>
-              import(
-                './tab-pages/registered-routes/registered-routes.module'
-              ).then(m => m.RegisteredRoutesModule)
-          }
+            loadChildren: () => import('./tab-pages/registered-routes/registered-routes.module').then((m) => m.RegisteredRoutesModule),
+          },
         ],
-        canActivate: [AuthGuard]
+        canActivate: [AuthGuard],
       },
       {
         path: 'pages',
         children: [
           {
             path: '',
-            loadChildren: () =>
-              import('../pages/pages.module').then(m => m.PagesModule)
-          }
-        ]
+            loadChildren: () => import('../pages/pages.module').then((m) => m.PagesModule),
+          },
+        ],
       },
       {
         path: '',
         redirectTo: '/tabs/registered',
-        pathMatch: 'full'
-      }
-    ]
+        pathMatch: 'full',
+      },
+    ],
   },
   {
     path: '',
     redirectTo: '/tabs/registered',
-    pathMatch: 'full'
-  }
+    pathMatch: 'full',
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class TabsPageRoutingModule {}
