@@ -17,17 +17,29 @@ export class EditProjectComponent implements OnInit {
   get title(): string {
     return this.editProjectForm.controls[this.TITLE].value;
   }
+  set title(value: string) {
+    this.editProjectForm.controls[this.TITLE].setValue(value);
+  }
   private readonly DESTINATION = 'destination';
   get destination(): string {
     return this.editProjectForm.controls[this.DESTINATION].value;
+  }
+  set destination(value: string) {
+    this.editProjectForm.controls[this.DESTINATION].setValue(value);
   }
   private readonly DETAIL = 'detail';
   get detail(): string {
     return this.editProjectForm.controls[this.DETAIL].value;
   }
+  set detail(value: string) {
+    this.editProjectForm.controls[this.DETAIL].setValue(value);
+  }
   private readonly MEMBERS = 'members';
   get members(): string {
     return this.editProjectForm.controls[this.MEMBERS].value;
+  }
+  set members(value: string) {
+    this.editProjectForm.controls[this.MEMBERS].setValue(value);
   }
   constructor(private fb: FormBuilder) {}
 
