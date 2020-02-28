@@ -1,14 +1,17 @@
+import { AppComponent } from './app.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { TestBed, async } from '@angular/core/testing';
-
-import { Platform } from '@ionic/angular';
+import { async, TestBed } from '@angular/core/testing';
+import { AngularFireModule } from '@angular/fire';
+import { AngularFireAuthModule } from '@angular/fire/auth';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { RouterTestingModule } from '@angular/router/testing';
+import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
-
-import { AppComponent } from './app.component';
+import { Platform } from '@ionic/angular';
+import { environment } from 'src/environments/environment';
 
 describe('AppComponent', () => {
-
   let statusBarSpy: any, splashScreenSpy: any, platformReadySpy: any, platformSpy: any;
 
   beforeEach(async(() => {
@@ -20,10 +23,12 @@ describe('AppComponent', () => {
     TestBed.configureTestingModule({
       declarations: [AppComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [RouterTestingModule, AngularFireModule.initializeApp(environment.firebase), AngularFireAuthModule, AngularFirestoreModule],
       providers: [
         { provide: StatusBar, useValue: statusBarSpy },
         { provide: SplashScreen, useValue: splashScreenSpy },
         { provide: Platform, useValue: platformSpy },
+        GooglePlus,
       ],
     }).compileComponents();
   }));
@@ -43,5 +48,4 @@ describe('AppComponent', () => {
   });
 
   // TODO: add more tests!
-
 });
