@@ -12,21 +12,11 @@ describe('MapRouteSearchComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        MapRouteSearchComponent
-      ],
-      schemas: [
-        CUSTOM_ELEMENTS_SCHEMA
-      ],
-      imports: [
-        GoogleMapsModule
-      ],
-      providers: [
-        provideMockStore(),
-        Geolocation,
-      ]
-    })
-    .compileComponents();
+      declarations: [MapRouteSearchComponent],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [GoogleMapsModule],
+      providers: [provideMockStore(), Geolocation],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -6,17 +6,8 @@ import { MaterialModule } from 'src/app/material/material.module';
 import { MapSelectedCourseComponent } from './map-selected-course.component';
 
 @NgModule({
-  declarations: [
-    MapSelectedCourseComponent
-  ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild([{ path: '', component: MapSelectedCourseComponent }]),
-    GoogleMapsModule,
-    MaterialModule
-  ],
-  schemas: [
-    CUSTOM_ELEMENTS_SCHEMA
-  ]
+  declarations: [MapSelectedCourseComponent],
+  imports: [CommonModule, RouterModule.forChild([{ path: '', component: MapSelectedCourseComponent }]), GoogleMapsModule, MaterialModule],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class MapSelectedCourseModule { }
+export class MapSelectedCourseModule {}
