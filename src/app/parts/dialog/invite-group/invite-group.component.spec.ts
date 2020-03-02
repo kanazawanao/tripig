@@ -1,13 +1,18 @@
+import { InviteGroupComponent } from './invite-group.component';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { IonicModule } from '@ionic/angular';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
-
-import { InviteGroupComponent } from './invite-group.component';
+import { MatDialogRef } from '@angular/material/dialog';
+import { IonicModule } from '@ionic/angular';
 import { environment } from 'src/environments/environment';
 
+
 describe('InviteGroupComponent', () => {
+  const mockDialogRef = {
+    data: {},
+    close: jasmine.createSpy('close'),
+  };
   let component: InviteGroupComponent;
   let fixture: ComponentFixture<InviteGroupComponent>;
 
@@ -19,6 +24,12 @@ describe('InviteGroupComponent', () => {
         AngularFireModule.initializeApp(environment.firebase),
         AngularFireAuthModule,
         AngularFirestoreModule,
+      ],
+      providers: [
+        {
+          provide: MatDialogRef,
+          useValue: mockDialogRef,
+        },
       ],
     }).compileComponents();
 

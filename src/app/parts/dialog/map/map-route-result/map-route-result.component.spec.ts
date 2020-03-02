@@ -1,31 +1,32 @@
+import { MapRouteResultComponent } from './map-route-result.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
-import { provideMockStore } from '@ngrx/store/testing';
-import { IonicModule } from '@ionic/angular';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDialogRef } from '@angular/material/dialog';
+import { RouterTestingModule } from '@angular/router/testing';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-
-import { MapRouteResultComponent } from './map-route-result.component';
+import { IonicModule } from '@ionic/angular';
+import { provideMockStore } from '@ngrx/store/testing';
 import { environment } from 'src/environments/environment';
 
+
 describe('MapRouteResultComponent', () => {
+  const mockDialogRef = {
+    data: {},
+    close: jasmine.createSpy('close'),
+  };
   let component: MapRouteResultComponent;
   let fixture: ComponentFixture<MapRouteResultComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        MapRouteResultComponent
-      ],
-      schemas: [
-        CUSTOM_ELEMENTS_SCHEMA
-      ],
+      declarations: [MapRouteResultComponent],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
         IonicModule.forRoot(),
         FormsModule,
@@ -40,9 +41,12 @@ describe('MapRouteResultComponent', () => {
         Geolocation,
         GooglePlus,
         InAppBrowser,
-      ]
-    })
-    .compileComponents();
+        {
+          provide: MatDialogRef,
+          useValue: mockDialogRef,
+        },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
