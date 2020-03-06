@@ -1,4 +1,4 @@
-import { PlaceEffects } from './effects';
+import { ConditionEffects } from './effects';
 import { reducer } from './reducers';
 import { featureName } from './states';
 import { NgModule } from '@angular/core';
@@ -6,6 +6,6 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 
 @NgModule({
-  imports: [StoreModule.forFeature(featureName, reducer), EffectsModule.forFeature([PlaceEffects])],
+  imports: [StoreModule.forFeature(featureName, reducer), EffectsModule.forFeature([ConditionEffects])],
 })
-export class PlaceStoreModule {}
+export class ConditionStoreModule {}

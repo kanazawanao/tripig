@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { Store } from '@ngrx/store';
-import * as TripigActions from 'src/app/store/tripig.action';
-import * as TripigReducer from 'src/app/store/tripig.reducer';
-import { Category } from 'src/app/parts/category.class';
 import { Direction } from 'src/app/models/interface/direction.model';
+import { Category } from 'src/app/parts/category.class';
+import { ConditionFacade } from 'src/app/store/condition/facades';
 
 @Component({
   selector: 'app-edit-project',
@@ -56,14 +54,14 @@ export class EditProjectComponent implements OnInit {
   set members(value: string) {
     this.editProjectForm.controls[this.MEMBERS].setValue(value);
   }
-  constructor(private fb: FormBuilder, private store: Store<TripigReducer.State>) {}
+  constructor(private fb: FormBuilder, private facadeService: ConditionFacade) {}
 
   ngOnInit() {}
 
   save() {}
 
   search(): void {
-    this.store.dispatch(TripigActions.setDirection({ direction: this.direction }));
-    this.store.dispatch(TripigActions.setCategory({ category: this.category }));
+    this.facadeService.setDirection(this.direction);
+    this.facadeService.setCategory(this.category);
   }
 }

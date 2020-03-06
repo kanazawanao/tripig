@@ -1,14 +1,20 @@
 import { Course } from 'src/app/models/class/course.models';
+import { Place } from 'src/app/models/class/place.model';
 
 export const featureName = 'place';
 
 export interface State {
   loading: boolean;
-  selectedList: Course[];
+  courseList: Course[];
+  selectedPlaceList: Place[];
+  lastSelectedPlace?: Place;
+  selectedCourseId: string;
   err?: any;
 }
 
 export const initialState: State = {
   loading: false,
-  selectedList: [],
+  courseList: [],
+  selectedPlaceList: [],
+  selectedCourseId: '',
 };

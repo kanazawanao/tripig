@@ -4,13 +4,10 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } 
 import { MatDialog } from '@angular/material/dialog';
 import { MatListOption, MatSelectionList } from '@angular/material/list';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-import { Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Place } from 'src/app/models/class/place.model';
-import * as TripigState from 'src/app/store/';
-import * as TripigActions from 'src/app/store/tripig.action';
-import * as TripigSelector from 'src/app/store/tripig.selector';
+import { PlaceFacade } from 'src/app/store/place/facades';
 
 @Component({
   selector: 'app-suggest-list',
@@ -25,8 +22,8 @@ export class SuggestListComponent implements OnInit, OnDestroy {
   private onDestroy$ = new Subject();
   googleSearchUrl = 'https://www.google.com/search?q=';
 
-  selectedList$: Observable<Place[]> = this.store.select(TripigSelector.getSelectedList);
-  constructor(private store: Store<TripigState.State>, private inAppBrowser: InAppBrowser, public dialog: MatDialog) {}
+  selectedList$: Observable<Place[]> = this.placeFacade.selectedPlaceList$;
+  constructor(private placeFacade: PlaceFacade, private inAppBrowser: InAppBrowser, public dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.selectedList$.pipe(takeUntil(this.onDestroy$)).subscribe((list) => {
@@ -40,7 +37,7 @@ export class SuggestListComponent implements OnInit, OnDestroy {
 
   onCheckBoxClick(event: MouseEvent, place: Place): void {
     event.stopPropagation();
-    this.store.dispatch(TripigActions.setLastSelectedPlace({ lastSelectedPlace: place }));
+    this.placeFacade.selectLastPlace(place);
   }
 
   onSearchLinkClick(event: MouseEvent, suggest: Place): void {
@@ -61,8 +58,7 @@ export class SuggestListComponent implements OnInit, OnDestroy {
         selected.push(Object.assign({}, option.value));
       }
     });
-    selected.forEach((s) => (s.selected = true));
-    this.store.dispatch(TripigActions.setSelectedList({ selectedList: selected }));
+    this.placeFacade.updateSelectedPlaceList(selected.filter((s) => (s.selected = true)));
   }
 
   openPlaceDetailDialog(event: MouseEvent, suggest: Place): void {

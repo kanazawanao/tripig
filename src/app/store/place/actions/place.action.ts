@@ -2,14 +2,16 @@ import { createAction, props } from '@ngrx/store';
 import { Course } from 'src/app/models/class/course.models';
 import { Place } from 'src/app/models/class/place.model';
 
-export const loadAll = createAction('[Place Page] Load All', props<{ offset?: number; limit?: number }>());
+export const loadAll = createAction('[Place Page] Load All');
 
-export const loadAllSuccess = createAction('[Place API] Load All Success', props<{ placeList: Course[] }>());
+export const loadAllSuccess = createAction('[Place API] Load All Success', props<{ courseList: Course[] }>());
 
 export const loadAllFailure = createAction('[Place API] Load All Failure', props<{ error: any }>());
 
-export const updateAll = createAction('[Place Page] Update All', props<{ placeList: Place[] }>());
+export const updateCourse = createAction('[Place Page] updateCourse', props<{ course: Course }>());
 
-export const updateAllSuccess = createAction('[Place API] Update All Success');
+export const updateSelectedPlaceList = createAction('[Place Page] updateSelectedPlaceList', props<{ selectedPlaceList: Place[] }>());
 
-export const updateAllFailure = createAction('[Place API] Update All Failure', props<{ error: any }>());
+export const selectLastPlace = createAction('[Place Page] selectLastPlace', props<{ lastSelectedPlace: Place }>());
+
+export const selectCourse = createAction('[Place Page] selectCourse', props<{ courseId: string }>());

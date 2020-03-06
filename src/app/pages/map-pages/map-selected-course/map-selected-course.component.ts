@@ -3,15 +3,13 @@ import { Location } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
 import { GoogleMap, MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { Router } from '@angular/router';
-import { Store } from '@ngrx/store';
 import { Subject } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 import { Course } from 'src/app/models/class/course.models';
 import { Place } from 'src/app/models/class/place.model';
 import { MapService } from 'src/app/services/map.service';
 import { PlaceService } from 'src/app/services/place.service';
-import * as TripigState from 'src/app/store/';
-import { selectors } from 'src/app/store/tripig.selector';
+import { PlaceFacade } from 'src/app/store/place/facades';
 
 @Component({
   selector: 'app-map-selected-course',
@@ -33,14 +31,13 @@ export class MapSelectedCourseComponent {
   constructor(
     private location: Location,
     private route: Router,
-    private store: Store<TripigState.State>,
+    private placeFacade: PlaceFacade,
     private mapService: MapService,
     private placeService: PlaceService,
   ) {}
 
   ionViewDidEnter() {
-    this.store
-      .select(selectors.getSelectedCourseId)
+    this.placeFacade.selectedCourseId$
       .pipe(mergeMap((id) => this.placeService.getPlace(id)))
       .pipe(
         mergeMap((course) => {

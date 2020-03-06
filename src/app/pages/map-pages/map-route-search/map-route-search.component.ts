@@ -1,16 +1,14 @@
 import { Location } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
 import { GoogleMap, MapInfoWindow, MapMarker } from '@angular/google-maps';
-import { Store } from '@ngrx/store';
-import { Observable, Subject } from 'rxjs';
-import { mergeMap, takeUntil } from 'rxjs/operators';
+import { forkJoin, Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { Place } from 'src/app/models/class/place.model';
 import { Direction } from 'src/app/models/interface/direction.model';
 import { Category } from 'src/app/parts/category.class';
 import { MapService } from 'src/app/services/map.service';
-import * as TripigState from 'src/app/store/';
-import { actions } from 'src/app/store/tripig.action';
-import { selectors } from 'src/app/store/tripig.selector';
+import { ConditionFacade } from 'src/app/store/condition/facades';
+import { PlaceFacade } from 'src/app/store/place/facades';
 
 @Component({
   selector: 'app-map-route-search',
@@ -24,9 +22,12 @@ export class MapRouteSearchComponent {
   markerOptions: google.maps.MarkerOptions = { draggable: false };
   infoContent = '';
   private onDestroy$ = new Subject();
-  direction$: Observable<Direction> = this.store.select(selectors.getDirection);
-  category$: Observable<Category> = this.store.select(selectors.getCategory);
-  selectedList$: Observable<Place[]> = this.store.select(selectors.getSelectedList);
+  origin$: Observable<string> = this.conditionFacade.origin$;
+  destination$: Observable<string> = this.conditionFacade.destination$;
+  radius$: Observable<number> = this.conditionFacade.radius$;
+  travelMode$: Observable<google.maps.TravelMode> = this.conditionFacade.travelMode$;
+  category$: Observable<Category> = this.conditionFacade.category$;
+  selectedList$: Observable<Place[]> = this.placeFacade.selectedPlaceList$;
   selectedList: Place[] = [];
   suggestList: Place[] = [];
   direction?: Direction;
@@ -44,21 +45,24 @@ export class MapRouteSearchComponent {
   destinationLatLng?: google.maps.LatLng;
   middlePointLatLng?: google.maps.LatLng;
 
-  constructor(private location: Location, private store: Store<TripigState.State>, private mapService: MapService) {}
+  constructor(
+    private location: Location,
+    private mapService: MapService,
+    private conditionFacade: ConditionFacade,
+    private placeFacade: PlaceFacade,
+  ) {}
 
   ionViewDidEnter(): void {
-    this.direction$
-      .pipe(
-        takeUntil(this.onDestroy$),
-        mergeMap((direction) => {
-          this.direction = direction;
-          return this.category$;
-        }),
-      )
-      .subscribe((category) => {
-        if (this.direction) {
-          this.setRouteMap(this.direction, category);
-        }
+    forkJoin([this.origin$, this.destination$, this.radius$, this.travelMode$, this.category$])
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe((list) => {
+        const direction: Direction = {
+          origin: list[0],
+          destination: list[1],
+          radius: list[2],
+          travelMode: list[3],
+        };
+        this.setRouteMap(direction, list[4]);
       });
     this.selectedList$.pipe(takeUntil(this.onDestroy$)).subscribe((selectedList) => {
       this.selectedList = selectedList;
@@ -142,6 +146,6 @@ export class MapRouteSearchComponent {
         s.selected = !s.selected;
       }
     });
-    this.store.dispatch(actions.setSelectedList({ selectedList: this.suggestList.filter((s) => s.selected) }));
+    this.placeFacade.updateSelectedPlaceList(this.suggestList.filter((s) => s.selected));
   }
 }

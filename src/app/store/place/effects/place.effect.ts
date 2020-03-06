@@ -6,7 +6,7 @@ import { catchError, map, switchMap } from 'rxjs/operators';
 import { PlaceService } from 'src/app/services/place.service';
 
 @Injectable()
-export class TodoEffects {
+export class PlaceEffects {
   constructor(private actions$: Actions, private placeService: PlaceService) {}
 
   loadAll$ = createEffect(() =>
@@ -14,7 +14,7 @@ export class TodoEffects {
       ofType(PlaceActions.loadAll),
       switchMap(() =>
         this.placeService.getAllPlace().pipe(
-          map((result) => PlaceActions.loadAllSuccess({ placeList: result })),
+          map((result) => PlaceActions.loadAllSuccess({ courseList: result })),
           catchError((error) => of(PlaceActions.loadAllFailure({ error }))),
         ),
       ),

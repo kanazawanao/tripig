@@ -1,20 +1,19 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { Store } from '@ngrx/store';
-import * as TripigActions from 'src/app/store/tripig.action';
-import * as TripigReducer from 'src/app/store/tripig.reducer';
 import { Direction } from 'src/app/models/interface/direction.model';
-import { Category, CATEGORIES } from 'src/app/parts/category.class';
+import { CATEGORIES, Category } from 'src/app/parts/category.class';
+import { ConditionFacade } from 'src/app/store/condition/facades';
+
 @Component({
   selector: 'app-point-search',
   templateUrl: './point-search.component.html',
-  styleUrls: ['./point-search.component.scss']
+  styleUrls: ['./point-search.component.scss'],
 })
 export class PointSearchComponent {
   @ViewChild('destination') inputDestination!: ElementRef;
   private _destination = '';
   searchForm = this.fb.group({
-    destination: [this._destination, Validators.required]
+    destination: [this._destination, Validators.required],
   });
   get destination(): string {
     return this._destination;
@@ -26,21 +25,16 @@ export class PointSearchComponent {
       destination: this.destination,
       origin: '',
       radius: 10000,
-      travelMode: google.maps.TravelMode.DRIVING
+      travelMode: google.maps.TravelMode.DRIVING,
     };
     return direction;
   }
   categories: Category[] = CATEGORIES.slice(0, 6);
 
-  constructor(
-    private fb: FormBuilder,
-    private store: Store<TripigReducer.State>
-  ) {}
+  constructor(private fb: FormBuilder, private facadeService: ConditionFacade) {}
 
   ionViewDidEnter(): void {
-    const suggest = new google.maps.places.Autocomplete(
-      this.inputDestination.nativeElement
-    );
+    const suggest = new google.maps.places.Autocomplete(this.inputDestination.nativeElement);
     suggest.addListener('place_changed', () => {
       const result = suggest.getPlace();
       this._destination = result.vicinity ? result.vicinity : result.name;
@@ -48,11 +42,7 @@ export class PointSearchComponent {
   }
 
   search(category: Category): void {
-    this.store.dispatch(
-      TripigActions.setDirection({ direction: this.direction })
-    );
-    this.store.dispatch(
-      TripigActions.setCategory({ category })
-    );
+    this.facadeService.setDirection(this.direction);
+    this.facadeService.setCategory(category);
   }
 }

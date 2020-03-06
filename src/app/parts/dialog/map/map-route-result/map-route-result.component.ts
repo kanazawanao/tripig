@@ -5,8 +5,7 @@ import { GoogleMap } from '@angular/google-maps';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-import { Store } from '@ngrx/store';
-import { Observable, Subject } from 'rxjs';
+import { forkJoin, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Course } from 'src/app/models/class/course.models';
 import { Place } from 'src/app/models/class/place.model';
@@ -14,9 +13,8 @@ import { Direction } from 'src/app/models/interface/direction.model';
 import { AuthService } from 'src/app/services/auth.service';
 import { MapService } from 'src/app/services/map.service';
 import { PlaceService } from 'src/app/services/place.service';
-import * as TripigState from 'src/app/store/';
-import { actions } from 'src/app/store/tripig.action';
-import { selectors } from 'src/app/store/tripig.selector';
+import { ConditionFacade } from 'src/app/store/condition/facades';
+import { PlaceFacade } from 'src/app/store/place/facades';
 
 @Component({
   selector: 'app-map-route-result',
@@ -34,12 +32,15 @@ export class MapRouteResultComponent implements OnInit, OnDestroy {
   }
   private onDestroy$ = new Subject();
   private directionsRenderer = new google.maps.DirectionsRenderer();
-  private direction$: Observable<Direction> = this.store.select(selectors.getDirection);
+  origin$: Observable<string> = this.conditionFacade.origin$;
+  destination$: Observable<string> = this.conditionFacade.destination$;
+  radius$: Observable<number> = this.conditionFacade.radius$;
+  travelMode$: Observable<google.maps.TravelMode> = this.conditionFacade.travelMode$;
   private direction?: Direction;
   get travelmode(): string {
     return this.direction ? this.direction.travelMode.toString() : '';
   }
-  private selectedList$: Observable<Place[]> = this.store.select(selectors.getSelectedList);
+  private selectedList$: Observable<Place[]> = this.placeFacade.selectedPlaceList$;
   get googleMapLinks(): string {
     return 'https://www.google.com/maps/dir/?api=1' + this.waypointsForMap + '&travelmode=' + this.travelmode;
   }
@@ -80,16 +81,25 @@ export class MapRouteResultComponent implements OnInit, OnDestroy {
     private router: Router,
     private fb: FormBuilder,
     private inAppBrowser: InAppBrowser,
-    private store: Store<TripigState.State>,
     private mapService: MapService,
     private placeService: PlaceService,
+    private placeFacade: PlaceFacade,
+    private conditionFacade: ConditionFacade,
   ) {}
 
   ngOnInit(): void {
-    this.direction$.pipe(takeUntil(this.onDestroy$)).subscribe((direction) => {
-      this.direction = direction;
-      this.setRouteMap(direction);
-    });
+    forkJoin([this.origin$, this.destination$, this.radius$, this.travelMode$])
+      .pipe(takeUntil(this.onDestroy$))
+      .subscribe((list) => {
+        const direction: Direction = {
+          origin: list[0],
+          destination: list[1],
+          radius: list[2],
+          travelMode: list[3],
+        };
+        this.direction = direction;
+        this.setRouteMap(direction);
+      });
   }
 
   ngOnDestroy(): void {
@@ -102,7 +112,7 @@ export class MapRouteResultComponent implements OnInit, OnDestroy {
 
   regist(): void {
     this.placeService.addPlace(this.createCourse());
-    this.store.dispatch(actions.setSelectedList({ selectedList: [] }));
+    this.placeFacade.updateSelectedPlaceList([]);
     this.dismissModal();
     this.router.navigate(['/tabs/registered']);
   }

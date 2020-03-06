@@ -1,7 +1,7 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
 import { TabsPage } from './tabs.component.page';
 import { AuthGuard } from '../guard/auth.guard';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
@@ -13,7 +13,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: () => import('./tab-pages/point-search/point-search.module').then((m) => m.PointSearchModule),
+            loadChildren: () => import('./pages/point-search/point-search.module').then((m) => m.PointSearchModule),
           },
         ],
       },
@@ -22,7 +22,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: () => import('./tab-pages/route-search/route-search.module').then((m) => m.RouteSearchModule),
+            loadChildren: () => import('./pages/route-search/route-search.module').then((m) => m.RouteSearchModule),
           },
         ],
       },
@@ -31,7 +31,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: () => import('./tab-pages/registered-routes/registered-routes.module').then((m) => m.RegisteredRoutesModule),
+            loadChildren: () => import('./pages/registered-routes/registered-routes.module').then((m) => m.RegisteredRoutesModule),
           },
         ],
         canActivate: [AuthGuard],

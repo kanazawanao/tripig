@@ -1,14 +1,12 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { Store } from '@ngrx/store';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Course } from 'src/app/models/class/course.models';
 import { InviteGroupComponent } from 'src/app/parts/dialog/invite-group/invite-group.component';
 import { PlaceService } from 'src/app/services/place.service';
-import { actions } from 'src/app/store/tripig.action';
-import * as TripigReducer from 'src/app/store/tripig.reducer';
+import { PlaceFacade } from 'src/app/store/place/facades';
 
 @Component({
   selector: 'app-registered-routes',
@@ -19,12 +17,7 @@ export class RegisteredRoutesComponent {
   courses: Course[] = [];
 
   private onDestroy$ = new Subject();
-  constructor(
-    private router: Router,
-    public dialog: MatDialog,
-    private placeService: PlaceService,
-    private store: Store<TripigReducer.State>,
-  ) {}
+  constructor(private router: Router, public dialog: MatDialog, private placeFacade: PlaceFacade, private placeService: PlaceService) {}
 
   ionViewDidEnter(): void {
     this.placeService
@@ -44,7 +37,7 @@ export class RegisteredRoutesComponent {
   }
 
   select(course: Course): void {
-    this.store.dispatch(actions.setSelectedCourseId({ selectedCourseId: course.id ? course.id : '' }));
+    this.placeFacade.selectCourse(course.id ? course.id : '');
     this.router.navigate(['/tabs/pages/map/course']);
   }
 
