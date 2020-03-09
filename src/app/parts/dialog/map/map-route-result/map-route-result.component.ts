@@ -5,8 +5,8 @@ import { GoogleMap } from '@angular/google-maps';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-import { forkJoin, Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { mergeMap, takeUntil } from 'rxjs/operators';
 import { Course } from 'src/app/models/class/course.models';
 import { Place } from 'src/app/models/class/place.model';
 import { Direction } from 'src/app/models/interface/direction.model';
@@ -33,9 +33,13 @@ export class MapRouteResultComponent implements OnInit, OnDestroy {
   private onDestroy$ = new Subject();
   private directionsRenderer = new google.maps.DirectionsRenderer();
   origin$: Observable<string> = this.conditionFacade.origin$;
+  origin = '';
   destination$: Observable<string> = this.conditionFacade.destination$;
+  destination = '';
   radius$: Observable<number> = this.conditionFacade.radius$;
+  radius = 0;
   travelMode$: Observable<google.maps.TravelMode> = this.conditionFacade.travelMode$;
+  travelMode = google.maps.TravelMode.DRIVING;
   private direction?: Direction;
   get travelmode(): string {
     return this.direction ? this.direction.travelMode.toString() : '';
@@ -55,14 +59,14 @@ export class MapRouteResultComponent implements OnInit, OnDestroy {
     );
   }
   waypoints: Place[] = [];
-  origin?: Place = { selected: true };
-  destination?: Place = { selected: true };
+  originPlace?: Place = { selected: true };
+  destinationPlace?: Place = { selected: true };
   get destinationName(): string {
-    return this.destination ? (this.destination.name ? this.destination.name : '') : '';
+    return this.destinationPlace ? (this.destinationPlace.name ? this.destinationPlace.name : '') : '';
   }
   resultList: Place[] = [];
   get originUrlValue(): string {
-    return this.origin ? (this.origin.location ? this.origin.location.toUrlValue() : '') : '';
+    return this.originPlace ? (this.originPlace.location ? this.originPlace.location.toUrlValue() : '') : '';
   }
   zoom = 16;
   private dist = 0;
@@ -88,14 +92,28 @@ export class MapRouteResultComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    forkJoin([this.origin$, this.destination$, this.radius$, this.travelMode$])
-      .pipe(takeUntil(this.onDestroy$))
-      .subscribe((list) => {
+    this.origin$
+      .pipe(
+        takeUntil(this.onDestroy$),
+        mergeMap((origin) => {
+          this.origin = origin;
+          return this.destination$;
+        }),
+        mergeMap((destination) => {
+          this.destination = destination;
+          return this.radius$;
+        }),
+        mergeMap((radius) => {
+          this.radius = radius;
+          return this.travelMode$;
+        }),
+      )
+      .subscribe((travelMode) => {
         const direction: Direction = {
-          origin: list[0],
-          destination: list[1],
-          radius: list[2],
-          travelMode: list[3],
+          origin: this.origin,
+          destination: this.destination,
+          radius: this.radius,
+          travelMode: travelMode,
         };
         this.direction = direction;
         this.setRouteMap(direction);
@@ -119,10 +137,10 @@ export class MapRouteResultComponent implements OnInit, OnDestroy {
 
   private createCourse(): Course {
     const course: Course = this.createDefaultCourse();
-    if (this.origin && this.destination) {
-      course.route.push(this.origin);
+    if (this.originPlace && this.destinationPlace) {
+      course.route.push(this.originPlace);
       this.waypoints.forEach((p) => course.route.push(p));
-      course.route.push(this.destination);
+      course.route.push(this.destinationPlace);
     }
     return course;
   }
@@ -142,19 +160,19 @@ export class MapRouteResultComponent implements OnInit, OnDestroy {
           location: result.geometry.location,
           placeId: result.place_id,
         };
-        this.origin = currentPosition;
+        this.originPlace = currentPosition;
         this.resultList.push(currentPosition);
         this.setResultRoute(direction);
       });
     } else {
       this.mapService.geocode({ address: direction.origin }).then((result) => {
-        this.origin = {
+        this.originPlace = {
           selected: true,
           location: result.geometry.location,
           placeId: result.place_id,
           name: direction.origin,
         };
-        this.resultList.push(this.origin);
+        this.resultList.push(this.originPlace);
         this.setResultRoute(direction);
       });
     }
@@ -162,7 +180,7 @@ export class MapRouteResultComponent implements OnInit, OnDestroy {
 
   private setResultRoute(direction: Direction): void {
     this.mapService.geocode({ address: direction.destination }).then((result) => {
-      this.destination = {
+      this.destinationPlace = {
         selected: true,
         location: result.geometry.location,
         placeId: result.place_id,
@@ -180,8 +198,8 @@ export class MapRouteResultComponent implements OnInit, OnDestroy {
               this.waypoints.push(waypoints[index]);
             });
             this.calcDistAndDura(routeResult);
-            if (this.destination) {
-              this.resultList.push(this.destination);
+            if (this.destinationPlace) {
+              this.resultList.push(this.destinationPlace);
             }
           })
           .catch(() => {
@@ -193,8 +211,8 @@ export class MapRouteResultComponent implements OnInit, OnDestroy {
 
   private CreateDirectionsRequest(direction: Direction, waypoints: Place[]): google.maps.DirectionsRequest {
     return {
-      origin: this.origin ? this.origin.location : undefined,
-      destination: this.destination ? this.destination.name : undefined,
+      origin: this.originPlace ? this.originPlace.location : undefined,
+      destination: this.destinationPlace ? this.destinationPlace.name : undefined,
       waypoints: this.createWaypoints(waypoints),
       travelMode: direction.travelMode,
       optimizeWaypoints: true,
@@ -251,25 +269,25 @@ export class MapRouteResultComponent implements OnInit, OnDestroy {
 
   private createDirectionRequest(): google.maps.DirectionsRequest {
     return {
-      origin: this.origin ? this.origin.location : undefined,
-      destination: this.destination ? this.destination.name : undefined,
+      origin: this.originPlace ? this.originPlace.location : undefined,
+      destination: this.destinationPlace ? this.destinationPlace.name : undefined,
       waypoints: this.createWaypoints(this.waypoints),
       travelMode: this.direction ? this.direction.travelMode : undefined,
     };
   }
 
   private setRouteInfo(): void {
-    this.origin = this.resultList.shift();
-    this.destination = this.resultList.pop();
+    this.originPlace = this.resultList.shift();
+    this.destinationPlace = this.resultList.pop();
     this.waypoints = [];
     this.resultList.forEach((r) => {
       this.waypoints.push(r);
     });
-    if (this.origin) {
-      this.resultList.unshift(this.origin);
+    if (this.originPlace) {
+      this.resultList.unshift(this.originPlace);
     }
-    if (this.destination) {
-      this.resultList.push(this.destination);
+    if (this.destinationPlace) {
+      this.resultList.push(this.destinationPlace);
     }
   }
 

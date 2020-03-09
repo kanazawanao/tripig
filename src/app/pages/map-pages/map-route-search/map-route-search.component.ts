@@ -1,8 +1,8 @@
 import { Location } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
 import { GoogleMap, MapInfoWindow, MapMarker } from '@angular/google-maps';
-import { forkJoin, Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { mergeMap, takeUntil } from 'rxjs/operators';
 import { Place } from 'src/app/models/class/place.model';
 import { Direction } from 'src/app/models/interface/direction.model';
 import { Category } from 'src/app/parts/category.class';
@@ -23,9 +23,13 @@ export class MapRouteSearchComponent {
   infoContent = '';
   private onDestroy$ = new Subject();
   origin$: Observable<string> = this.conditionFacade.origin$;
+  origin = '';
   destination$: Observable<string> = this.conditionFacade.destination$;
+  destination = '';
   radius$: Observable<number> = this.conditionFacade.radius$;
+  radius = 0;
   travelMode$: Observable<google.maps.TravelMode> = this.conditionFacade.travelMode$;
+  travelMode = google.maps.TravelMode.DRIVING;
   category$: Observable<Category> = this.conditionFacade.category$;
   selectedList$: Observable<Place[]> = this.placeFacade.selectedPlaceList$;
   selectedList: Place[] = [];
@@ -53,16 +57,34 @@ export class MapRouteSearchComponent {
   ) {}
 
   ionViewDidEnter(): void {
-    forkJoin([this.origin$, this.destination$, this.radius$, this.travelMode$, this.category$])
-      .pipe(takeUntil(this.onDestroy$))
-      .subscribe((list) => {
+    this.origin$
+      .pipe(
+        takeUntil(this.onDestroy$),
+        mergeMap((origin) => {
+          this.origin = origin;
+          return this.destination$;
+        }),
+        mergeMap((destination) => {
+          this.destination = destination;
+          return this.radius$;
+        }),
+        mergeMap((radius) => {
+          this.radius = radius;
+          return this.travelMode$;
+        }),
+        mergeMap((travelMode) => {
+          this.travelMode = travelMode;
+          return this.category$;
+        }),
+      )
+      .subscribe((category) => {
         const direction: Direction = {
-          origin: list[0],
-          destination: list[1],
-          radius: list[2],
-          travelMode: list[3],
+          origin: this.origin,
+          destination: this.destination,
+          radius: this.radius,
+          travelMode: this.travelMode,
         };
-        this.setRouteMap(direction, list[4]);
+        this.setRouteMap(direction, category);
       });
     this.selectedList$.pipe(takeUntil(this.onDestroy$)).subscribe((selectedList) => {
       this.selectedList = selectedList;
