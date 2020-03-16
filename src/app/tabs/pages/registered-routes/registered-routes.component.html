@@ -1,19 +1,22 @@
 <ion-content>
-  <mat-list>
-    <mat-list-item>
-      <button mat-button type="button" (click)="createTravelPlanning()" aria-label="create">
-        <mat-icon matPrefix>add_circle_outline</mat-icon>
-        旅のプロジェクトを作る
-      </button>
-    </mat-list-item>
-    <mat-list-item *ngFor="let course of courses">
-      <button mat-button type="button" (click)="select(course)" aria-label="select">
-        {{ course.name }}
-        <mat-icon matSuffix>keyboard_arrow_right</mat-icon>
-      </button>
-      <button mat-button type="button" (click)="inviteGroup(course)" aria-label="invite">
-        <mat-icon>group_add</mat-icon>
-      </button>
-    </mat-list-item>
-  </mat-list>
+  <button mat-button type="button" (click)="createTravelPlanning()" aria-label="create">
+    <mat-icon matPrefix>add_circle_outline</mat-icon>
+    旅のプロジェクトを作る
+  </button>
+  <mat-tab-group>
+    <mat-tab label="作成中">
+      <mat-list>
+        <mat-list-item *ngFor="let course of courses">
+          <button mat-button type="button" (click)="select(course)" aria-label="select">
+            {{ course.name }}
+            <mat-icon matSuffix>keyboard_arrow_right</mat-icon>
+          </button>
+          <button mat-button type="button" (click)="inviteGroup(course)" aria-label="invite">
+            <mat-icon>group_add</mat-icon>
+          </button>
+        </mat-list-item>
+      </mat-list>
+    </mat-tab>
+    <mat-tab label="作成済み">in preparation</mat-tab>
+  </mat-tab-group>
 </ion-content>
