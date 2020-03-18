@@ -1,43 +1,22 @@
-<ion-content>
-  <form [formGroup]="searchForm" class="form">
-    <mat-form-field class="full-width input-field">
-      <input
-        matInput
-        #origin
-        type="text"
-        placeholder="LEAVING FROM"
-        formControlName="origin"
-        required
-      />
-    </mat-form-field>
-    <mat-form-field class="full-width input-field">
-      <input
-        matInput
-        #destination
-        type="text"
-        placeholder="ARRIVAL AT"
-        formControlName="destination"
-        required
-      />
-    </mat-form-field>
-    <mat-form-field class="full-width">
-      <mat-label>TRAVEL MODE</mat-label>
-      <mat-select formControlName="selectedTravelMode">
-        <mat-select-trigger>
-          <mat-icon>{{ selectedMode.viewValue }}</mat-icon>
-        </mat-select-trigger>
-        <mat-option *ngFor="let mode of travelModes" [value]="mode">
-          <mat-icon>{{ mode.viewValue }}</mat-icon>
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <button
-      mat-button
-      type="button"
-      (click)="search()"
-      [disabled]="!searchForm.valid"
-    >
-      Search
-    </button>
-  </form>
-</ion-content>
+<form [formGroup]="searchForm" class="form">
+  <mat-form-field class="full-width input-field">
+    <input matInput #origin type="text" placeholder="LEAVING FROM" formControlName="origin" required />
+  </mat-form-field>
+  <mat-form-field class="full-width input-field">
+    <input matInput #destination type="text" placeholder="ARRIVAL AT" formControlName="destination" required />
+  </mat-form-field>
+  <mat-form-field class="full-width">
+    <mat-label>TRAVEL MODE</mat-label>
+    <mat-select formControlName="selectedTravelMode">
+      <mat-select-trigger>
+        <mat-icon>{{ selectedMode.viewValue }}</mat-icon>
+      </mat-select-trigger>
+      <mat-option *ngFor="let mode of travelModes" [value]="mode">
+        <mat-icon>{{ mode.viewValue }}</mat-icon>
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <button mat-button type="button" (click)="search()" [disabled]="!searchForm.valid">
+    Search
+  </button>
+</form>

@@ -1,37 +1,27 @@
-<ion-content>
-  <form [formGroup]="searchForm" class="form">
-    <mat-form-field class="full-width input-field">
-      <mat-icon matPrefix>search</mat-icon>
-      <input
-        matInput
-        #destination
-        type="text"
-        placeholder="Search a city guide(e.g. Tokyo)"
-        formControlName="destination"
-        required
-      />
-    </mat-form-field>
-    <mat-grid-list cols="3" rowHeight="2:1">
-      <mat-grid-tile
-        *ngFor="let category of categories">
-        <button
-          #searchButton
-          mat-fab
-          color="category"
-          type="button"
-          (click)="search(category)"
-          [disabled]="!searchForm.valid"
-          aria-label="categorySearch"
-          routerLink="/tabs/pages/map/point"
-        >
-          <span *ngIf="category.custome; else default">
-            <mat-icon [svgIcon]="category.icon"></mat-icon>
-          </span>
-          <ng-template #default>
-            <mat-icon>{{ category.icon }}</mat-icon>
-          </ng-template>
-        </button>
-      </mat-grid-tile>
-    </mat-grid-list>
-  </form>
-</ion-content>
+<form [formGroup]="searchForm" class="form">
+  <mat-form-field class="full-width input-field">
+    <mat-icon matPrefix>search</mat-icon>
+    <input matInput #destination type="text" placeholder="Search a city guide(e.g. Tokyo)" formControlName="destination" required />
+  </mat-form-field>
+  <mat-grid-list cols="3" rowHeight="2:1">
+    <mat-grid-tile *ngFor="let category of categories">
+      <button
+        #searchButton
+        mat-fab
+        color="category"
+        type="button"
+        (click)="search(category)"
+        [disabled]="!searchForm.valid"
+        aria-label="categorySearch"
+        routerLink="/tabs/pages/map/point"
+      >
+        <span *ngIf="category.custome; else default">
+          <mat-icon [svgIcon]="category.icon"></mat-icon>
+        </span>
+        <ng-template #default>
+          <mat-icon>{{ category.icon }}</mat-icon>
+        </ng-template>
+      </button>
+    </mat-grid-tile>
+  </mat-grid-list>
+</form>

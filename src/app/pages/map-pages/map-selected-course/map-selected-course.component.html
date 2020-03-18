@@ -1,14 +1,14 @@
-<google-map height="250px" width="100%" [center]="center" [zoom]="zoom">
-  <map-marker
-    #marker
-    *ngFor="let place of selectedCourse?.route"
-    [position]="place.location"
-    [options]="markerOptions"
-    (mapClick)="openInfoWindow(marker, place)"
-  ></map-marker>
-  <map-info-window>{{ infoContent }}</map-info-window>
-</google-map>
-<ion-content>
+<div class="form">
+  <google-map height="250px" width="100%" [center]="center" [zoom]="zoom">
+    <map-marker
+      #marker
+      *ngFor="let place of selectedCourse?.route"
+      [position]="place.location"
+      [options]="markerOptions"
+      (mapClick)="openInfoWindow(marker, place)"
+    ></map-marker>
+    <map-info-window>{{ infoContent }}</map-info-window>
+  </google-map>
   <h2>{{ selectedCourse?.name }}</h2>
   <div cdkDropList class="list" (cdkDropListDropped)="drop($event)">
     <div class="box" *ngFor="let result of selectedCourse?.route; index as i" cdkDrag>
@@ -32,4 +32,4 @@
       </button>
     </div>
   </mat-menu>
-</ion-content>
+</div>
