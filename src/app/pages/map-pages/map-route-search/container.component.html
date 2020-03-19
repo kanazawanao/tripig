@@ -4,5 +4,5 @@
     [center]="lastSelectedLocation$ | async"
     (selectPlaceEvent)="selectPlace($event)"
   ></app-map>
-  <app-map-point-search [suggestList]="suggestList"> </app-map-point-search>
+  <app-map-route-search [suggestList]="sugestPlaceList"> </app-map-route-search>
 </div>

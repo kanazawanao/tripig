@@ -1,28 +1,27 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
-import { GoogleMapsModule } from '@angular/google-maps';
-import { MaterialModule } from 'src/app/material/material.module';
+import { ContainerComponent } from './container.component';
 import { MapRouteSearchComponent } from './map-route-search.component';
+import { CommonModule } from '@angular/common';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { GoogleMapsModule } from '@angular/google-maps';
+import { RouterModule } from '@angular/router';
+import { MaterialModule } from 'src/app/material/material.module';
+import { MapModule } from 'src/app/parts/map/map.module';
 import { SuggestListModule } from 'src/app/parts/suggest-list/suggest-list.module';
 import { TabCategoryModule } from 'src/app/parts/tab-category/tab-category.module';
 
 @NgModule({
-  declarations: [
-    MapRouteSearchComponent
-  ],
+  declarations: [ContainerComponent, MapRouteSearchComponent],
   imports: [
     CommonModule,
     FormsModule,
-    RouterModule.forChild([{ path: '', component: MapRouteSearchComponent }]),
+    RouterModule.forChild([{ path: '', component: ContainerComponent }]),
     GoogleMapsModule,
     MaterialModule,
     SuggestListModule,
-    TabCategoryModule
+    TabCategoryModule,
+    MapModule,
   ],
-  schemas: [
-    CUSTOM_ELEMENTS_SCHEMA
-  ]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class MapRouteSearchModule { }
+export class MapRouteSearchModule {}

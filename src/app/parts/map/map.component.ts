@@ -8,7 +8,6 @@ import { Place } from 'src/app/models/class/place.model';
 })
 export class MapComponent implements OnInit {
   @Input() selectedList: Place[] = [];
-  @Input() suggestList: Place[] = [];
   @Input() center?: google.maps.LatLng;
   @ViewChild(GoogleMap) map!: GoogleMap;
   @ViewChild(MapInfoWindow) infoWindow!: MapInfoWindow;
