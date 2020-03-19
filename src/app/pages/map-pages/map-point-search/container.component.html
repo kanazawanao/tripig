@@ -6,8 +6,8 @@
     [travelMode]="travelMode$ | async"
     [category]="category$ | async"
     [selectedList]="selectedPlaceList$ | async"
-    [suggestList]="sugestPlaceList$ | async"
-    [center]="lastSelectedPlace$ | async"
+    [center]="lastSelectedLocation$ | async"
+    (selectPlaceEvent)="selectPlace($event)"
   ></app-map>
-  <app-map-point-search [suggestList]="sugestPlaceList$ | async"> </app-map-point-search>
+  <app-map-point-search [suggestList]="suggestList"> </app-map-point-search>
 </div>

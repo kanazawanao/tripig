@@ -1,6 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Place } from 'src/app/models/class/place.model';
-import { PlaceFacade } from 'src/app/store/place/facades';
 
 @Component({
   selector: 'app-map-point-search',
@@ -9,15 +8,11 @@ import { PlaceFacade } from 'src/app/store/place/facades';
 })
 export class MapPointSearchComponent {
   @Input() suggestList: Place[] = [];
+  @Output() selectPlaceEvent = new EventEmitter<Place>();
 
-  constructor(private placeFacade: PlaceFacade) {}
+  constructor() {}
 
   selectPlace(place: Place) {
-    this.suggestList.map((s) => {
-      if (s.placeId === place.placeId) {
-        s.selected = !s.selected;
-      }
-    });
-    this.placeFacade.updateSelectedPlaceList(this.suggestList.filter((s) => s.selected));
+    this.selectPlaceEvent.emit(place);
   }
 }

@@ -14,6 +14,6 @@ export const updateSelectedPlaceList = createAction('[Place Page] updateSelected
 
 export const searchSugestPlaceList = createAction('[Place Page] searchSugestPlaceList', props<{ sugestPlaceList: Place[] }>());
 
-export const selectLastPlace = createAction('[Place Page] selectLastPlace', props<{ lastSelectedPlace: Place }>());
+export const selectLastLocation = createAction('[Place Page] selectLastLocation', props<{ lastSelectedLocation?: google.maps.LatLng }>());
 
 export const selectCourse = createAction('[Place Page] selectCourse', props<{ courseId: string }>());

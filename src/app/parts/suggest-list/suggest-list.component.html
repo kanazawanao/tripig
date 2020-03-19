@@ -1,13 +1,12 @@
 <ion-content>
-  <mat-selection-list
-    #suggests
-    (selectionChange)="onSelectedChange(suggests.selectedOptions.selected)"
-    class="list-item">
+  <mat-selection-list #suggests (selectionChange)="onSelectedChange(suggests.selectedOptions.selected)" class="list-item">
     <mat-list-option
       checkboxPosition="before"
       *ngFor="let suggest of suggestList"
       [value]="suggest"
-      [selected]="suggest.selected">
+      [selected]="suggest.selected"
+      (onClick)="onCheckBoxClick($event, suggest)"
+    >
       <span class="name" (click)="openPlaceDetailDialog($event, suggest)">
         {{ suggest.name }}
         <button mat-button (click)="onSearchLinkClick($event, suggest)">
@@ -18,13 +17,7 @@
       <mat-divider></mat-divider>
     </mat-list-option>
   </mat-selection-list>
-  <ion-fab
-    cdkDrag
-    *ngIf="showResultRoute"
-    vertical="bottom"
-    horizontal="end"
-    slot="fixed"
-    class="rocket">
+  <ion-fab cdkDrag *ngIf="showResultRoute" vertical="bottom" horizontal="end" slot="fixed" class="rocket">
     <ion-fab-button (click)="openRouteResultDialog()" aria-label="routeResult">
       <ion-icon name="rocket"></ion-icon>
     </ion-fab-button>

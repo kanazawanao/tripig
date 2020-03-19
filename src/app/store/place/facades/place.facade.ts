@@ -14,7 +14,7 @@ export class PlaceFacade {
   courseList$ = this.store.pipe(select(PlaceSelectors.getCourseList));
   selectedPlaceList$ = this.store.pipe(select(PlaceSelectors.getSelectedPlaceList));
   sugestPlaceList$ = this.store.pipe(select(PlaceSelectors.getSugestPlaceList));
-  lastSelectedPlace$ = this.store.pipe(select(PlaceSelectors.getLastSelectedPlace));
+  lastSelectedLocation$ = this.store.pipe(select(PlaceSelectors.getLastSelectedLocation));
   selectedCourseId$ = this.store.pipe(select(PlaceSelectors.getSelectedCourseId));
 
   constructor(private store: Store<State>) {}
@@ -51,11 +51,11 @@ export class PlaceFacade {
   }
 
   /**
-   * selectLastPlace
-   * @param lastSelectedPlace lastSelectedPlace
+   * selectLastLocation
+   * @param selectLastLocation selectLastLocation
    */
-  selectLastPlace(lastSelectedPlace: Place) {
-    this.store.dispatch(PlaceActions.selectLastPlace({ lastSelectedPlace }));
+  selectLastLocation(lastSelectedLocation?: google.maps.LatLng) {
+    this.store.dispatch(PlaceActions.selectLastLocation({ lastSelectedLocation }));
   }
 
   /**

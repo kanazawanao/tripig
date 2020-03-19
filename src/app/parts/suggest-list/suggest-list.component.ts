@@ -36,8 +36,10 @@ export class SuggestListComponent implements OnInit, OnDestroy {
   }
 
   onCheckBoxClick(event: MouseEvent, place: Place): void {
+    console.log('onCheckBoxClick');
     event.stopPropagation();
-    this.placeFacade.selectLastPlace(place);
+    this.selectEvent.emit(place);
+    this.placeFacade.selectLastLocation(place.location);
   }
 
   onSearchLinkClick(event: MouseEvent, suggest: Place): void {

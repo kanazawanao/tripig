@@ -8,7 +8,7 @@ export interface State {
   courseList: Course[];
   selectedPlaceList: Place[];
   sugestPlaceList: Place[];
-  lastSelectedPlace?: Place;
+  lastSelectedLocation?: google.maps.LatLng;
   selectedCourseId: string;
   err?: any;
 }

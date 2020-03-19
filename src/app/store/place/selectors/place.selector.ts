@@ -11,6 +11,6 @@ export const getSelectedPlaceList = createSelector(getState, (state) => state.se
 
 export const getSugestPlaceList = createSelector(getState, (state) => state.sugestPlaceList);
 
-export const getLastSelectedPlace = createSelector(getState, (state) => state.lastSelectedPlace);
+export const getLastSelectedLocation = createSelector(getState, (state) => state.lastSelectedLocation);
 
 export const getSelectedCourseId = createSelector(getState, (state) => state.selectedCourseId);
