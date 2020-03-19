@@ -9,6 +9,8 @@ export const getCourseList = createSelector(getState, (state) => state.courseLis
 
 export const getSelectedPlaceList = createSelector(getState, (state) => state.selectedPlaceList);
 
+export const getSugestPlaceList = createSelector(getState, (state) => state.sugestPlaceList);
+
 export const getLastSelectedPlace = createSelector(getState, (state) => state.lastSelectedPlace);
 
 export const getSelectedCourseId = createSelector(getState, (state) => state.selectedCourseId);

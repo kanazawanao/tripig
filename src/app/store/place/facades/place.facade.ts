@@ -13,6 +13,7 @@ export class PlaceFacade {
   loading$ = this.store.pipe(select(PlaceSelectors.getLoading));
   courseList$ = this.store.pipe(select(PlaceSelectors.getCourseList));
   selectedPlaceList$ = this.store.pipe(select(PlaceSelectors.getSelectedPlaceList));
+  sugestPlaceList$ = this.store.pipe(select(PlaceSelectors.getSugestPlaceList));
   lastSelectedPlace$ = this.store.pipe(select(PlaceSelectors.getLastSelectedPlace));
   selectedCourseId$ = this.store.pipe(select(PlaceSelectors.getSelectedCourseId));
 
@@ -34,11 +35,19 @@ export class PlaceFacade {
   }
 
   /**
-   * updateCourse
+   * updateSelectedPlaceList
    * @param selectedPlaceList selectedPlaceList
    */
   updateSelectedPlaceList(selectedPlaceList: Place[]) {
     this.store.dispatch(PlaceActions.updateSelectedPlaceList({ selectedPlaceList }));
+  }
+
+  /**
+   * searchSugestPlaceList
+   * @param sugestPlaceList sugestPlaceList
+   */
+  searchSugestPlaceList(sugestPlaceList: Place[]) {
+    this.store.dispatch(PlaceActions.searchSugestPlaceList({ sugestPlaceList }));
   }
 
   /**

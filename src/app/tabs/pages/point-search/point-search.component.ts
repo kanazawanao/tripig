@@ -19,7 +19,7 @@ export class PointSearchComponent {
     return this._destination;
   }
 
-  selectedCategory: Category = { icon: '', index: 0, value: '', viewValue: '', custome: false };
+  selectedCategory: Category = new Category();
   get direction(): Direction {
     const direction: Direction = {
       destination: this.destination,

@@ -1,0 +1,13 @@
+<div class="form">
+  <app-map
+    [origin]="origin$ | async"
+    [destination]="destination$ | async"
+    [radius]="radius$ | async"
+    [travelMode]="travelMode$ | async"
+    [category]="category$ | async"
+    [selectedList]="selectedPlaceList$ | async"
+    [suggestList]="sugestPlaceList$ | async"
+    [center]="lastSelectedPlace$ | async"
+  ></app-map>
+  <app-map-point-search [suggestList]="sugestPlaceList$ | async"> </app-map-point-search>
+</div>

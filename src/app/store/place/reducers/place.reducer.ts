@@ -22,6 +22,9 @@ const placeReducer = createReducer(
   on(PlaceActions.selectCourse, (state, { courseId }) => {
     return { ...state, selectedCourseId: courseId };
   }),
+  on(PlaceActions.searchSugestPlaceList, (state, { sugestPlaceList }) => {
+    return { ...state, sugestPlaceList };
+  }),
 );
 
 export function reducer(state: State, action: Action) {

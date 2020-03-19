@@ -1,9 +1,16 @@
-export interface Category {
+export class Category {
   value: string;
   viewValue: string;
   icon: string;
   index: number;
   custome: boolean;
+  constructor() {
+    this.icon = '';
+    this.index = 0;
+    this.value = '';
+    this.viewValue = '';
+    this.custome = false;
+  }
 }
 
 export const CATEGORIES: Category[] = [

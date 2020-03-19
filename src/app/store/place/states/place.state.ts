@@ -7,6 +7,7 @@ export interface State {
   loading: boolean;
   courseList: Course[];
   selectedPlaceList: Place[];
+  sugestPlaceList: Place[];
   lastSelectedPlace?: Place;
   selectedCourseId: string;
   err?: any;
@@ -16,5 +17,6 @@ export const initialState: State = {
   loading: false,
   courseList: [],
   selectedPlaceList: [],
+  sugestPlaceList: [],
   selectedCourseId: '',
 };

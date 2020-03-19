@@ -16,7 +16,7 @@ export class EditProjectComponent implements OnInit {
     detail: ['', Validators.required],
     members: ['', Validators.required],
   });
-  category: Category = { icon: '', index: 0, value: '', viewValue: '', custome: false };
+  category: Category = new Category();
   get direction(): Direction {
     const direction: Direction = {
       destination: this.destination,

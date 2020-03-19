@@ -1,0 +1,10 @@
+<google-map height="250px" width="100%" [center]="center" [zoom]="zoom">
+  <map-marker
+    #marker
+    *ngFor="let selected of selectedList"
+    [position]="selected.location"
+    [options]="markerOptions"
+    (mapClick)="openInfoWindow(marker, selected)"
+  ></map-marker>
+  <map-info-window>{{ infoContent }}</map-info-window>
+</google-map>

@@ -12,6 +12,8 @@ export const updateCourse = createAction('[Place Page] updateCourse', props<{ co
 
 export const updateSelectedPlaceList = createAction('[Place Page] updateSelectedPlaceList', props<{ selectedPlaceList: Place[] }>());
 
+export const searchSugestPlaceList = createAction('[Place Page] searchSugestPlaceList', props<{ sugestPlaceList: Place[] }>());
+
 export const selectLastPlace = createAction('[Place Page] selectLastPlace', props<{ lastSelectedPlace: Place }>());
 
 export const selectCourse = createAction('[Place Page] selectCourse', props<{ courseId: string }>());
