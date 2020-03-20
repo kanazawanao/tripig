@@ -2,5 +2,10 @@
   <app-header></app-header>
   <ion-content>
     <ion-router-outlet class="container"></ion-router-outlet>
+    <ion-fab cdkDrag *ngIf="showResultRoute" vertical="bottom" horizontal="end" slot="fixed" class="rocket">
+      <ion-fab-button (click)="openRouteResultDialog()" aria-label="routeResult">
+        <ion-icon name="rocket"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
   </ion-content>
 </ion-app>

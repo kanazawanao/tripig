@@ -16,6 +16,9 @@ const placeReducer = createReducer(
   on(PlaceActions.updateCourse, (state, { course }) => {
     return { ...state };
   }),
+  on(PlaceActions.updateSelectedPlaceList, (state, { selectedPlaceList }) => {
+    return { ...state, selectedPlaceList };
+  }),
   on(PlaceActions.selectLastLocation, (state, { lastSelectedLocation }) => {
     return { ...state, lastSelectedLocation };
   }),
