@@ -1,27 +1,25 @@
 import { Location } from '@angular/common';
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Subject } from 'rxjs';
+import { mergeMap, takeUntil } from 'rxjs/operators';
+import { Place } from 'src/app/models/class/place.model';
+import { Direction } from 'src/app/models/interface/direction.model';
+import { Category } from 'src/app/parts/category.class';
+import { MapComponent } from 'src/app/parts/map/map.component';
+import { MapService } from 'src/app/services/map.service';
 import { ConditionFacade } from 'src/app/store/condition/facades';
 import { PlaceFacade } from 'src/app/store/place/facades';
-import { Place } from 'src/app/models/class/place.model';
-import { Subject } from 'rxjs';
-import { Direction } from 'src/app/models/interface/direction.model';
-import { takeUntil, mergeMap } from 'rxjs/operators';
-import { Category } from 'src/app/parts/category.class';
-import { MapService } from 'src/app/services/map.service';
-import { MapComponent } from 'src/app/parts/map/map.component';
 
 @Component({
-  selector: 'app-container',
-  templateUrl: './container.component.html',
-  styleUrls: ['./container.component.scss'],
+  selector: 'app-map-route-search-container',
+  templateUrl: './map-route-search-container.component.html',
+  styleUrls: ['./map-route-search-container.component.scss'],
 })
-export class ContainerComponent implements OnInit, OnDestroy {
+export class MapRouteSearchContainerComponent implements OnInit, OnDestroy {
   @ViewChild(MapComponent) mapComponent!: MapComponent;
   private onDestroy$ = new Subject();
-  suggestList: Place[] = [];
-  selectedList: Place[] = [];
+  directionsRenderer = new google.maps.DirectionsRenderer();
   lastSelectedLocation$ = this.placeFacade.lastSelectedLocation$;
-  selectedPlaceList$ = this.placeFacade.selectedPlaceList$;
   origin$ = this.conditionFacade.origin$;
   origin = '';
   destination$ = this.conditionFacade.destination$;
@@ -31,16 +29,30 @@ export class ContainerComponent implements OnInit, OnDestroy {
   travelMode$ = this.conditionFacade.travelMode$;
   travelMode = google.maps.TravelMode.DRIVING;
   category$ = this.conditionFacade.category$;
+  selectedPlaceList$ = this.placeFacade.selectedPlaceList$;
+  selectedList: Place[] = [];
+  sugestPlaceList$ = this.placeFacade.sugestPlaceList$;
+  sugestPlaceList: Place[] = [];
+  private dist = 0;
+  get distance(): string {
+    return `約${Math.floor(this.dist / 1000)}km`;
+  }
+  private dura = 0;
+  get duration(): string {
+    return `約${Math.floor(this.dura / 60)}分`;
+  }
   center?: google.maps.LatLng;
-
+  originLatLng?: google.maps.LatLng;
+  destinationLatLng?: google.maps.LatLng;
+  middlePointLatLng?: google.maps.LatLng;
   constructor(
-    private placeFacade: PlaceFacade,
     private conditionFacade: ConditionFacade,
+    private placeFacade: PlaceFacade,
     private location: Location,
     private mapService: MapService,
   ) {}
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.origin$
       .pipe(
         takeUntil(this.onDestroy$),
@@ -68,13 +80,13 @@ export class ContainerComponent implements OnInit, OnDestroy {
           radius: this.radius,
           travelMode: this.travelMode,
         };
-        this.setMap(direction, category);
+        this.setRouteMap(direction, category);
       });
-    this.placeFacade.sugestPlaceList$.subscribe((list) => {
-      this.suggestList = list;
+    this.selectedPlaceList$.pipe(takeUntil(this.onDestroy$)).subscribe((selectedList) => {
+      this.selectedList = selectedList;
     });
-    this.placeFacade.selectedPlaceList$.subscribe((list) => {
-      this.selectedList = list;
+    this.placeFacade.sugestPlaceList$.subscribe((list) => {
+      this.sugestPlaceList = list;
     });
     this.lastSelectedLocation$.subscribe((location) => {
       this.center = location;
@@ -85,25 +97,33 @@ export class ContainerComponent implements OnInit, OnDestroy {
     this.onDestroy$.next();
   }
 
-  private setMap(direction: Direction, category: Category): void {
+  private setRouteMap(direction: Direction, category: Category): void {
+    const request: google.maps.DirectionsRequest = {
+      origin: direction.origin,
+      destination: direction.destination,
+      travelMode: direction.travelMode,
+    };
     this.mapService
-      .geocode({ address: direction.destination })
+      .route(request)
       .then((result) => {
-        this.placeFacade.selectLastLocation(result.geometry.location);
-        this.searchSuggestList(direction, category);
+        this.directionsRenderer.setMap(this.mapComponent.map.data.getMap());
+        this.directionsRenderer.setDirections(result);
+        this.middlePointLatLng = result.routes[0].overview_path[Math.round(result.routes[0].overview_path.length / 2)];
+        this.calcDistAndDura(result);
+        this.middlePointPlaceSearch(direction, category);
       })
       .catch(() => {
         this.location.back();
       });
   }
 
-  private searchSuggestList(direction: Direction, category: Category) {
+  middlePointPlaceSearch(direction: Direction, category: Category): void {
     const placeService = new google.maps.places.PlacesService(this.mapComponent.map.data.getMap());
     const request: google.maps.places.PlaceSearchRequest = {
       rankBy: google.maps.places.RankBy.PROMINENCE,
-      location: this.center,
+      location: this.middlePointLatLng,
       radius: direction.radius,
-      keyword: `${direction.destination} ${category.value}`,
+      keyword: category.value,
     };
     this.mapService.nearbySearch(placeService, request).then((results) => {
       const list = [...this.selectedList, ...results].filter((member, index, self) => {
@@ -113,12 +133,21 @@ export class ContainerComponent implements OnInit, OnDestroy {
     });
   }
 
+  private calcDistAndDura(result: google.maps.DirectionsResult): void {
+    this.dist = 0;
+    this.dura = 0;
+    result.routes[0].legs.forEach((leg) => {
+      this.dist += leg.distance.value;
+      this.dura += leg.duration.value;
+    });
+  }
+
   selectPlace(place: Place) {
-    this.suggestList.map((s) => {
+    this.sugestPlaceList.map((s) => {
       if (s.placeId === place.placeId) {
         s.selected = !s.selected;
       }
     });
-    this.placeFacade.updateSelectedPlaceList(this.suggestList.filter((s) => s.selected));
+    this.placeFacade.updateSelectedPlaceList(this.sugestPlaceList.filter((s) => s.selected));
   }
 }

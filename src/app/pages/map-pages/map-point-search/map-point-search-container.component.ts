@@ -11,15 +11,17 @@ import { ConditionFacade } from 'src/app/store/condition/facades';
 import { PlaceFacade } from 'src/app/store/place/facades';
 
 @Component({
-  selector: 'app-container',
-  templateUrl: './container.component.html',
-  styleUrls: ['./container.component.scss'],
+  selector: 'app-map-point-search-container',
+  templateUrl: './map-point-search-container.component.html',
+  styleUrls: ['./map-point-search-container.component.scss'],
 })
-export class ContainerComponent implements OnInit, OnDestroy {
+export class MapPointSearchContainerComponent implements OnInit, OnDestroy {
   @ViewChild(MapComponent) mapComponent!: MapComponent;
   private onDestroy$ = new Subject();
-  directionsRenderer = new google.maps.DirectionsRenderer();
+  suggestList: Place[] = [];
+  selectedList: Place[] = [];
   lastSelectedLocation$ = this.placeFacade.lastSelectedLocation$;
+  selectedPlaceList$ = this.placeFacade.selectedPlaceList$;
   origin$ = this.conditionFacade.origin$;
   origin = '';
   destination$ = this.conditionFacade.destination$;
@@ -29,30 +31,16 @@ export class ContainerComponent implements OnInit, OnDestroy {
   travelMode$ = this.conditionFacade.travelMode$;
   travelMode = google.maps.TravelMode.DRIVING;
   category$ = this.conditionFacade.category$;
-  selectedPlaceList$ = this.placeFacade.selectedPlaceList$;
-  selectedList: Place[] = [];
-  sugestPlaceList$ = this.placeFacade.sugestPlaceList$;
-  sugestPlaceList: Place[] = [];
-  private dist = 0;
-  get distance(): string {
-    return `約${Math.floor(this.dist / 1000)}km`;
-  }
-  private dura = 0;
-  get duration(): string {
-    return `約${Math.floor(this.dura / 60)}分`;
-  }
   center?: google.maps.LatLng;
-  originLatLng?: google.maps.LatLng;
-  destinationLatLng?: google.maps.LatLng;
-  middlePointLatLng?: google.maps.LatLng;
+
   constructor(
-    private conditionFacade: ConditionFacade,
     private placeFacade: PlaceFacade,
+    private conditionFacade: ConditionFacade,
     private location: Location,
     private mapService: MapService,
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.origin$
       .pipe(
         takeUntil(this.onDestroy$),
@@ -80,13 +68,13 @@ export class ContainerComponent implements OnInit, OnDestroy {
           radius: this.radius,
           travelMode: this.travelMode,
         };
-        this.setRouteMap(direction, category);
+        this.setMap(direction, category);
       });
-    this.selectedPlaceList$.pipe(takeUntil(this.onDestroy$)).subscribe((selectedList) => {
-      this.selectedList = selectedList;
-    });
     this.placeFacade.sugestPlaceList$.subscribe((list) => {
-      this.sugestPlaceList = list;
+      this.suggestList = list;
+    });
+    this.placeFacade.selectedPlaceList$.subscribe((list) => {
+      this.selectedList = list;
     });
     this.lastSelectedLocation$.subscribe((location) => {
       this.center = location;
@@ -97,33 +85,25 @@ export class ContainerComponent implements OnInit, OnDestroy {
     this.onDestroy$.next();
   }
 
-  private setRouteMap(direction: Direction, category: Category): void {
-    const request: google.maps.DirectionsRequest = {
-      origin: direction.origin,
-      destination: direction.destination,
-      travelMode: direction.travelMode,
-    };
+  private setMap(direction: Direction, category: Category): void {
     this.mapService
-      .route(request)
+      .geocode({ address: direction.destination })
       .then((result) => {
-        this.directionsRenderer.setMap(this.mapComponent.map.data.getMap());
-        this.directionsRenderer.setDirections(result);
-        this.middlePointLatLng = result.routes[0].overview_path[Math.round(result.routes[0].overview_path.length / 2)];
-        this.calcDistAndDura(result);
-        this.middlePointPlaceSearch(direction, category);
+        this.placeFacade.selectLastLocation(result.geometry.location);
+        this.searchSuggestList(direction, category);
       })
       .catch(() => {
         this.location.back();
       });
   }
 
-  middlePointPlaceSearch(direction: Direction, category: Category): void {
+  private searchSuggestList(direction: Direction, category: Category) {
     const placeService = new google.maps.places.PlacesService(this.mapComponent.map.data.getMap());
     const request: google.maps.places.PlaceSearchRequest = {
       rankBy: google.maps.places.RankBy.PROMINENCE,
-      location: this.middlePointLatLng,
+      location: this.center,
       radius: direction.radius,
-      keyword: category.value,
+      keyword: `${direction.destination} ${category.value}`,
     };
     this.mapService.nearbySearch(placeService, request).then((results) => {
       const list = [...this.selectedList, ...results].filter((member, index, self) => {
@@ -133,21 +113,12 @@ export class ContainerComponent implements OnInit, OnDestroy {
     });
   }
 
-  private calcDistAndDura(result: google.maps.DirectionsResult): void {
-    this.dist = 0;
-    this.dura = 0;
-    result.routes[0].legs.forEach((leg) => {
-      this.dist += leg.distance.value;
-      this.dura += leg.duration.value;
-    });
-  }
-
   selectPlace(place: Place) {
-    this.sugestPlaceList.map((s) => {
+    this.suggestList.map((s) => {
       if (s.placeId === place.placeId) {
         s.selected = !s.selected;
       }
     });
-    this.placeFacade.updateSelectedPlaceList(this.sugestPlaceList.filter((s) => s.selected));
+    this.placeFacade.updateSelectedPlaceList(this.suggestList.filter((s) => s.selected));
   }
 }

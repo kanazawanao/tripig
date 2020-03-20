@@ -1,4 +1,4 @@
-import { ContainerComponent } from './container.component';
+import { MapRouteSearchContainerComponent } from './map-route-search-container.component';
 import { MapRouteSearchComponent } from './map-route-search.component';
 import { CommonModule } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
@@ -11,11 +11,11 @@ import { SuggestListModule } from 'src/app/parts/suggest-list/suggest-list.modul
 import { TabCategoryModule } from 'src/app/parts/tab-category/tab-category.module';
 
 @NgModule({
-  declarations: [ContainerComponent, MapRouteSearchComponent],
+  declarations: [MapRouteSearchContainerComponent, MapRouteSearchComponent],
   imports: [
     CommonModule,
     FormsModule,
-    RouterModule.forChild([{ path: '', component: ContainerComponent }]),
+    RouterModule.forChild([{ path: '', component: MapRouteSearchContainerComponent }]),
     GoogleMapsModule,
     MaterialModule,
     SuggestListModule,

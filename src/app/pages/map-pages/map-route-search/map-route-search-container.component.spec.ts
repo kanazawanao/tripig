@@ -1,19 +1,18 @@
+import { MapRouteSearchContainerComponent } from './map-route-search-container.component';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { ContainerComponent } from './container.component';
-
 describe('ContainerComponent', () => {
-  let component: ContainerComponent;
-  let fixture: ComponentFixture<ContainerComponent>;
+  let component: MapRouteSearchContainerComponent;
+  let fixture: ComponentFixture<MapRouteSearchContainerComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ContainerComponent ],
-      imports: [IonicModule.forRoot()]
+      declarations: [MapRouteSearchContainerComponent],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ContainerComponent);
+    fixture = TestBed.createComponent(MapRouteSearchContainerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));
