@@ -22,7 +22,6 @@ export class SuggestListComponent {
 
   onCheckBoxClick(event: MouseEvent, place: Place): void {
     event.stopPropagation();
-    this.selectEvent.emit(place);
     this.placeFacade.selectLastLocation(place.location);
   }
 

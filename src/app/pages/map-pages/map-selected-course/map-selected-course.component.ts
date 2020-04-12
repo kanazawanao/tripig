@@ -1,12 +1,12 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Location } from '@angular/common';
-import { Component, ViewChild } from '@angular/core';
-import { GoogleMap, MapInfoWindow, MapMarker } from '@angular/google-maps';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 import { Course } from 'src/app/models/class/course.models';
 import { Place } from 'src/app/models/class/place.model';
+import { MapComponent } from 'src/app/parts/map/map.component';
 import { MapService } from 'src/app/services/map.service';
 import { PlaceService } from 'src/app/services/place.service';
 import { PlaceFacade } from 'src/app/store/place/facades';
@@ -16,13 +16,8 @@ import { PlaceFacade } from 'src/app/store/place/facades';
   templateUrl: './map-selected-course.component.html',
   styleUrls: ['./map-selected-course.component.scss'],
 })
-export class MapSelectedCourseComponent {
-  @ViewChild(GoogleMap) map!: GoogleMap;
-  @ViewChild(MapInfoWindow) infoWindow!: MapInfoWindow;
-  markerOptions: google.maps.MarkerOptions = { draggable: false };
-  initLatLng: google.maps.LatLng = new google.maps.LatLng(37.421995, -122.084092);
-  center = this.initLatLng;
-  zoom = 16;
+export class MapSelectedCourseComponent implements OnInit, OnDestroy {
+  @ViewChild(MapComponent) mapComponent!: MapComponent;
   selectedCourse?: Course;
   deletedPlaces: Place[] = [];
   infoContent = '';
@@ -36,7 +31,7 @@ export class MapSelectedCourseComponent {
     private placeService: PlaceService,
   ) {}
 
-  ionViewDidEnter() {
+  ngOnInit() {
     this.placeFacade.selectedCourseId$
       .pipe(mergeMap((id) => this.placeService.getPlace(id)))
       .pipe(
@@ -53,7 +48,7 @@ export class MapSelectedCourseComponent {
       });
   }
 
-  ionViewDidLeave(): void {
+  ngOnDestroy(): void {
     this.onDestroy$.next();
   }
 
@@ -69,7 +64,7 @@ export class MapSelectedCourseComponent {
     this.mapService
       .route(request)
       .then((result) => {
-        this.directionsRenderer.setMap(this.map.data.getMap());
+        this.directionsRenderer.setMap(this.mapComponent.map.data.getMap());
         this.directionsRenderer.setDirections(result);
       })
       .catch(() => {
@@ -88,11 +83,6 @@ export class MapSelectedCourseComponent {
       }
     });
     return waypoints;
-  }
-
-  openInfoWindow(marker: MapMarker, place: Place): void {
-    this.infoContent = place.name ? place.name : '';
-    this.infoWindow.open(marker);
   }
 
   drop(event: CdkDragDrop<Place[]>): void {

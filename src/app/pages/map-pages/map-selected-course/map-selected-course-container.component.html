@@ -1,0 +1,8 @@
+<div class="form">
+  <app-map
+    [selectedList]="selectedPlaceList$ | async"
+    [center]="lastSelectedLocation$ | async"
+    (selectPlaceEvent)="selectPlace($event)"
+  ></app-map>
+  <app-map-selected-course></app-map-selected-course>
+</div>

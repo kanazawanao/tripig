@@ -29,7 +29,7 @@ export class PointSearchComponent {
     };
     return direction;
   }
-  categories: Category[] = CATEGORIES.slice(0, 6);
+  categories: Category[] = CATEGORIES.slice(0, 10);
 
   constructor(private fb: FormBuilder, private facadeService: ConditionFacade) {}
 
